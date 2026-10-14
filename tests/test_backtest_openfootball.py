@@ -100,6 +100,26 @@ class TestOpenFootballBacktest(unittest.TestCase):
             ("baseline_frequency_p1", "baseline_frequency_px", "baseline_frequency_p2")), 1.0, places=12)
 
 
+    def test_calibration_table_reports_global_and_league_season_with_counts(self):
+        detail = pd.DataFrame({
+            "league": ["Premier League"] * 4 + ["LaLiga"] * 2,
+            "season": ["2024-25"] * 4 + ["2023-24"] * 2,
+            "actual_1X2": ["1", "X", "2", "1", "X", "2"],
+        })
+        for model in ["multipliers_1.10_0.90", "neutral_1.00_1.00",
+                      "venue_adjusted", "baseline_frequency"]:
+            detail[f"{model}_p1"] = [0.6, 0.2, 0.2, 0.6, 0.2, 0.2]
+            detail[f"{model}_px"] = [0.2, 0.6, 0.2, 0.2, 0.6, 0.2]
+            detail[f"{model}_p2"] = [0.2, 0.2, 0.6, 0.2, 0.2, 0.6]
+        result = bt.calibration_table(detail, ["multipliers_1.10_0.90"], bins=5)
+        self.assertIn("Global", set(result["Ambito"]))
+        self.assertIn("Liga-temporada", set(result["Ambito"]))
+        self.assertEqual(set(result["Liga"].dropna()), {"Premier League", "LaLiga"})
+        self.assertEqual(set(result["Temporada"].dropna()), {"2024-25", "2023-24"})
+        self.assertTrue((result["N"] > 0).all())
+        self.assertTrue(((result["Error_absoluto_calibracion"] >= 0) &
+                         (result["Error_absoluto_calibracion"] <= 1)).all())
+
     def test_paired_bootstrap_comparisons_is_reproducible_and_interpretable(self):
         import pandas as pd
         detail = pd.DataFrame({

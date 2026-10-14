@@ -126,6 +126,18 @@ def backtest(rows):
                 actual="1" if r["hg"]>r["ag"] else "X" if r["hg"]==r["ag"] else "2"
                 rec={k:r[k] for k in ["league","season","date","home","away","hg","ag","source_url","source_sha256"]}
                 rec["actual_1X2"]=actual
+                # Baseline de frecuencia histórica con suavizado Laplace y solo partidos anteriores.
+                outcomes=["1" if x["hg"]>x["ag"] else "X" if x["hg"]==x["ag"] else "2" for x in prior]
+                counts=[outcomes.count(label) for label in ["1","X","2"]]
+                probs_base=[(c+1)/(len(outcomes)+3) for c in counts]
+                idx=["1","X","2"].index(actual)
+                pred_base=["1","X","2"][probs_base.index(max(probs_base))]
+                rec.update({"baseline_frequency_prior_n":len(outcomes),
+                    "baseline_frequency_p1":probs_base[0],"baseline_frequency_px":probs_base[1],
+                    "baseline_frequency_p2":probs_base[2],"baseline_frequency_prediction":pred_base,
+                    "baseline_frequency_correct":int(pred_base==actual),
+                    "baseline_frequency_brier":sum((v-(i==idx))**2 for i,v in enumerate(probs_base)),
+                    "baseline_frequency_logloss":-math.log(max(probs_base[idx],1e-15))})
                 for m,(lh,la) in lambdas.items():
                     p=p1x2(lh,la); labels=["1","X","2"]; idx=labels.index(actual); pred=labels[p.index(max(p))]
                     rec.update({f"{m}_lambda_home":lh,f"{m}_lambda_away":la,
@@ -147,15 +159,35 @@ def main():
     if not rows: raise RuntimeError("No se pudo recuperar ninguna fuente OpenFootball.")
     clean_rows,invalid,dups,conflicts=clean(rows)
     detail,skipped=backtest(clean_rows)
-    models=["multipliers_1.10_0.90","neutral_1.00_1.00","venue_adjusted"]
-    glob=[]; by=[]
+    models=["multipliers_1.10_0.90","neutral_1.00_1.00","venue_adjusted","baseline_frequency"]
+    glob=[]; by=[]; metrics_ci=[]; calibration=[]
+    rng=np.random.default_rng(20261014); n=len(detail)
     for m in models:
-        if len(detail): glob.append({"Modelo":m,"Partidos":len(detail),"Exactitud":detail[f"{m}_correct"].mean(),
-          "Brier":detail[f"{m}_brier"].mean(),"LogLoss":detail[f"{m}_logloss"].mean(),
-          "Nota":"No incluye cuotas, EV ni ROI"})
+        if n:
+            glob.append({"Modelo":m,"Partidos":n,"Exactitud":detail[f"{m}_correct"].mean(),
+              "Brier":detail[f"{m}_brier"].mean(),"LogLoss":detail[f"{m}_logloss"].mean(),
+              "Nota":"Frecuencia histórica suavizada; solo partidos anteriores" if m=="baseline_frequency" else "Sin cuotas, EV ni ROI"})
+            for metric in ["correct","brier","logloss"]:
+                vals=detail[f"{m}_{metric}"].to_numpy(dtype=float)
+                boot=np.array([rng.choice(vals,size=n,replace=True).mean() for _ in range(1000)])
+                metrics_ci.append({"Modelo":m,"Metrica":{"correct":"Exactitud","brier":"Brier","logloss":"LogLoss"}[metric],
+                    "N":n,"Estimacion":float(vals.mean()),"IC95_inferior":float(np.quantile(boot,.025)),
+                    "IC95_superior":float(np.quantile(boot,.975)),"Metodo":"Bootstrap por partido, 1000 remuestras, semilla fija"})
+            probs=detail[[f"{m}_p1",f"{m}_px",f"{m}_p2"]].to_numpy(dtype=float)
+            actuals=detail["actual_1X2"].to_numpy(); labels=["1","X","2"]; edges=np.linspace(0,1,11)
+            for j,label in enumerate(labels):
+                pp=probs[:,j]; yy=(actuals==label).astype(float)
+                for bi in range(10):
+                    mask=(pp>=edges[bi]) & ((pp<edges[bi+1]) if bi<9 else (pp<=edges[bi+1]))
+                    if mask.any():
+                        calibration.append({"Modelo":m,"Clase":label,"Banda":f"{edges[bi]:.1f}-{edges[bi+1]:.1f}",
+                            "N":int(mask.sum()),"Probabilidad_media":float(pp[mask].mean()),
+                            "Frecuencia_observada":float(yy[mask].mean()),
+                            "Error_absoluto_calibracion":float(abs(pp[mask].mean()-yy[mask].mean()))})
     for (league,season),g in detail.groupby(["league","season"]):
-        for m in models: by.append({"Liga":league,"Temporada":season,"Modelo":m,"N":len(g),
-          "Exactitud":g[f"{m}_correct"].mean(),"Brier":g[f"{m}_brier"].mean(),"LogLoss":g[f"{m}_logloss"].mean()})
+        for m in models:
+            by.append({"Liga":league,"Temporada":season,"Modelo":m,"N":len(g),
+              "Exactitud":g[f"{m}_correct"].mean(),"Brier":g[f"{m}_brier"].mean(),"LogLoss":g[f"{m}_logloss"].mean()})
     quality=pd.DataFrame([
       ["Fuente", "OpenFootball football.json","Fuente efectivamente consultada"],
       ["Filas fuente",len(rows),"15 JSON"],
@@ -173,6 +205,8 @@ def main():
         pd.DataFrame(manifests+errors).to_excel(w,index=False,sheet_name="Fuentes")
         pd.DataFrame(glob).to_excel(w,index=False,sheet_name="Metricas_globales")
         pd.DataFrame(by).to_excel(w,index=False,sheet_name="Metricas_liga_temporada")
+        pd.DataFrame(metrics_ci).to_excel(w,index=False,sheet_name="Intervalos_confianza")
+        pd.DataFrame(calibration).to_excel(w,index=False,sheet_name="Calibracion")
         detail.to_excel(w,index=False,sheet_name="Detalle_backtest")
         skipped.to_excel(w,index=False,sheet_name="Omitidos")
         pd.DataFrame(dups).to_excel(w,index=False,sheet_name="Duplicados")

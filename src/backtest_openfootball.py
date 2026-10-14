@@ -302,6 +302,7 @@ def main():
               "Exactitud":g[f"{m}_correct"].mean(),"Brier":g[f"{m}_brier"].mean(),"LogLoss":g[f"{m}_logloss"].mean()})
     calibration = calibration_table(detail, models, bins=10)
     paired_comparisons = paired_bootstrap_comparisons(detail, n_boot=3000, seed=20261014)
+    block_comparisons = paired_block_bootstrap_comparisons(detail, n_boot=3000, seed=20261015)
     temporal_calibration = temporal_temperature_calibration(detail, models)
     temporal_by_league = temporal_calibration_by_league(detail, models)
     quality=pd.DataFrame([

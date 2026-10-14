@@ -1,0 +1,47 @@
+name: Backtest reproducible OpenFootball
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/backtest_openfootball.py"
+      - ".github/workflows/backtest-openfootball.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backtest-openfootball
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy requests openpyxl
+
+      - name: Run reproducible backtest
+        run: python src/backtest_openfootball.py
+
+      - name: Upload data, manifest and workbook
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backtest-openfootball-${{ github.run_number }}
+          path: |
+            src/data/openfootball/**
+            src/manifest_openfootball.json
+            src/backtest_openfootball_resultados.xlsx
+          if-no-files-found: error
+          retention-days: 90

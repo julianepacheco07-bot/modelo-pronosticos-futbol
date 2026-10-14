@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-14",
+  "timezone": "America/Bogota",
+  "competition": "UEFA Champions League",
+  "matchday": "2026-10-14",
+  "purpose": "paper_trading_pre_match",
+  "rules": {
+    "over_minimum_line": 1.5,
+    "under_maximum_line": 3.5,
+    "stake_units_per_single": 1,
+    "stake_units_per_combination": 1,
+    "no_real_money": true,
+    "never_overwrite_snapshots": true,
+    "combined_odds_must_be_verified_directly": true
+  },
+  "sources": [
+    {
+      "id": "pokerstars",
+      "name": "PokerStars Sports",
+      "url": "https://www.pokerstars.es/sports/futbol/1/uefa-champions-league/228/",
+      "markets": "1X2",
+      "note": "Public odds listing found on 2026-10-14; prices may change."
+    },
+    {
+      "id": "soccerodds-city-psg",
+      "name": "The Soccer Odds / Manchester City vs PSG",
+      "url": "https://www.thesoccerodds.com/manchester-city-vs-paris-saint-germain-odds-2026-10-14",
+      "markets": "selected singles for Manchester City vs PSG"
+    },
+    {
+      "id": "ladbrokes-city-psg",
+      "name": "Ladbrokes / Manchester City vs PSG",
+      "url": "https://www.ladbrokes.com/en/sports/event/football/uefa-club-competitions/uefa-champions-league/manchester-city-v-paris-saint-germain/258518838/goals",
+      "markets": "selected combined market for Manchester City vs PSG",
+      "note": "Man City win + Over 1.5 goals quoted at 2.40 decimal equivalent (7/5)."
+    },
+    {
+      "id": "probapredict",
+      "name": "ProbaPredict",
+      "url": "https://probapredict.app/champions-league/over-1-5-goals",
+      "markets": "Over 1.5 trend/probability references",
+      "note": "Model/statistical reference, not a bookmaker quote."
+    }
+  ],
+  "matches": [
+    {
+      "home": "Feyenoord",
+      "away": "Como",
+      "kickoff_source_time": "12:45",
+      "odds_1x2": {
+        "home": 3,
+        "draw": 3.75,
+        "away": 2.2
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "1X2",
+        "selection": "Como gana",
+        "odds": 2.2,
+        "odds_verified": true
+      },
+      "combo_pick": {
+        "selections": [
+          "Como gana",
+          "Over 1.5 goles"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "LASK Linz",
+      "away": "Liverpool",
+      "kickoff_source_time": "12:45",
+      "odds_1x2": {
+        "home": 8,
+        "draw": 5,
+        "away": 1.33
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "1X2",
+        "selection": "Liverpool gana",
+        "odds": 1.33,
+        "odds_verified": true
+      },
+      "combo_pick": {
+        "selections": [
+          "Liverpool gana",
+          "Over 1.5 goles"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "Aston Villa",
+      "away": "Fenerbahce",
+      "kickoff_source_time": "15:00",
+      "odds_1x2": {
+        "home": 1.67,
+        "draw": 4.1,
+        "away": 5
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "1X2",
+        "selection": "Aston Villa gana",
+        "odds": 1.67,
+        "odds_verified": true
+      },
+      "combo_pick": {
+        "selections": [
+          "Aston Villa gana",
+          "Under 3.5 goles"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "Real Betis",
+      "away": "Porto",
+      "kickoff_source_time": "15:00",
+      "odds_1x2": {
+        "home": 2.05,
+        "draw": 3.7,
+        "away": 3.5
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "1X2",
+        "selection": "Betis gana",
+        "odds": 2.05,
+        "odds_verified": true
+      },
+      "combo_pick": {
+        "selections": [
+          "Betis o empate (1X)",
+          "Over 1.5 goles"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "Bodo/Glimt",
+      "away": "Borussia Dortmund",
+      "kickoff_source_time": "15:00",
+      "odds_1x2": {
+        "home": 3,
+        "draw": 3.9,
+        "away": 2.2
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "1X2",
+        "selection": "Dortmund gana",
+        "odds": 2.2,
+        "odds_verified": true
+      },
+      "combo_pick": {
+        "selections": [
+          "Dortmund o empate (X2)",
+          "Over 1.5 goles"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "Manchester City",
+      "away": "PSG",
+      "kickoff_source_time": "15:00",
+      "odds_1x2": {
+        "home": 2,
+        "draw": 4,
+        "away": 3.3
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "Both Teams To Score",
+        "selection": "Sí",
+        "odds": 1.4,
+        "odds_source": "thesoccerodds",
+        "odds_verified": true
+      },
+      "combo_pick": {
+        "selections": [
+          "Manchester City gana",
+          "Over 1.5 goles"
+        ],
+        "odds": 2.4,
+        "odds_source": "ladbrokes",
+        "odds_verified": true
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "Roma",
+      "away": "Real Madrid",
+      "kickoff_source_time": "15:00",
+      "odds_1x2": {
+        "home": 3.75,
+        "draw": 3.9,
+        "away": 1.91
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "Double Chance",
+        "selection": "Real Madrid o empate (X2)",
+        "odds": null,
+        "odds_verified": false
+      },
+      "combo_pick": {
+        "selections": [
+          "Real Madrid o empate (X2)",
+          "Ambos marcan: Sí"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "Shakhtar Donetsk",
+      "away": "AEK Athens",
+      "kickoff_source_time": "15:00",
+      "odds_1x2": {
+        "home": 2.7,
+        "draw": 3.4,
+        "away": 2.7
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "Goals",
+        "selection": "Over 1.5 goles",
+        "odds": null,
+        "odds_verified": false
+      },
+      "combo_pick": {
+        "selections": [
+          "Over 1.5 goles",
+          "Ambos marcan: No"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    },
+    {
+      "home": "Slovan Bratislava",
+      "away": "Stuttgart",
+      "kickoff_source_time": "15:00",
+      "odds_1x2": {
+        "home": 7.5,
+        "draw": 5.5,
+        "away": 1.36
+      },
+      "odds_source": "pokerstars",
+      "single_pick": {
+        "market": "1X2",
+        "selection": "Stuttgart gana",
+        "odds": 1.36,
+        "odds_verified": true
+      },
+      "combo_pick": {
+        "selections": [
+          "Stuttgart gana",
+          "Over 1.5 goles"
+        ],
+        "odds": null,
+        "odds_verified": false
+      },
+      "status": "pending_pre_match_validation"
+    }
+  ],
+  "caveats": [
+    "The 1X2 odds are a source snapshot and may differ by bookmaker and time.",
+    "Only the City win + Over 1.5 combined price is verified in the retrieved public sources; all other combination odds remain null until captured directly.",
+    "Probabilities are not stored as calibrated model outputs in this initial odds snapshot.",
+    "The time labels above are as shown by the source; convert and confirm local kickoff times before considering the snapshot pre-match."
+  ]
+}

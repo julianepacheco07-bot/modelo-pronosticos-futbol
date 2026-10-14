@@ -8,6 +8,8 @@ import requests
 import numpy as np
 import pandas as pd
 from openpyxl.styles import Font, PatternFill, Alignment
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from temporal_calibration import temporal_temperature_calibration
 
 BASE=Path(__file__).resolve().parent

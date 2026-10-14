@@ -20,7 +20,8 @@
     "Odds are a pre-match snapshot of publicly visible listings; bookmaker prices can differ and move.",
     "Model probabilities and picks are intentionally blank until generated and frozen by the model before kickoff.",
     "Kickoff times are source-reported and must be confirmed in America/Bogota.",
-    "No price was found and recorded for combo markets in this snapshot; do not infer combo odds by multiplying single prices."
+    "No price was found and recorded for combo markets in this snapshot; do not infer combo odds by multiplying single prices.",
+    "Fixture cross-check: Dimayor lists Real Cundinamarca vs Bogotá FC at 17:00 Colombia in Torneo BetPlay; included without odds until a verifiable pre-match price is captured."
   ],
   "matches": [
     {
@@ -28,7 +29,7 @@
       "home": "Junior FC",
       "away": "Deportivo Pereira",
       "kickoff_source": "Dimayor / source listings differ",
-      "kickoff_source_time": "16:30 Colombia per Dimayor; PokerStars listing displayed 17:30",
+      "kickoff_source_time": "16:30 Colombia (Dimayor; also listed 17:30 by one odds page, discrepancy flagged)",
       "odds_source": "PokerStars Sports",
       "odds_url": "https://www.pokerstars.es/sports/futbol/1/colombia-primera-a/844197/junior-fc-barranquilla-pereira/36178219/",
       "odds_1x2": {
@@ -43,10 +44,24 @@
       "status": "pre_match_snapshot"
     },
     {
+      "competition": "Torneo BetPlay Colombia",
+      "home": "Real Cundinamarca",
+      "away": "Bogotá FC",
+      "kickoff_source_time": "17:00 Colombia (Dimayor)",
+      "odds_source": null,
+      "odds_url": null,
+      "odds_1x2": null,
+      "market_odds_captured": false,
+      "model_probabilities": null,
+      "model_pick": null,
+      "combination_candidate": null,
+      "status": "fixture_confirmed_odds_not_captured"
+    },
+    {
       "competition": "Primera División Argentina",
       "home": "Sarmiento de Junín",
       "away": "River Plate",
-      "kickoff_source_time": "18:00 shown by PokerStars; confirm local schedule",
+      "kickoff_source_time": "17:00 Colombia (GolCaracol); odds listing showed a different time label",
       "odds_source": "PokerStars Sports",
       "odds_url": "https://www.pokerstars.es/sports/futbol/1/argentina-primera-division/67387/sarmiento-de-junin-river-plate/36150223/",
       "odds_1x2": {
@@ -72,7 +87,7 @@
       "competition": "Copa Sudamericana",
       "home": "Atlético Mineiro",
       "away": "Montevideo City Torque",
-      "kickoff_source_time": "17:00 Colombia per published schedule; Stake listing displayed 22:00",
+      "kickoff_source_time": "17:00 Colombia (AFA/CONMEBOL schedule)",
       "odds_source": "Stake",
       "odds_url": "https://pba.stake.bet.ar/sports/soccer/international-clubs/conmebol-sudamericana/717628-atletico-mineiro-montevideo-city-torque",
       "odds_1x2": {
@@ -98,7 +113,7 @@
       "competition": "Copa Libertadores",
       "home": "Fluminense",
       "away": "Palmeiras",
-      "kickoff_source_time": "19:30 Colombia per published schedule; odds listings show differing timezone labels",
+      "kickoff_source_time": "19:30 Colombia (AFA/CONMEBOL schedule)",
       "odds_source": "Stake",
       "odds_url": "https://pba.stake.bet.ar/sports/soccer/international-clubs/copa-libertadores/714988-fluminense-palmeiras",
       "odds_1x2": {
@@ -133,7 +148,7 @@
       "competition": "Copa Colombia",
       "home": "Atlético Nacional",
       "away": "Independiente Medellín",
-      "kickoff_source_time": "20:30 Colombia per Dimayor",
+      "kickoff_source_time": "20:30 Colombia (Dimayor; other listings show 21:30, discrepancy flagged)",
       "odds_source": "PokerStars Sports",
       "odds_url": "https://www.pokerstars.es/sports/futbol/1/copa-colombia/854148/atletico-nacional-medellin-ind-medellin/36186374/",
       "odds_1x2": {

@@ -100,5 +100,34 @@ class TestOpenFootballBacktest(unittest.TestCase):
             ("baseline_frequency_p1", "baseline_frequency_px", "baseline_frequency_p2")), 1.0, places=12)
 
 
+    def test_paired_bootstrap_comparisons_is_reproducible_and_interpretable(self):
+        import pandas as pd
+        detail = pd.DataFrame({
+            "multipliers_1.10_0.90_correct": [1, 1, 0, 1],
+            "baseline_frequency_correct": [0, 1, 0, 0],
+            "multipliers_1.10_0.90_brier": [0.3, 0.4, 0.8, 0.2],
+            "baseline_frequency_brier": [0.6, 0.4, 0.7, 0.5],
+            "multipliers_1.10_0.90_logloss": [0.5, 0.7, 1.5, 0.3],
+            "baseline_frequency_logloss": [1.0, 0.7, 1.2, 0.8],
+            "venue_adjusted_correct": [1, 0, 0, 1],
+            "venue_adjusted_brier": [0.35, 0.5, 0.75, 0.3],
+            "venue_adjusted_logloss": [0.6, 0.9, 1.4, 0.4],
+            "neutral_1.00_1.00_correct": [1, 0, 0, 1],
+            "neutral_1.00_1.00_brier": [0.4, 0.5, 0.7, 0.3],
+            "neutral_1.00_1.00_logloss": [0.7, 0.9, 1.3, 0.4],
+        })
+        first = bt.paired_bootstrap_comparisons(detail, n_boot=100, seed=123)
+        second = bt.paired_bootstrap_comparisons(detail, n_boot=100, seed=123)
+        self.assertEqual(len(first), 12)
+        self.assertTrue(first.equals(second))
+        row = first[(first["Modelo_A"] == "multipliers_1.10_0.90") &
+                    (first["Modelo_B"] == "baseline_frequency") &
+                    (first["Metrica"] == "Exactitud")].iloc[0]
+        self.assertAlmostEqual(row["Diferencia_A_menos_B"], 0.25)
+        self.assertLessEqual(row["IC95_inferior"], row["IC95_superior"])
+        self.assertEqual(row["N"], 4)
+
+
+
 if __name__ == "__main__":
     unittest.main()

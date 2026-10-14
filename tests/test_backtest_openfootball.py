@@ -61,20 +61,24 @@ class TestOpenFootballBacktest(unittest.TestCase):
             rows.append({
                 "league": "Premier League", "season": "2023-24",
                 "date": f"2024-01-{i+1:02d}", "home": "A", "away": f"Opponent{i}",
-                "hg": 1 + (i % 2), "ag": i % 2
+                "hg": 1 + (i % 2), "ag": i % 2,
+                "source_url": "test://source", "source_sha256": "testhash"
             })
             rows.append({
                 "league": "Premier League", "season": "2023-24",
                 "date": f"2024-01-{i+1:02d}", "home": f"Visitor{i}", "away": "B",
-                "hg": i % 2, "ag": 1 + (i % 2)
+                "hg": i % 2, "ag": 1 + (i % 2),
+                "source_url": "test://source", "source_sha256": "testhash"
             })
         target = {
             "league": "Premier League", "season": "2023-24",
-            "date": "2024-01-10", "home": "A", "away": "B", "hg": 1, "ag": 0
+            "date": "2024-01-10", "home": "A", "away": "B", "hg": 1, "ag": 0,
+            "source_url": "test://source", "source_sha256": "testhash"
         }
         future = {
             "league": "Premier League", "season": "2023-24",
-            "date": "2024-01-11", "home": "A", "away": "B", "hg": 9, "ag": 0
+            "date": "2024-01-11", "home": "A", "away": "B", "hg": 9, "ag": 0,
+            "source_url": "test://source", "source_sha256": "testhash"
         }
         clean1, *_ = bt.clean(rows + [target, future])
         detail1, _ = bt.backtest(clean1)

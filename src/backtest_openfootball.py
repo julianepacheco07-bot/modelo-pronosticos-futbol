@@ -127,7 +127,8 @@ def backtest(rows):
                 rec={k:r[k] for k in ["league","season","date","home","away","hg","ag","source_url","source_sha256"]}
                 rec["actual_1X2"]=actual
                 # Baseline de frecuencia histórica con suavizado Laplace y solo partidos anteriores.
-                outcomes=["1" if x["hg"]>x["ag"] else "X" if x["hg"]==x["ag"] else "2" for x in prior]
+                prior_matches=[x for x in rows if x["league"]==league and x["date"]<r["date"] and x["hg"] is not None and x["ag"] is not None]
+                outcomes=["1" if x["hg"]>x["ag"] else "X" if x["hg"]==x["ag"] else "2" for x in prior_matches]
                 counts=[outcomes.count(label) for label in ["1","X","2"]]
                 probs_base=[(c+1)/(len(outcomes)+3) for c in counts]
                 idx=["1","X","2"].index(actual)

@@ -12,7 +12,13 @@
     "stake_units_per_combination": 1,
     "no_real_money": true,
     "never_overwrite_snapshots": true,
-    "combined_odds_must_be_verified_directly": true
+    "combined_odds_must_be_verified_directly": true,
+    "combination_fair_odds_from_joint_probability": true,
+    "never_present_fair_odds_as_bookmaker_odds": true,
+    "combination_probability_must_account_for_dependence": true,
+    "combination_safety_margin": 0.05,
+    "combination_formula": "fair_odds = 1 / estimated_joint_probability; target_odds = (1 + safety_margin) / estimated_joint_probability",
+    "combination_probability_method": "Estimate joint probability from historical match data/model; do not multiply marginal probabilities unless independence is justified."
   },
   "sources": [
     {
@@ -289,6 +295,7 @@
     "Only the City win + Over 1.5 combined price is verified in the retrieved public sources; all other combination odds remain null until captured directly.",
     "Probabilities are not stored as calibrated model outputs in this initial odds snapshot.",
     "The time labels above are as shown by the source; convert and confirm local kickoff times before considering the snapshot pre-match.",
-    "Shakhtar vs AEK: Over 1.5 at 1.31 was provided by the user; bookmaker unspecified. Combination odds intentionally omitted."
+    "Shakhtar vs AEK: Over 1.5 at 1.31 was provided by the user; bookmaker unspecified. Combination odds intentionally omitted.",
+    "For combinations without an observed bookmaker price, store model-estimated joint probability, fair odds, and target odds separately; never label model estimates as market odds."
   ]
 }

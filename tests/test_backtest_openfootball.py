@@ -1,5 +1,7 @@
 import importlib.util
 import unittest
+
+import pandas as pd
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "src" / "backtest_openfootball.py"

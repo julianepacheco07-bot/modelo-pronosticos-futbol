@@ -241,8 +241,10 @@
       "single_pick": {
         "market": "Goals",
         "selection": "Over 1.5 goles",
-        "odds": null,
-        "odds_verified": false
+        "odds": 1.31,
+        "odds_verified": true,
+        "odds_source": "user_reported",
+        "odds_note": "Cuota comunicada por el usuario; casa de apuestas no especificada."
       },
       "combo_pick": {
         "selections": [
@@ -250,7 +252,8 @@
           "Ambos marcan: No"
         ],
         "odds": null,
-        "odds_verified": false
+        "odds_verified": false,
+        "odds_note": "Cuota combinada omitida por decisión del usuario; no se estimará ni multiplicará."
       },
       "status": "pending_pre_match_validation"
     },
@@ -285,6 +288,7 @@
     "The 1X2 odds are a source snapshot and may differ by bookmaker and time.",
     "Only the City win + Over 1.5 combined price is verified in the retrieved public sources; all other combination odds remain null until captured directly.",
     "Probabilities are not stored as calibrated model outputs in this initial odds snapshot.",
-    "The time labels above are as shown by the source; convert and confirm local kickoff times before considering the snapshot pre-match."
+    "The time labels above are as shown by the source; convert and confirm local kickoff times before considering the snapshot pre-match.",
+    "Shakhtar vs AEK: Over 1.5 at 1.31 was provided by the user; bookmaker unspecified. Combination odds intentionally omitted."
   ]
 }

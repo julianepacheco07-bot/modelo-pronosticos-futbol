@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from src.temporal_calibration import temporal_temperature_calibration, temporal_calibration_by_league, _temperature_transform
+from src.temporal_calibration import temporal_temperature_calibration, temporal_calibration_by_league, _temperature_transform\nfrom src.backtest_openfootball import paired_block_bootstrap_comparisons
 
 
 class TestTemporalTemperatureCalibration(unittest.TestCase):
@@ -44,6 +44,28 @@ class TestTemporalTemperatureCalibration(unittest.TestCase):
         self.assertEqual(len(result[result["Temporada_prueba"] == "2025-26"]), 6)
         self.assertTrue((result["Control_fuga"].str.contains("temporadas anteriores")).all())
         self.assertTrue((result["N_prueba"] == 1).all())
+
+
+    def test_block_bootstrap_reports_paired_league_season_blocks(self):
+        rows = []
+        for league, season, delta in [
+            ("A", "2024-25", 0.1), ("B", "2024-25", 0.2),
+            ("A", "2025-26", -0.1), ("B", "2025-26", 0.3),
+        ]:
+            rows.append({
+                "league": league, "season": season,
+                "multipliers_1.10_0.90_correct": 1.0,
+                "baseline_frequency_correct": 0.0,
+                "multipliers_1.10_0.90_brier": 0.2,
+                "baseline_frequency_brier": 0.4,
+                "multipliers_1.10_0.90_logloss": 0.8,
+                "baseline_frequency_logloss": 1.0,
+            })
+        result = paired_block_bootstrap_comparisons(pd.DataFrame(rows), n_boot=100, seed=7)
+        self.assertEqual(len(result), 12)
+        self.assertTrue((result["N_bloques"] == 4).all())
+        self.assertTrue(result["Metodo"].str.contains("liga-temporada").all())
+        self.assertTrue(result["Limitacion"].str.contains("2 temporadas").all())
 
     def test_empty_input_returns_schema(self):
         result = temporal_temperature_calibration(pd.DataFrame(), ["model"])

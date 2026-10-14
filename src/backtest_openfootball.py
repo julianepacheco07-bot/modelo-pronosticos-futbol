@@ -10,7 +10,7 @@ import pandas as pd
 from openpyxl.styles import Font, PatternFill, Alignment
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from temporal_calibration import temporal_temperature_calibration
+from temporal_calibration import temporal_temperature_calibration, temporal_calibration_by_league
 
 BASE=Path(__file__).resolve().parent
 RAW=BASE/"data"/"openfootball"
@@ -262,6 +262,7 @@ def main():
     calibration = calibration_table(detail, models, bins=10)
     paired_comparisons = paired_bootstrap_comparisons(detail, n_boot=3000, seed=20261014)
     temporal_calibration = temporal_temperature_calibration(detail, models)
+    temporal_by_league = temporal_calibration_by_league(detail, models)
     quality=pd.DataFrame([
       ["Fuente", "OpenFootball football.json","Fuente efectivamente consultada"],
       ["Filas fuente",len(rows),"15 JSON"],
@@ -283,6 +284,7 @@ def main():
         pd.DataFrame(calibration).to_excel(w,index=False,sheet_name="Calibracion")
         paired_comparisons.to_excel(w,index=False,sheet_name="Comparaciones_pareadas")
         temporal_calibration.to_excel(w,index=False,sheet_name="Calibracion_temporal")
+        temporal_by_league.to_excel(w,index=False,sheet_name="Cal_temporal_liga")
         detail.to_excel(w,index=False,sheet_name="Detalle_backtest")
         skipped.to_excel(w,index=False,sheet_name="Omitidos")
         pd.DataFrame(dups).to_excel(w,index=False,sheet_name="Duplicados")

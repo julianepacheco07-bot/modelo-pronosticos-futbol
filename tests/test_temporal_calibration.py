@@ -2,7 +2,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from src.temporal_calibration import temporal_temperature_calibration, temporal_calibration_by_league, _temperature_transform\nfrom src.backtest_openfootball import paired_block_bootstrap_comparisons
+from src.temporal_calibration import temporal_temperature_calibration, temporal_calibration_by_league, _temperature_transform
+from src.backtest_openfootball import paired_block_bootstrap_comparisons
 
 
 class TestTemporalTemperatureCalibration(unittest.TestCase):

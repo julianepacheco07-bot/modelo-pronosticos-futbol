@@ -1,0 +1,33 @@
+name: Backtest Sudamerica
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/backtest_sudamerica.py"
+      - ".github/workflows/backtest-sudamerica.yml"
+permissions:
+  contents: read
+concurrency:
+  group: backtest-sudamerica
+  cancel-in-progress: false
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip pandas requests
+      - run: python -m py_compile src/backtest_sudamerica.py
+      - run: python src/backtest_sudamerica.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backtest-sudamerica-\${{ github.run_number }}
+          path: |
+            src/data/south_america/**
+            src/backtest_sudamerica_resultados.json
+          if-no-files-found: warn
+          retention-days: 90

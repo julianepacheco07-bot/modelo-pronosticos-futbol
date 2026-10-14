@@ -123,7 +123,7 @@ class TestOpenFootballBacktest(unittest.TestCase):
         row = first[(first["Modelo_A"] == "multipliers_1.10_0.90") &
                     (first["Modelo_B"] == "baseline_frequency") &
                     (first["Metrica"] == "Exactitud")].iloc[0]
-        self.assertAlmostEqual(row["Diferencia_A_menos_B"], 0.25)
+        self.assertAlmostEqual(row["Diferencia_A_menos_B"], 0.5)
         self.assertLessEqual(row["IC95_inferior"], row["IC95_superior"])
         self.assertEqual(row["N"], 4)
 

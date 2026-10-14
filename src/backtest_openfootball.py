@@ -31,8 +31,22 @@ def fetch(league,code,season):
         r=requests.get(url,timeout=45); r.raise_for_status()
         path.write_bytes(r.content)
     obj=json.loads(path.read_text(encoding="utf-8"))
+    # OpenFootball has used both an object with a "matches" array and a
+    # top-level array. Normalize both shapes before parsing.
+    if isinstance(obj, dict):
+        matches=obj.get("matches", [])
+        source_name=obj.get("name")
+    elif isinstance(obj, list):
+        matches=obj
+        source_name=f"{league} {season}"
+    else:
+        raise ValueError(f"Formato JSON inesperado: {type(obj).__name__}")
+    if not isinstance(matches, list):
+        raise ValueError("El campo matches no es una lista")
     rows=[]
-    for m in obj.get("matches",[]):
+    for m in matches:
+        if not isinstance(m, dict):
+            continue
         score=m.get("score",{}).get("ft")
         hg=score[0] if isinstance(score,list) and len(score)==2 else None
         ag=score[1] if isinstance(score,list) and len(score)==2 else None
@@ -40,7 +54,7 @@ def fetch(league,code,season):
           "home":m.get("team1"),"away":m.get("team2"),"hg":hg,"ag":ag,
           "round":m.get("round"),"source_url":url,"source_file":path.name,"source_sha256":sha256(path)})
     return rows,{"league":league,"season":season,"url":url,"file":path.name,
-      "sha256":sha256(path),"bytes":path.stat().st_size,"rows":len(rows),"source_name":obj.get("name"),
+      "sha256":sha256(path),"bytes":path.stat().st_size,"rows":len(rows),"source_name":source_name,
       "downloaded_utc":STAMP,"status":"OK"}
 
 def poisson(lam,n=10):

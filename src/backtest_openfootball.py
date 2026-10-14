@@ -151,6 +151,44 @@ def backtest(rows):
     return pd.DataFrame(detail),pd.DataFrame(skipped)
 
 
+def calibration_table(detail, models, bins=10):
+    """Tabla de fiabilidad global y por liga-temporada con bandas fijas."""
+    columns = ["Ambito", "Liga", "Temporada", "Modelo", "Clase", "Banda", "N",
+               "Probabilidad_media", "Frecuencia_observada", "Error_absoluto_calibracion"]
+    if detail.empty:
+        return pd.DataFrame(columns=columns)
+    edges = np.linspace(0.0, 1.0, bins + 1)
+    groups = [("Global", None, None, detail)]
+    for (league, season), group in detail.groupby(["league", "season"], sort=True):
+        groups.append(("Liga-temporada", league, season, group))
+    rows = []
+    labels = ["1", "X", "2"]
+    for scope, league, season, group in groups:
+        actuals = group["actual_1X2"].to_numpy()
+        for model in models:
+            probs = group[[f"{model}_p1", f"{model}_px", f"{model}_p2"]].to_numpy(dtype=float)
+            for j, label in enumerate(labels):
+                predicted = probs[:, j]
+                observed = (actuals == label).astype(float)
+                for index in range(bins):
+                    mask = (predicted >= edges[index]) & (
+                        (predicted < edges[index + 1]) if index < bins - 1
+                        else (predicted <= edges[index + 1]))
+                    if not mask.any():
+                        continue
+                    mean_p = float(predicted[mask].mean())
+                    observed_rate = float(observed[mask].mean())
+                    rows.append({
+                        "Ambito": scope, "Liga": league, "Temporada": season,
+                        "Modelo": model, "Clase": label,
+                        "Banda": f"{edges[index]:.1f}-{edges[index + 1]:.1f}",
+                        "N": int(mask.sum()), "Probabilidad_media": mean_p,
+                        "Frecuencia_observada": observed_rate,
+                        "Error_absoluto_calibracion": abs(mean_p - observed_rate),
+                    })
+    return pd.DataFrame(rows, columns=columns)
+
+
 def paired_bootstrap_comparisons(detail, n_boot=3000, seed=20261014):
     """Bootstrap pareado por partido; diferencia = métrica A menos métrica B."""
     comparisons = [
@@ -200,7 +238,7 @@ def main():
     clean_rows,invalid,dups,conflicts=clean(rows)
     detail,skipped=backtest(clean_rows)
     models=["multipliers_1.10_0.90","neutral_1.00_1.00","venue_adjusted","baseline_frequency"]
-    glob=[]; by=[]; metrics_ci=[]; calibration=[]
+    glob=[]; by=[]; metrics_ci=[]
     rng=np.random.default_rng(20261014); n=len(detail)
     for m in models:
         if n:
@@ -213,21 +251,12 @@ def main():
                 metrics_ci.append({"Modelo":m,"Metrica":{"correct":"Exactitud","brier":"Brier","logloss":"LogLoss"}[metric],
                     "N":n,"Estimacion":float(vals.mean()),"IC95_inferior":float(np.quantile(boot,.025)),
                     "IC95_superior":float(np.quantile(boot,.975)),"Metodo":"Bootstrap por partido, 1000 remuestras, semilla fija"})
-            probs=detail[[f"{m}_p1",f"{m}_px",f"{m}_p2"]].to_numpy(dtype=float)
-            actuals=detail["actual_1X2"].to_numpy(); labels=["1","X","2"]; edges=np.linspace(0,1,11)
-            for j,label in enumerate(labels):
-                pp=probs[:,j]; yy=(actuals==label).astype(float)
-                for bi in range(10):
-                    mask=(pp>=edges[bi]) & ((pp<edges[bi+1]) if bi<9 else (pp<=edges[bi+1]))
-                    if mask.any():
-                        calibration.append({"Modelo":m,"Clase":label,"Banda":f"{edges[bi]:.1f}-{edges[bi+1]:.1f}",
-                            "N":int(mask.sum()),"Probabilidad_media":float(pp[mask].mean()),
-                            "Frecuencia_observada":float(yy[mask].mean()),
-                            "Error_absoluto_calibracion":float(abs(pp[mask].mean()-yy[mask].mean()))})
+            # La calibración se calcula por separado a escala global y por liga-temporada.
     for (league,season),g in detail.groupby(["league","season"]):
         for m in models:
             by.append({"Liga":league,"Temporada":season,"Modelo":m,"N":len(g),
               "Exactitud":g[f"{m}_correct"].mean(),"Brier":g[f"{m}_brier"].mean(),"LogLoss":g[f"{m}_logloss"].mean()})
+    calibration = calibration_table(detail, models, bins=10)
     paired_comparisons = paired_bootstrap_comparisons(detail, n_boot=3000, seed=20261014)
     quality=pd.DataFrame([
       ["Fuente", "OpenFootball football.json","Fuente efectivamente consultada"],

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "captured_at": "2026-10-14T16:00:00-05:00",
+  "captured_at": "2026-10-14T07:00:00-05:00",
   "timezone": "America/Bogota",
   "purpose": "paper_trading_pre_match_snapshot",
   "immutable_snapshot": true,
@@ -17,11 +17,11 @@
     "keep_market_odds_separate_from_fair_odds": true
   },
   "caveats": [
-    "Odds are a pre-match snapshot of publicly visible listings; bookmaker prices can differ and move.",
-    "Model probabilities and picks are intentionally blank until generated and frozen by the model before kickoff.",
-    "Kickoff times are source-reported and must be confirmed in America/Bogota.",
-    "No price was found and recorded for combo markets in this snapshot; do not infer combo odds by multiplying single prices.",
-    "Fixture cross-check: Dimayor lists Real Cundinamarca vs Bogotá FC at 17:00 Colombia in Torneo BetPlay; included without odds until a verifiable pre-match price is captured."
+    "Cuotas consultadas en fuentes públicas el 14/10/2026; son referencias de mercado y pueden cambiar. No son necesariamente cuotas disponibles en Betano.",
+    "Registrar por separado casa, mercado y hora de captura; no presentar cuotas de comparación como si fueran de Betano.",
+    "La página de cuotas de Santa Fe-Jaguares refleja una programación antigua: el partido fue aplazado al 15/10/2026 y no debe incluirse en la jornada de hoy.",
+    "Las probabilidades del modelo y selecciones se mantienen vacías hasta calcularlas y congelarlas antes del inicio.",
+    "Las cuotas de combinadas solo se registran si la casa muestra directamente el mercado; nunca multiplicar cuotas simples para inventar una cuota combinada."
   ],
   "matches": [
     {
@@ -29,45 +29,67 @@
       "home": "Junior FC",
       "away": "Deportivo Pereira",
       "kickoff_source": "Dimayor / source listings differ",
-      "kickoff_source_time": "16:30 Colombia (Dimayor; also listed 17:30 by one odds page, discrepancy flagged)",
-      "odds_source": "PokerStars Sports",
-      "odds_url": "https://www.pokerstars.es/sports/futbol/1/colombia-primera-a/844197/junior-fc-barranquilla-pereira/36178219/",
+      "kickoff_source_time": "16:30 Colombia (Dimayor; una página de cuotas muestra 17:30)",
+      "odds_source": "Comparador SportyTrader; también contrastado con FootyStats",
+      "odds_url": "https://www.sportytrader.com/es/apuestas/club-atletico-junior-deportivo-pereira-8811207/",
       "odds_1x2": {
-        "home": 1.18,
-        "draw": 5.5,
-        "away": 10.5
+        "home": 1.28,
+        "draw": 5.8,
+        "away": 12.5
       },
       "market_odds_captured": true,
       "model_probabilities": null,
       "model_pick": null,
       "combination_candidate": null,
-      "status": "pre_match_snapshot"
+      "status": "pre_match_snapshot",
+      "best_market_prices": {
+        "home": 1.28,
+        "draw": 5.8,
+        "away": 12.5
+      },
+      "odds_capture_note": "Mejores cuotas listadas por SportyTrader; FootyStats lista 1.15/5.75/7.50 en 10Bet, mostrando dispersión importante entre casas."
     },
     {
       "competition": "Torneo BetPlay Colombia",
       "home": "Real Cundinamarca",
       "away": "Bogotá FC",
       "kickoff_source_time": "17:00 Colombia (Dimayor)",
-      "odds_source": null,
-      "odds_url": null,
-      "odds_1x2": null,
-      "market_odds_captured": false,
+      "odds_source": "Stake",
+      "odds_url": "https://stake.com/ar/sports/soccer/colombia/primera-b/46921167-real-cundinamarca-bogota-fc",
+      "odds_1x2": {
+        "home": 1.73,
+        "draw": 3.4,
+        "away": 4.3
+      },
+      "market_odds_captured": true,
       "model_probabilities": null,
       "model_pick": null,
       "combination_candidate": null,
-      "status": "fixture_confirmed_odds_not_captured"
+      "status": "pre_match_snapshot",
+      "goals_odds": {
+        "over_1_5": 1.36,
+        "under_1_5": 2.75,
+        "over_2_5": 2.09,
+        "under_2_5": 1.61,
+        "over_3_5": 3.65,
+        "under_3_5": 1.21
+      },
+      "both_teams_to_score": {
+        "yes": 2,
+        "no": 1.67
+      }
     },
     {
       "competition": "Primera División Argentina",
       "home": "Sarmiento de Junín",
       "away": "River Plate",
-      "kickoff_source_time": "17:00 Colombia (GolCaracol); odds listing showed a different time label",
-      "odds_source": "PokerStars Sports",
-      "odds_url": "https://www.pokerstars.es/sports/futbol/1/argentina-primera-division/67387/sarmiento-de-junin-river-plate/36150223/",
+      "kickoff_source_time": "17:00 Colombia (AS.com); Stake muestra 22:00, equivalente a 17:00 Colombia",
+      "odds_source": "Stake Argentina",
+      "odds_url": "https://pba.stake.bet.ar/sports/soccer/argentina/primera-lpf",
       "odds_1x2": {
-        "home": 4.6,
-        "draw": 3.4,
-        "away": 1.73
+        "home": 6.4,
+        "draw": 3.9,
+        "away": 1.52
       },
       "goals_odds": {
         "over_1_5": 1.33,
@@ -81,14 +103,15 @@
       "model_probabilities": null,
       "model_pick": null,
       "combination_candidate": null,
-      "status": "pre_match_snapshot"
+      "status": "pre_match_snapshot",
+      "odds_capture_note": "Cuotas visibles en la ficha de Stake al consultar; difieren de otra referencia anterior."
     },
     {
       "competition": "Copa Sudamericana",
       "home": "Atlético Mineiro",
       "away": "Montevideo City Torque",
       "kickoff_source_time": "17:00 Colombia (AFA/CONMEBOL schedule)",
-      "odds_source": "Stake",
+      "odds_source": "Stake y 1xBet (mercados simples); 1xBet para combinada explícita",
       "odds_url": "https://pba.stake.bet.ar/sports/soccer/international-clubs/conmebol-sudamericana/717628-atletico-mineiro-montevideo-city-torque",
       "odds_1x2": {
         "home": 1.39,
@@ -107,13 +130,32 @@
       "model_probabilities": null,
       "model_pick": null,
       "combination_candidate": null,
-      "status": "pre_match_snapshot"
+      "status": "pre_match_snapshot",
+      "best_market_prices": {
+        "home": 1.39,
+        "draw": 4.52,
+        "away": 9
+      },
+      "both_teams_to_score": {
+        "yes": 2.28,
+        "no": 1.557
+      },
+      "double_chance": {
+        "home_or_draw": 1.069,
+        "draw_or_away": 3.055
+      },
+      "combination_market_prices": {
+        "home_win_and_both_teams_to_score_no": 1.207,
+        "home_or_draw_and_both_teams_to_score_no": 1.45
+      },
+      "combination_source_url": "https://1xbet.pe/es/line/football/1528791-copa-sudamericana/754031439-clube-atletico-mineiro-montevideo-city-torque",
+      "odds_capture_note": "Stake 1X2: 1.39/4.40/8.00; 1xBet muestra mercados de combinada explícitos. No usar como cuota Betano."
     },
     {
       "competition": "Copa Libertadores",
       "home": "Fluminense",
       "away": "Palmeiras",
-      "kickoff_source_time": "19:30 Colombia (AFA/CONMEBOL schedule)",
+      "kickoff_source_time": "19:30 Colombia según AS.com; Stake lista 00:30 del 15/10, equivalente a 19:30 Colombia",
       "odds_source": "Stake",
       "odds_url": "https://pba.stake.bet.ar/sports/soccer/international-clubs/copa-libertadores/714988-fluminense-palmeiras",
       "odds_1x2": {
@@ -148,13 +190,13 @@
       "competition": "Copa Colombia",
       "home": "Atlético Nacional",
       "away": "Independiente Medellín",
-      "kickoff_source_time": "20:30 Colombia (Dimayor; other listings show 21:30, discrepancy flagged)",
-      "odds_source": "PokerStars Sports",
-      "odds_url": "https://www.pokerstars.es/sports/futbol/1/copa-colombia/854148/atletico-nacional-medellin-ind-medellin/36186374/",
+      "kickoff_source_time": "20:30 Colombia (Dimayor); una casa muestra 22:30 por zona horaria distinta",
+      "odds_source": "SportingBete",
+      "odds_url": "https://sportingbete.net/esportes/futebol",
       "odds_1x2": {
-        "home": 1.7,
-        "draw": 3.6,
-        "away": 4.2
+        "home": 1.66,
+        "draw": 3.38,
+        "away": 4.29
       },
       "goals_odds": {
         "over_1_5": 1.2,
@@ -168,7 +210,22 @@
       "model_probabilities": null,
       "model_pick": null,
       "combination_candidate": null,
-      "status": "pre_match_snapshot"
+      "status": "pre_match_snapshot",
+      "odds_capture_note": "Cuotas visibles 1.66/3.38/4.29; confirmar mercado y vigencia antes del inicio."
+    },
+    {
+      "competition": "Liga BetPlay Colombia",
+      "home": "Independiente Santa Fe",
+      "away": "Jaguares de Córdoba",
+      "kickoff_source_time": "Aplazado al 15/10/2026 20:05 Colombia según ClaroSports",
+      "odds_source": "PokerStars (cuotas listadas para la fecha anterior; no usar para hoy)",
+      "odds_url": "https://www.clarosports.com/colombia/liga-bet-play/por-marchas-en-bogota-santa-fe-vs-jaguares-por-liga-betplay-se-aplaza-un-dia/",
+      "odds_1x2": null,
+      "market_odds_captured": false,
+      "model_probabilities": null,
+      "model_pick": null,
+      "combination_candidate": null,
+      "status": "postponed_excluded_from_2026-10-14"
     }
   ]
 }

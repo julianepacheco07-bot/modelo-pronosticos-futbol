@@ -47,7 +47,15 @@ def fetch(league,code,season):
     for m in matches:
         if not isinstance(m, dict):
             continue
-        score=m.get("score",{}).get("ft")
+        score_obj=m.get("score",{})
+        # Scores may be {"ft":[home,away], "ht":[...]} or a direct
+        # [home, away] pair. Treat either shape consistently.
+        if isinstance(score_obj, dict):
+            score=score_obj.get("ft")
+        elif isinstance(score_obj, list):
+            score=score_obj
+        else:
+            score=None
         hg=score[0] if isinstance(score,list) and len(score)==2 else None
         ag=score[1] if isinstance(score,list) and len(score)==2 else None
         rows.append({"league":league,"season":season,"date":m.get("date"),

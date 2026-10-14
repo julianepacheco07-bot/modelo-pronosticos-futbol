@@ -60,7 +60,7 @@ class TestTemporalTemperatureCalibration(unittest.TestCase):
                 "multipliers_1.10_0.90_brier": 0.2,
                 "baseline_frequency_brier": 0.4,
                 "multipliers_1.10_0.90_logloss": 0.8,
-                "baseline_frequency_logloss": 1.0,
+                "baseline_frequency_logloss": 1.0,\n                "venue_adjusted_correct": 1.0, "neutral_1.00_1.00_correct": 0.0,\n                "venue_adjusted_brier": 0.3, "neutral_1.00_1.00_brier": 0.35,\n                "venue_adjusted_logloss": 0.9, "neutral_1.00_1.00_logloss": 0.95,
             })
         result = paired_block_bootstrap_comparisons(pd.DataFrame(rows), n_boot=100, seed=7)
         self.assertEqual(len(result), 12)

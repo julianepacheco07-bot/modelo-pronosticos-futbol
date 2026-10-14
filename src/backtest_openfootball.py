@@ -65,7 +65,7 @@ def fetch(league,code,season):
       "sha256":sha256(path),"bytes":path.stat().st_size,"rows":len(rows),"source_name":source_name,
       "downloaded_utc":STAMP,"status":"OK"}
 
-def poisson(lam,n=10):
+def poisson(lam,n=12):
     a=[math.exp(-lam)]
     for k in range(1,n+1): a.append(a[-1]*lam/k)
     s=sum(a); return [x/s for x in a]

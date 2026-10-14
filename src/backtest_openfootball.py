@@ -150,6 +150,45 @@ def backtest(rows):
                          {"team":r["away"],"venue":"away","gf":r["ag"],"ga":r["hg"],"date":r["date"]}])
     return pd.DataFrame(detail),pd.DataFrame(skipped)
 
+
+def paired_bootstrap_comparisons(detail, n_boot=3000, seed=20261014):
+    """Bootstrap pareado por partido; diferencia = métrica A menos métrica B."""
+    comparisons = [
+        ("multipliers_1.10_0.90", "baseline_frequency"),
+        ("venue_adjusted", "baseline_frequency"),
+        ("multipliers_1.10_0.90", "venue_adjusted"),
+        ("multipliers_1.10_0.90", "neutral_1.00_1.00"),
+    ]
+    metric_columns = {"Exactitud": ("correct", True), "Brier": ("brier", False), "LogLoss": ("logloss", False)}
+    columns = ["Modelo_A", "Modelo_B", "Metrica", "N", "Diferencia_A_menos_B",
+               "IC95_inferior", "IC95_superior", "Remuestras", "Semilla", "Metodo", "Interpretacion"]
+    if detail.empty:
+        return pd.DataFrame(columns=columns)
+    rng = np.random.default_rng(seed)
+    n = len(detail)
+    results = []
+    for model_a, model_b in comparisons:
+        for metric, (suffix, higher_is_better) in metric_columns.items():
+            delta = (detail[f"{model_a}_{suffix}"].to_numpy(dtype=float)
+                     - detail[f"{model_b}_{suffix}"].to_numpy(dtype=float))
+            boot = np.empty(n_boot, dtype=float)
+            for i in range(n_boot):
+                boot[i] = delta[rng.integers(0, n, size=n)].mean()
+            estimate = float(delta.mean())
+            lo, hi = float(np.quantile(boot, .025)), float(np.quantile(boot, .975))
+            if lo > 0:
+                verdict = "A mejor" if higher_is_better else "B mejor"
+            elif hi < 0:
+                verdict = "A mejor" if not higher_is_better else "B mejor"
+            else:
+                verdict = "IC95 incluye cero; diferencia no concluyente"
+            results.append({"Modelo_A": model_a, "Modelo_B": model_b, "Metrica": metric, "N": n,
+                "Diferencia_A_menos_B": estimate, "IC95_inferior": lo, "IC95_superior": hi,
+                "Remuestras": n_boot, "Semilla": seed,
+                "Metodo": "Bootstrap pareado por partido; mismas filas para ambos modelos",
+                "Interpretacion": verdict})
+    return pd.DataFrame(results)
+
 def main():
     rows=[]; manifests=[]; errors=[]
     for league,code in LEAGUES.items():
@@ -189,6 +228,7 @@ def main():
         for m in models:
             by.append({"Liga":league,"Temporada":season,"Modelo":m,"N":len(g),
               "Exactitud":g[f"{m}_correct"].mean(),"Brier":g[f"{m}_brier"].mean(),"LogLoss":g[f"{m}_logloss"].mean()})
+    paired_comparisons = paired_bootstrap_comparisons(detail, n_boot=3000, seed=20261014)
     quality=pd.DataFrame([
       ["Fuente", "OpenFootball football.json","Fuente efectivamente consultada"],
       ["Filas fuente",len(rows),"15 JSON"],
@@ -208,6 +248,7 @@ def main():
         pd.DataFrame(by).to_excel(w,index=False,sheet_name="Metricas_liga_temporada")
         pd.DataFrame(metrics_ci).to_excel(w,index=False,sheet_name="Intervalos_confianza")
         pd.DataFrame(calibration).to_excel(w,index=False,sheet_name="Calibracion")
+        paired_comparisons.to_excel(w,index=False,sheet_name="Comparaciones_pareadas")
         detail.to_excel(w,index=False,sheet_name="Detalle_backtest")
         skipped.to_excel(w,index=False,sheet_name="Omitidos")
         pd.DataFrame(dups).to_excel(w,index=False,sheet_name="Duplicados")

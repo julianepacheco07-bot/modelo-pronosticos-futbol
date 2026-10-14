@@ -336,5 +336,131 @@
     "reason": "The repository contains historical backtest scripts but no verified pre-match inference pipeline that ingests current team data and outputs calibrated match/market probabilities for these fixtures.",
     "do_not_recommend_from_market_odds_alone": true,
     "next_required_step": "Implement or identify the inference pipeline and gather historical pre-match team data, then freeze model probabilities before kickoff."
+  },
+  "model_run": {
+    "run_at": "2026-10-14T07:00:00-05:00",
+    "model": "Poisson independiente, misma familia de cálculo que el backtest del repositorio; lambdas aproximadas desde promedios de goles a favor/recibidos de últimos cinco partidos reportados por fuentes secundarias",
+    "version": "provisional_last5_poisson_v1",
+    "calibrated_for_these_leagues": false,
+    "audit_warning": "No es una ejecución reproducible del backtest entrenado ni una predicción calibrada para Sudamérica. Los registros de forma reciente proceden de páginas secundarias, no de un dataset histórico descargado y auditado partido a partido. Usar como simulación exploratoria, no como apuesta aprobada.",
+    "candidates": [
+      {
+        "match": "Junior FC vs Deportivo Pereira",
+        "form_source": "https://predictapp.io/es/prediccion-deportivo-pereira-vs-junior-fc",
+        "form_goals_last5": {
+          "home_for": 11,
+          "home_against": 9,
+          "away_for": 3,
+          "away_against": 8
+        },
+        "lambda": {
+          "home": 1.9,
+          "away": 1.2
+        },
+        "probabilities": {
+          "home_win": 0.5372,
+          "draw": 0.2235,
+          "away_win": 0.2394,
+          "over_1_5": 0.8153,
+          "under_3_5": 0.6248,
+          "btts_yes": 0.5943
+        },
+        "most_likely_score": "1-1",
+        "classification": "ANÁLISIS INSUFICIENTE",
+        "reason": "Over 1.5 supera 75% pero cuota 1.28 de comparador no confirma Betano ni valor esperado positivo."
+      },
+      {
+        "match": "Sarmiento de Junín vs River Plate",
+        "form_source": "https://www.totalcorner.com/es/h2h/river-plate-vs-sarmiento",
+        "form_goals_last5": {
+          "home_for": 8,
+          "home_against": 9,
+          "away_for": 10,
+          "away_against": 6
+        },
+        "lambda": {
+          "home": 1.4,
+          "away": 1.9
+        },
+        "probabilities": {
+          "home_win": 0.2841,
+          "draw": 0.2231,
+          "away_win": 0.4928,
+          "over_1_5": 0.8414,
+          "under_3_5": 0.5803,
+          "btts_yes": 0.6407
+        },
+        "most_likely_score": "1-1",
+        "classification": "ANÁLISIS INSUFICIENTE",
+        "reason": "Over 1.5 supera 75% pero la cuota de referencia 1.33 no está verificada en Betano y no se demuestra EV positivo."
+      },
+      {
+        "match": "Atlético Mineiro vs Montevideo City Torque",
+        "form_source": "https://www.sportytrader.com/es/pronosticos/atletico-mineiro-torque-378833/",
+        "form_goals_last5": {
+          "home_for": 10,
+          "home_against": 6,
+          "away_for": 5,
+          "away_against": 8
+        },
+        "lambda": {
+          "home": 1.8,
+          "away": 1.1
+        },
+        "probabilities": {
+          "home_win": 0.5376,
+          "draw": 0.2314,
+          "away_win": 0.231,
+          "over_1_5": 0.7854,
+          "under_3_5": 0.6696,
+          "btts_yes": 0.5569
+        },
+        "most_likely_score": "1-1",
+        "classification": "ANÁLISIS INSUFICIENTE",
+        "reason": "Over 1.5 supera 75% pero la cuota 1.33 de otra casa no es Betano y no prueba EV positivo."
+      },
+      {
+        "match": "Real Soacha Cundinamarca vs Bogotá FC",
+        "form_source": "https://betimate.com/es/news/previews/real-soacha-cundinamarca-vs-bogota-fc-prediction-odds-betting-tips-10142026-2846023",
+        "form_goals_last5": {
+          "home_for": 8,
+          "home_against": 4,
+          "away_for": 5,
+          "away_against": 5
+        },
+        "lambda": {
+          "home": 1.3,
+          "away": 0.9
+        },
+        "probabilities": {
+          "home_win": 0.4581,
+          "draw": 0.2837,
+          "away_win": 0.2582,
+          "over_1_5": 0.6454,
+          "under_3_5": 0.8194,
+          "btts_yes": 0.4317
+        },
+        "most_likely_score": "1-0",
+        "classification": "ANÁLISIS INSUFICIENTE",
+        "reason": "Under 3.5 supera 75%, pero no hay cuota verificable para comprobar EV."
+      }
+    ],
+    "excluded_or_insufficient": [
+      {
+        "match": "Atlético Nacional vs Independiente Medellín",
+        "reason": "No se obtuvo una serie verificable de últimos cinco resultados por equipo para alimentar este cálculo sin inventar datos."
+      },
+      {
+        "match": "Fluminense vs Palmeiras",
+        "reason": "No se obtuvo una serie verificable de últimos cinco resultados por equipo para alimentar este cálculo sin inventar datos."
+      },
+      {
+        "match": "Independiente Santa Fe vs Jaguares de Córdoba",
+        "reason": "La programación y el aplazamiento tienen discrepancias entre fuentes; no pronosticar hasta confirmar hora y estado oficial."
+      }
+    ],
+    "combinations": [],
+    "combination_reason": "No se recomiendan combinadas: no hay probabilidades conjuntas validadas ni cuotas combinadas verificadas en Betano Colombia.",
+    "final_decision": "No hay apuestas aprobadas. Hay cuatro señales exploratorias, pero faltan calibración regional, datos de forma auditados y cuotas Betano para EV."
   }
 }

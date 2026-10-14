@@ -230,6 +230,47 @@ def paired_bootstrap_comparisons(detail, n_boot=3000, seed=20261014):
                 "Interpretacion": verdict})
     return pd.DataFrame(results)
 
+def paired_block_bootstrap_comparisons(detail, n_boot=3000, seed=20261015):
+    """Paired bootstrap resampling whole league-season blocks to reduce match-level dependence."""
+    comparisons = [
+        ("multipliers_1.10_0.90", "baseline_frequency"),
+        ("venue_adjusted", "baseline_frequency"),
+        ("multipliers_1.10_0.90", "venue_adjusted"),
+        ("multipliers_1.10_0.90", "neutral_1.00_1.00"),
+    ]
+    metric_columns = {"Exactitud": "correct", "Brier": "brier", "LogLoss": "logloss"}
+    columns = ["Modelo_A", "Modelo_B", "Metrica", "N_partidos", "N_bloques",
+               "Diferencia_A_menos_B", "IC95_inferior", "IC95_superior",
+               "Remuestras", "Semilla", "Metodo", "Limitacion"]
+    if detail.empty:
+        return pd.DataFrame(columns=columns)
+    blocks = [g for _, g in detail.groupby(["league", "season"], sort=True)]
+    if len(blocks) < 2:
+        return pd.DataFrame(columns=columns)
+    rng = np.random.default_rng(seed)
+    rows = []
+    for model_a, model_b in comparisons:
+        for metric, suffix in metric_columns.items():
+            deltas = [(g[f"{model_a}_{suffix}"].to_numpy(dtype=float) -
+                       g[f"{model_b}_{suffix}"].to_numpy(dtype=float)) for g in blocks]
+            estimate = float(np.concatenate(deltas).mean())
+            boot = np.empty(n_boot, dtype=float)
+            for i in range(n_boot):
+                chosen = rng.integers(0, len(blocks), size=len(blocks))
+                sample = np.concatenate([deltas[j] for j in chosen])
+                boot[i] = sample.mean()
+            lo, hi = float(np.quantile(boot, .025)), float(np.quantile(boot, .975))
+            rows.append({
+                "Modelo_A": model_a, "Modelo_B": model_b, "Metrica": metric,
+                "N_partidos": len(detail), "N_bloques": len(blocks),
+                "Diferencia_A_menos_B": estimate, "IC95_inferior": lo,
+                "IC95_superior": hi, "Remuestras": n_boot, "Semilla": seed,
+                "Metodo": "Bootstrap pareado por bloques liga-temporada; conserva juntos los partidos del bloque",
+                "Limitacion": "Solo 15 bloques y 2 temporadas de prueba; IC orientativo, no prueba definitiva",
+            })
+    return pd.DataFrame(rows, columns=columns)
+
+
 def main():
     rows=[]; manifests=[]; errors=[]
     for league,code in LEAGUES.items():
@@ -282,7 +323,7 @@ def main():
         pd.DataFrame(by).to_excel(w,index=False,sheet_name="Metricas_liga_temporada")
         pd.DataFrame(metrics_ci).to_excel(w,index=False,sheet_name="Intervalos_confianza")
         pd.DataFrame(calibration).to_excel(w,index=False,sheet_name="Calibracion")
-        paired_comparisons.to_excel(w,index=False,sheet_name="Comparaciones_pareadas")
+        paired_comparisons.to_excel(w,index=False,sheet_name="Comparaciones_pareadas")\n        block_comparisons.to_excel(w,index=False,sheet_name="IC_bloques_liga_temp")
         temporal_calibration.to_excel(w,index=False,sheet_name="Calibracion_temporal")
         temporal_by_league.to_excel(w,index=False,sheet_name="Cal_temporal_liga")
         detail.to_excel(w,index=False,sheet_name="Detalle_backtest")

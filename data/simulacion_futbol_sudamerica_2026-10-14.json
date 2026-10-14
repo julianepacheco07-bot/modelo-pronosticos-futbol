@@ -47,7 +47,17 @@
         "draw": 5.8,
         "away": 12.5
       },
-      "odds_capture_note": "Mejores cuotas listadas por SportyTrader; FootyStats lista 1.15/5.75/7.50 en 10Bet, mostrando dispersión importante entre casas."
+      "odds_capture_note": "Mejores cuotas listadas por SportyTrader; FootyStats lista 1.15/5.75/7.50 en 10Bet, mostrando dispersión importante entre casas.",
+      "market_baseline": {
+        "type": "normalized_implied_probability_1x2",
+        "probabilities": {
+          "home": 0.7558,
+          "draw": 0.1668,
+          "away": 0.0774
+        },
+        "overround": 0.0337,
+        "note": "Derived from recorded 1X2 odds only; this is a market baseline, not the model's calibrated prediction."
+      }
     },
     {
       "competition": "Torneo BetPlay Colombia",
@@ -74,7 +84,22 @@
         "yes": 2,
         "no": 1.75
       },
-      "odds_capture_note": "Cuotas del comparador; no atribuirlas a Betano sin confirmar casa concreta."
+      "odds_capture_note": "Cuotas del comparador; no atribuirlas a Betano sin confirmar casa concreta.",
+      "market_baseline": {
+        "type": "normalized_implied_probability_1x2",
+        "probabilities": {
+          "home": 0.5392,
+          "draw": 0.2665,
+          "away": 0.1943
+        },
+        "overround": 0.0721,
+        "note": "Derived from recorded 1X2 odds only; this is a market baseline, not the model's calibrated prediction.",
+        "raw_implied_probabilities_totals": {
+          "over_2_5": 0.4762,
+          "under_2_5": 0.5882
+        },
+        "totals_note": "Raw implied probabilities only; opposing-side odds may not be a complete two-way market. Not model probabilities."
+      }
     },
     {
       "competition": "Primera División Argentina",
@@ -101,7 +126,26 @@
       "model_pick": null,
       "combination_candidate": null,
       "status": "pre_match_snapshot",
-      "odds_capture_note": "Cuotas visibles en la ficha de Stake al consultar; difieren de otra referencia anterior."
+      "odds_capture_note": "Cuotas visibles en la ficha de Stake al consultar; difieren de otra referencia anterior.",
+      "market_baseline": {
+        "type": "normalized_implied_probability_1x2",
+        "probabilities": {
+          "home": 0.146,
+          "draw": 0.2395,
+          "away": 0.6145
+        },
+        "overround": 0.0706,
+        "note": "Derived from recorded 1X2 odds only; this is a market baseline, not the model's calibrated prediction.",
+        "raw_implied_probabilities_totals": {
+          "over_1_5": 0.7519,
+          "under_1_5": 0.3333,
+          "over_2_5": 0.4762,
+          "under_2_5": 0.6061,
+          "over_3_5": 0.25,
+          "under_3_5": 0.8333
+        },
+        "totals_note": "Raw implied probabilities only; opposing-side odds may not be a complete two-way market. Not model probabilities."
+      }
     },
     {
       "competition": "Copa Sudamericana",
@@ -146,7 +190,26 @@
         "home_or_draw_and_both_teams_to_score_no": 1.45
       },
       "combination_source_url": "https://1xbet.pe/es/line/football/1528791-copa-sudamericana/754031439-clube-atletico-mineiro-montevideo-city-torque",
-      "odds_capture_note": "Stake 1X2: 1.39/4.40/8.00; 1xBet muestra mercados de combinada explícitos. No usar como cuota Betano."
+      "odds_capture_note": "Stake 1X2: 1.39/4.40/8.00; 1xBet muestra mercados de combinada explícitos. No usar como cuota Betano.",
+      "market_baseline": {
+        "type": "normalized_implied_probability_1x2",
+        "probabilities": {
+          "home": 0.6713,
+          "draw": 0.2121,
+          "away": 0.1166
+        },
+        "overround": 0.0717,
+        "note": "Derived from recorded 1X2 odds only; this is a market baseline, not the model's calibrated prediction.",
+        "raw_implied_probabilities_totals": {
+          "over_1_5": 0.7519,
+          "under_1_5": 0.3175,
+          "over_2_5": 0.5025,
+          "under_2_5": 0.5682,
+          "over_3_5": 0.2899,
+          "under_3_5": 0.7813
+        },
+        "totals_note": "Raw implied probabilities only; opposing-side odds may not be a complete two-way market. Not model probabilities."
+      }
     },
     {
       "competition": "Copa Libertadores",
@@ -181,7 +244,26 @@
       "model_probabilities": null,
       "model_pick": null,
       "combination_candidate": null,
-      "status": "pre_match_snapshot"
+      "status": "pre_match_snapshot",
+      "market_baseline": {
+        "type": "normalized_implied_probability_1x2",
+        "probabilities": {
+          "home": 0.3283,
+          "draw": 0.3119,
+          "away": 0.3598
+        },
+        "overround": 0.0688,
+        "note": "Derived from recorded 1X2 odds only; this is a market baseline, not the model's calibrated prediction.",
+        "raw_implied_probabilities_totals": {
+          "over_1_5": 0.6711,
+          "under_1_5": 0.4115,
+          "over_2_5": 0.4,
+          "under_2_5": 0.6803,
+          "over_3_5": 0.2128,
+          "under_3_5": 0.8696
+        },
+        "totals_note": "Raw implied probabilities only; opposing-side odds may not be a complete two-way market. Not model probabilities."
+      }
     },
     {
       "competition": "Copa Colombia",
@@ -212,6 +294,25 @@
       "both_teams_to_score": {
         "yes": 1.78,
         "no": 2.01
+      },
+      "market_baseline": {
+        "type": "normalized_implied_probability_1x2",
+        "probabilities": {
+          "home": 0.4802,
+          "draw": 0.2726,
+          "away": 0.2472
+        },
+        "overround": 0.0789,
+        "note": "Derived from recorded 1X2 odds only; this is a market baseline, not the model's calibrated prediction.",
+        "raw_implied_probabilities_totals": {
+          "over_2_5": 0.5263,
+          "under_2_5": 0.5435,
+          "over_1_5": 0.8333,
+          "under_1_5": 0.2564,
+          "over_3_5": 0.3448,
+          "under_3_5": 0.7519
+        },
+        "totals_note": "Raw implied probabilities only; opposing-side odds may not be a complete two-way market. Not model probabilities."
       }
     },
     {
@@ -228,5 +329,12 @@
       "combination_candidate": null,
       "status": "postponed_excluded_from_2026-10-14"
     }
-  ]
+  ],
+  "audit_status": {
+    "odds_snapshot_updated": true,
+    "model_execution": "not_available_for_current_fixture_in_repository",
+    "reason": "The repository contains historical backtest scripts but no verified pre-match inference pipeline that ingests current team data and outputs calibrated match/market probabilities for these fixtures.",
+    "do_not_recommend_from_market_odds_alone": true,
+    "next_required_step": "Implement or identify the inference pipeline and gather historical pre-match team data, then freeze model probabilities before kickoff."
+  }
 }

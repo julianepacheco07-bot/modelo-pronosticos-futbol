@@ -92,6 +92,12 @@ class TestOpenFootballBacktest(unittest.TestCase):
                     "multipliers_1.10_0.90_p2"):
             self.assertAlmostEqual(float(target1.iloc[0][col]), float(target2.iloc[0][col]), places=12)
         self.assertEqual(len(detail1), len(detail2))
+        for col in ("baseline_frequency_p1", "baseline_frequency_px", "baseline_frequency_p2",
+                    "baseline_frequency_correct", "baseline_frequency_brier", "baseline_frequency_logloss"):
+            self.assertAlmostEqual(float(target1.iloc[0][col]), float(target2.iloc[0][col]), places=12)
+        self.assertEqual(int(target1.iloc[0]["baseline_frequency_prior_n"]), 10)
+        self.assertAlmostEqual(sum(float(target1.iloc[0][c]) for c in
+            ("baseline_frequency_p1", "baseline_frequency_px", "baseline_frequency_p2")), 1.0, places=12)
 
 
 if __name__ == "__main__":

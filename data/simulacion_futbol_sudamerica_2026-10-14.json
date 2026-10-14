@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-10-14T16:00:00-05:00",
+  "timezone": "America/Bogota",
+  "purpose": "paper_trading_pre_match_snapshot",
+  "immutable_snapshot": true,
+  "no_real_money": true,
+  "policy": {
+    "stake_units_per_single": 1,
+    "stake_units_per_combination": 1,
+    "over_minimum_line": 1.5,
+    "under_maximum_line": 3.5,
+    "combination_probability_threshold": 0.65,
+    "select_only_highest_probability_eligible_combination_per_match": true,
+    "combination_probability_must_account_for_dependence": true,
+    "never_invent_model_probabilities": true,
+    "keep_market_odds_separate_from_fair_odds": true
+  },
+  "caveats": [
+    "Odds are a pre-match snapshot of publicly visible listings; bookmaker prices can differ and move.",
+    "Model probabilities and picks are intentionally blank until generated and frozen by the model before kickoff.",
+    "Kickoff times are source-reported and must be confirmed in America/Bogota.",
+    "No price was found and recorded for combo markets in this snapshot; do not infer combo odds by multiplying single prices."
+  ],
+  "matches": [
+    {
+      "competition": "Liga BetPlay Colombia",
+      "home": "Junior FC",
+      "away": "Deportivo Pereira",
+      "kickoff_source": "Dimayor / source listings differ",
+      "kickoff_source_time": "16:30 Colombia per Dimayor; PokerStars listing displayed 17:30",
+      "odds_source": "PokerStars Sports",
+      "odds_url": "https://www.pokerstars.es/sports/futbol/1/colombia-primera-a/844197/junior-fc-barranquilla-pereira/36178219/",
+      "odds_1x2": {
+        "home": 1.18,
+        "draw": 5.5,
+        "away": 10.5
+      },
+      "market_odds_captured": true,
+      "model_probabilities": null,
+      "model_pick": null,
+      "combination_candidate": null,
+      "status": "pre_match_snapshot"
+    },
+    {
+      "competition": "Primera División Argentina",
+      "home": "Sarmiento de Junín",
+      "away": "River Plate",
+      "kickoff_source_time": "18:00 shown by PokerStars; confirm local schedule",
+      "odds_source": "PokerStars Sports",
+      "odds_url": "https://www.pokerstars.es/sports/futbol/1/argentina-primera-division/67387/sarmiento-de-junin-river-plate/36150223/",
+      "odds_1x2": {
+        "home": 4.6,
+        "draw": 3.4,
+        "away": 1.73
+      },
+      "goals_odds": {
+        "over_1_5": 1.33,
+        "under_1_5": 3,
+        "over_2_5": 2.1,
+        "under_2_5": 1.65,
+        "over_3_5": 4,
+        "under_3_5": 1.2
+      },
+      "market_odds_captured": true,
+      "model_probabilities": null,
+      "model_pick": null,
+      "combination_candidate": null,
+      "status": "pre_match_snapshot"
+    },
+    {
+      "competition": "Copa Sudamericana",
+      "home": "Atlético Mineiro",
+      "away": "Montevideo City Torque",
+      "kickoff_source_time": "17:00 Colombia per published schedule; Stake listing displayed 22:00",
+      "odds_source": "Stake",
+      "odds_url": "https://pba.stake.bet.ar/sports/soccer/international-clubs/conmebol-sudamericana/717628-atletico-mineiro-montevideo-city-torque",
+      "odds_1x2": {
+        "home": 1.39,
+        "draw": 4.4,
+        "away": 8
+      },
+      "goals_odds": {
+        "over_1_5": 1.33,
+        "under_1_5": 3.15,
+        "over_2_5": 1.99,
+        "under_2_5": 1.76,
+        "over_3_5": 3.45,
+        "under_3_5": 1.28
+      },
+      "market_odds_captured": true,
+      "model_probabilities": null,
+      "model_pick": null,
+      "combination_candidate": null,
+      "status": "pre_match_snapshot"
+    },
+    {
+      "competition": "Copa Libertadores",
+      "home": "Fluminense",
+      "away": "Palmeiras",
+      "kickoff_source_time": "19:30 Colombia per published schedule; odds listings show differing timezone labels",
+      "odds_source": "Stake",
+      "odds_url": "https://pba.stake.bet.ar/sports/soccer/international-clubs/copa-libertadores/714988-fluminense-palmeiras",
+      "odds_1x2": {
+        "home": 2.85,
+        "draw": 3,
+        "away": 2.6
+      },
+      "goals_odds": {
+        "over_1_5": 1.49,
+        "under_1_5": 2.43,
+        "over_2_5": 2.5,
+        "under_2_5": 1.47,
+        "over_3_5": 4.7,
+        "under_3_5": 1.15
+      },
+      "both_teams_to_score": {
+        "yes": 2.12,
+        "no": 1.67
+      },
+      "double_chance": {
+        "home_or_draw": 1.48,
+        "draw_or_away": 1.42,
+        "home_or_away": 1.39
+      },
+      "market_odds_captured": true,
+      "model_probabilities": null,
+      "model_pick": null,
+      "combination_candidate": null,
+      "status": "pre_match_snapshot"
+    },
+    {
+      "competition": "Copa Colombia",
+      "home": "Atlético Nacional",
+      "away": "Independiente Medellín",
+      "kickoff_source_time": "20:30 Colombia per Dimayor",
+      "odds_source": "PokerStars Sports",
+      "odds_url": "https://www.pokerstars.es/sports/futbol/1/copa-colombia/854148/atletico-nacional-medellin-ind-medellin/36186374/",
+      "odds_1x2": {
+        "home": 1.7,
+        "draw": 3.6,
+        "away": 4.2
+      },
+      "goals_odds": {
+        "over_1_5": 1.2,
+        "under_1_5": 3.9,
+        "over_2_5": 1.73,
+        "under_2_5": 1.95,
+        "over_3_5": 2.9,
+        "under_3_5": 1.33
+      },
+      "market_odds_captured": true,
+      "model_probabilities": null,
+      "model_pick": null,
+      "combination_candidate": null,
+      "status": "pre_match_snapshot"
+    }
+  ]
+}

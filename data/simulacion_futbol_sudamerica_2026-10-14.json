@@ -51,15 +51,15 @@
     },
     {
       "competition": "Torneo BetPlay Colombia",
-      "home": "Real Cundinamarca",
+      "home": "Real Soacha Cundinamarca",
       "away": "Bogotá FC",
-      "kickoff_source_time": "17:00 Colombia (Dimayor)",
-      "odds_source": "Stake",
-      "odds_url": "https://stake.com/ar/sports/soccer/colombia/primera-b/46921167-real-cundinamarca-bogota-fc",
+      "kickoff_source_time": "18:00 Colombia (SportyTrader)",
+      "odds_source": "SportyTrader (comparador; casa específica debe confirmarse al ejecutar)",
+      "odds_url": "https://www.sportytrader.com/es/apuestas/real-soacha-cundinamarca-bogota-fc-8828720/",
       "odds_1x2": {
         "home": 1.73,
-        "draw": 3.4,
-        "away": 4.3
+        "draw": 3.5,
+        "away": 4.8
       },
       "market_odds_captured": true,
       "model_probabilities": null,
@@ -67,17 +67,14 @@
       "combination_candidate": null,
       "status": "pre_match_snapshot",
       "goals_odds": {
-        "over_1_5": 1.36,
-        "under_1_5": 2.75,
-        "over_2_5": 2.09,
-        "under_2_5": 1.61,
-        "over_3_5": 3.65,
-        "under_3_5": 1.21
+        "over_2_5": 2.1,
+        "under_2_5": 1.7
       },
       "both_teams_to_score": {
         "yes": 2,
-        "no": 1.67
-      }
+        "no": 1.75
+      },
+      "odds_capture_note": "Cuotas del comparador; no atribuirlas a Betano sin confirmar casa concreta."
     },
     {
       "competition": "Primera División Argentina",
@@ -191,18 +188,18 @@
       "home": "Atlético Nacional",
       "away": "Independiente Medellín",
       "kickoff_source_time": "20:30 Colombia (Dimayor); una casa muestra 22:30 por zona horaria distinta",
-      "odds_source": "SportingBete",
-      "odds_url": "https://sportingbete.net/esportes/futebol",
+      "odds_source": "SportyTrader (comparador) y PokerStars Sports",
+      "odds_url": "https://www.sportytrader.com/es/apuestas/atletico-nacional-independiente-medellin-8880797/",
       "odds_1x2": {
-        "home": 1.66,
-        "draw": 3.38,
-        "away": 4.29
+        "home": 1.93,
+        "draw": 3.4,
+        "away": 3.75
       },
       "goals_odds": {
+        "over_2_5": 1.9,
+        "under_2_5": 1.84,
         "over_1_5": 1.2,
         "under_1_5": 3.9,
-        "over_2_5": 1.73,
-        "under_2_5": 1.95,
         "over_3_5": 2.9,
         "under_3_5": 1.33
       },
@@ -211,7 +208,11 @@
       "model_pick": null,
       "combination_candidate": null,
       "status": "pre_match_snapshot",
-      "odds_capture_note": "Cuotas visibles 1.66/3.38/4.29; confirmar mercado y vigencia antes del inicio."
+      "odds_capture_note": "Comparador muestra 1.93/3.40/3.75; PokerStars lista 1.70/3.60/4.20. Discrepancia material entre casas, mantener ambas fuentes y no llamar a ninguna cuota Betano.",
+      "both_teams_to_score": {
+        "yes": 1.78,
+        "no": 2.01
+      }
     },
     {
       "competition": "Liga BetPlay Colombia",

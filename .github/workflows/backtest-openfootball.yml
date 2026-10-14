@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
 
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy requests openpyxl
@@ -43,5 +42,5 @@ jobs:
             src/data/openfootball/**
             src/manifest_openfootball.json
             src/backtest_openfootball_resultados.xlsx
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90

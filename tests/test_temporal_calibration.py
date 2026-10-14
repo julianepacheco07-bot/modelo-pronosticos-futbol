@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from src.temporal_calibration import temporal_temperature_calibration, _temperature_transform
+from src.temporal_calibration import temporal_temperature_calibration, temporal_calibration_by_league, _temperature_transform
 
 
 class TestTemporalTemperatureCalibration(unittest.TestCase):
@@ -27,6 +27,23 @@ class TestTemporalTemperatureCalibration(unittest.TestCase):
         self.assertEqual(set(second["Temporadas_entrenamiento"]), {"2023-24, 2024-25"})
         self.assertTrue((result["N_prueba"] == 1).all())
         self.assertTrue((result["Control_fuga"].str.contains("estrictamente anteriores")).all())
+
+
+    def test_league_holdouts_are_separate_and_use_past_seasons_only(self):
+        rows = []
+        for season, league, actual in [
+            ("2023-24", "A", "1"), ("2023-24", "B", "2"),
+            ("2024-25", "A", "X"), ("2024-25", "B", "1"),
+            ("2025-26", "A", "2"), ("2025-26", "B", "X"),
+        ]:
+            rows.append({"season": season, "league": league, "actual_1X2": actual,
+                         "model_p1": 0.55, "model_px": 0.25, "model_p2": 0.20})
+        result = temporal_calibration_by_league(pd.DataFrame(rows), ["model"])
+        self.assertEqual(set(result["Temporada_prueba"]), {"2024-25", "2025-26"})
+        self.assertEqual(len(result[result["Temporada_prueba"] == "2024-25"]), 6)
+        self.assertEqual(len(result[result["Temporada_prueba"] == "2025-26"]), 6)
+        self.assertTrue((result["Control_fuga"].str.contains("temporadas anteriores")).all())
+        self.assertTrue((result["N_prueba"] == 1).all())
 
     def test_empty_input_returns_schema(self):
         result = temporal_temperature_calibration(pd.DataFrame(), ["model"])

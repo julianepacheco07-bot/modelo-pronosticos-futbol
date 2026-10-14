@@ -96,3 +96,56 @@ def temporal_temperature_calibration(detail, models, temperatures=None):
                     "Control_fuga": "Ajuste solo con temporadas estrictamente anteriores",
                 })
     return pd.DataFrame(rows, columns=columns)
+
+
+def temporal_calibration_by_league(detail, models, temperatures=None):
+    """Evaluate past-season-fitted temperatures separately by league and holdout season.
+
+    Temperature is selected using only matches from strictly earlier seasons;
+    the holdout league's outcomes never participate in fitting.
+    """
+    columns = [
+        "Modelo", "Temporada_prueba", "Liga_prueba", "Temporadas_entrenamiento",
+        "N_entrenamiento", "N_prueba", "Temperatura_elegida", "Metrica",
+        "Original", "Calibrado", "Cambio_calibrado_menos_original",
+        "Control_fuga",
+    ]
+    if detail.empty:
+        return pd.DataFrame(columns=columns)
+    temps = np.asarray(temperatures if temperatures is not None
+                       else np.linspace(0.50, 2.50, 81), dtype=float)
+    seasons = sorted(detail["season"].dropna().astype(str).unique())
+    rows = []
+    for target_index in range(1, len(seasons)):
+        target_season = seasons[target_index]
+        train_seasons = seasons[:target_index]
+        train = detail[detail["season"].astype(str).isin(train_seasons)]
+        test_season = detail[detail["season"].astype(str) == target_season]
+        if train.empty or test_season.empty:
+            continue
+        actual_train = train["actual_1X2"].astype(str).to_numpy()
+        for model in models:
+            cols = [f"{model}_{suffix}" for suffix in PROB_SUFFIXES]
+            p_train = _normalized_probs(train[cols].to_numpy(dtype=float))
+            train_scores = [(_logloss(_temperature_transform(p_train, t), actual_train), float(t))
+                            for t in temps]
+            _, chosen_t = min(train_scores, key=lambda item: (item[0], item[1]))
+            for league, test in test_season.groupby("league", sort=True):
+                actual_test = test["actual_1X2"].astype(str).to_numpy()
+                p_test = _normalized_probs(test[cols].to_numpy(dtype=float))
+                calibrated = _temperature_transform(p_test, chosen_t)
+                original_metrics = _metrics(p_test, actual_test)
+                calibrated_metrics = _metrics(calibrated, actual_test)
+                for metric in ("Exactitud", "Brier", "LogLoss"):
+                    original = original_metrics[metric]
+                    adjusted = calibrated_metrics[metric]
+                    rows.append({
+                        "Modelo": model, "Temporada_prueba": target_season,
+                        "Liga_prueba": league, "Temporadas_entrenamiento": ", ".join(train_seasons),
+                        "N_entrenamiento": len(train), "N_prueba": len(test),
+                        "Temperatura_elegida": chosen_t, "Metrica": metric,
+                        "Original": original, "Calibrado": adjusted,
+                        "Cambio_calibrado_menos_original": adjusted - original,
+                        "Control_fuga": "Temperatura ajustada solo con temporadas anteriores; evaluación separada por liga",
+                    })
+    return pd.DataFrame(rows, columns=columns)

@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Exploratory pre-match Europa League simulation, with strict historical cutoff."""
+from pathlib import Path
+from datetime import date, datetime, timezone
+import hashlib, json, math, requests
+
+ROOT=Path(__file__).resolve().parents[1]
+OUT=ROOT/"data"/"simulacion"/"simulacion_europa_league_2026-10-15.json"
+TARGET=date(2026,10,15)
+SEASONS=("2023-24","2024-25","2025-26")
+LEAGUES={"Premier League":"en.1","LaLiga":"es.1","Serie A":"it.1","Bundesliga":"de.1","Ligue 1":"fr.1"}
+FIXTURES=[
+("Sparta Praha","Lillestrøm"),("AZ Alkmaar","Hapoel Beer-Sheva"),("Salzburg","Milan"),
+("Lech Poznań","Leverkusen"),("Celje","Omonia"),("Lyon","Crystal Palace"),
+("Union SG","Real Sociedad"),("Torreense","Sunderland"),("Benfica","Celtic"),
+("Bournemouth","Sturm Graz"),("Celta Vigo","Juventus"),("Dinamo Zagreb","Anderlecht"),
+("Ferencváros","Viktoria Plzeň"),("Hoffenheim","Beşiktaş"),("Jagiellonia","Ararat-Armenia"),
+("Marseille","Olympiacos"),("NEC Nijmegen","Levski Sofia"),("Rennes","OFI Crete")]
+ALIASES={"bayer leverkusen":"leverkusen","bayer 04 leverkusen":"leverkusen","ac milan":"milan",
+"olympique lyonnais":"lyon","rc celta de vigo":"celta vigo","real sociedad de futbol":"real sociedad"}
+def norm(s):
+    s=s.lower().replace(" fc","").replace(" cf","").replace(" afc","").replace(" sc","").strip()
+    return ALIASES.get(s,s)
+def pois(lam,n=12):
+    p=[math.exp(-lam)]
+    for k in range(1,n+1): p.append(p[-1]*lam/k)
+    z=sum(p); return [v/z for v in p]
+def match_probs(lh,la):
+    h,a=pois(lh),pois(la); p=[0.,0.,0.]; over=under=btts=0.
+    for i,x in enumerate(h):
+        for j,y in enumerate(a):
+            q=x*y
+            p[0 if i>j else 1 if i==j else 2]+=q
+            if i+j>=2: over+=q
+            if i+j<=3: under+=q
+            if i>0 and j>0: btts+=q
+    z=sum(p)
+    return {"home_win":p[0]/z,"draw":p[1]/z,"away_win":p[2]/z,"over_1_5":over,"under_3_5":under,"btts_yes":btts}
+def main():
+    games=[]; source_manifest=[]
+    for league,code in LEAGUES.items():
+        for season in SEASONS:
+            url=f"https://raw.githubusercontent.com/openfootball/football.json/master/{season}/{code}.json"
+            resp=requests.get(url,timeout=40); resp.raise_for_status()
+            raw=resp.content; source_manifest.append({"league":league,"season":season,"url":url,"sha256":hashlib.sha256(raw).hexdigest()})
+            obj=resp.json(); items=obj.get("matches",[]) if isinstance(obj,dict) else obj
+            for m in items:
+                sc=m.get("score",{}); sc=sc.get("ft") if isinstance(sc,dict) else sc
+                if not isinstance(sc,list) or len(sc)!=2 or sc[0] is None or sc[1] is None: continue
+                try: d=date.fromisoformat(str(m.get("date",""))[:10])
+                except ValueError: continue
+                if d>=TARGET: continue
+                games.append({"date":d,"home":norm(str(m.get("team1",""))),"away":norm(str(m.get("team2",""))),
+                              "hg":int(sc[0]),"ag":int(sc[1]),"league":league})
+    output=[]
+    for home,away in FIXTURES:
+        hname,aname=norm(home),norm(away)
+        hist_h=sorted([g for g in games if hname in (g["home"],g["away"])],key=lambda x:x["date"])[-10:]
+        hist_a=sorted([g for g in games if aname in (g["home"],g["away"])],key=lambda x:x["date"])[-10:]
+        rec={"date":TARGET.isoformat(),"competition":"UEFA Europa League","home":home,"away":away,
+             "cutoff":"2026-10-15 00:00 UTC (solo resultados anteriores; sin datos del partido objetivo)",
+             "odds":{"Betano":None,"other_bookmakers":None},"model":"Poisson exploratorio, forma de hasta 10 partidos previos",
+             "decision":"ANALISIS_INSUFICIENTE"}
+        if len(hist_h)>=5 and len(hist_a)>=5:
+            def rates(hist,team):
+                gf=[];ga=[]
+                for g in hist:
+                    ishome=g["home"]==team
+                    gf.append(g["hg"] if ishome else g["ag"]); ga.append(g["ag"] if ishome else g["hg"])
+                return sum(gf)/len(gf),sum(ga)/len(ga)
+            hgf,hga=rates(hist_h,hname); agf,aga=rates(hist_a,aname)
+            lh=max(.15,(hgf+aga)/2); la=max(.15,(agf+hga)/2)
+            rec.update({"lambda_home":round(lh,4),"lambda_away":round(la,4),
+              "history":{"home_n":len(hist_h),"away_n":len(hist_a),
+              "home_last_match":max(g["date"] for g in hist_h).isoformat(),
+              "away_last_match":max(g["date"] for g in hist_a).isoformat()},
+              "probabilities":{k:round(v,4) for k,v in match_probs(lh,la).items()},
+              "decision":"REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+              "limitations":"Entrenamiento solo con cinco ligas fuente; no incorpora plantillas, competición europea, bajas, noticias ni cuotas verificadas."})
+        else:
+            rec["reason"]="Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+        output.append(rec)
+    payload={"generated_utc":datetime.now(timezone.utc).isoformat(),"target_date":TARGET.isoformat(),
+      "matches_requested":len(FIXTURES),"estimated":sum("probabilities" in x for x in output),
+      "insufficient":sum("probabilities" not in x for x in output),"sources":source_manifest,"matches":output}
+    OUT.parent.mkdir(parents=True,exist_ok=True); OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print(json.dumps({k:payload[k] for k in ("generated_utc","target_date","matches_requested","estimated","insufficient")},ensure_ascii=False))
+    print("OUTPUT="+str(OUT))
+if __name__=="__main__": main()

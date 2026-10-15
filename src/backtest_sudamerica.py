@@ -42,9 +42,23 @@ def load():
    season=Path(rel).name.split("_")[0]; parsed=parse_txt(raw.decode("utf-8-sig"),league,season)
    if len(parsed)<100: raise RuntimeError(f"Formato/cobertura inesperado en {rel}: {len(parsed)} partidos")
    rows+=parsed; manifest.append({"url":url,"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw),"matches_parsed":len(parsed)})
- df=pd.DataFrame(rows).drop_duplicates(["league","date","home","away","hg","ag"])
- df["date"]=pd.to_datetime(df.date,errors="coerce"); df=df.dropna(subset=["date"]).sort_values(["league","date"]).reset_index(drop=True)
- return df,manifest
+ if len(manifest) != sum(len(v) for v in SOURCES.values()):
+  raise RuntimeError(f"Cobertura incompleta: {len(manifest)} fuentes recuperadas de {sum(len(v) for v in SOURCES.values())}.")
+ raw_df=pd.DataFrame(rows)
+ raw_df["date"]=pd.to_datetime(raw_df.date,errors="coerce")
+ raw_df=raw_df.dropna(subset=["date"])
+ # Remove exact duplicates, then exclude fixtures with contradictory final scores.
+ key=["league","date","home","away"]
+ exact_dups=int(raw_df.duplicated(key+["hg","ag"]).sum())
+ raw_df=raw_df.drop_duplicates(key+["hg","ag"])
+ score_counts=raw_df.groupby(key,dropna=False)[["hg","ag"]].apply(lambda g: len(g.drop_duplicates()))
+ conflicted_keys=set(score_counts[score_counts>1].index.tolist())
+ if conflicted_keys:
+  tuples=pd.MultiIndex.from_frame(raw_df[key])
+  conflict_index=pd.MultiIndex.from_tuples(list(conflicted_keys),names=key)
+  raw_df=raw_df.loc[~tuples.isin(conflict_index)].copy()
+ df=raw_df.sort_values(["league","date","home","away"]).reset_index(drop=True)
+ return df,manifest,{"exact_duplicates_removed":exact_dups,"conflicting_fixtures_excluded":len(conflicted_keys)}
 
 def poisson(lam,n=12):
  p=[math.exp(-lam)]
@@ -74,24 +88,63 @@ def score(p,y):
  p=min(1-1e-12,max(1e-12,p)); return (p-y)**2,-(y*math.log(p)+(1-y)*math.log(1-p))
 
 def run():
- df,manifest=load(); preds=[]; skipped=0
+ df,manifest,cleaning=load(); preds=[]; skipped=0
  for m in df.itertuples():
   hist=df[(df.league==m.league)&(df.date<m.date)]
   p=predict(hist,m)
   if p is None: skipped+=1; continue
-  preds.append({"league":m.league,"season":m.season,"date":m.date.date().isoformat(),"home":m.home,"away":m.away,
-   **p,"actual_over_1_5":int(m.hg+m.ag>=2),"actual_under_3_5":int(m.hg+m.ag<=3),"actual_btts_yes":int(m.hg>0 and m.ag>0)})
+  actual={"over_1_5":int(m.hg+m.ag>=2),"under_3_5":int(m.hg+m.ag<=3),"btts_yes":int(m.hg>0 and m.ag>0)}
+  row={"league":m.league,"season":m.season,"date":m.date.date().isoformat(),"home":m.home,"away":m.away,**p,
+       "actual_over_1_5":actual["over_1_5"],"actual_under_3_5":actual["under_3_5"],"actual_btts_yes":actual["btts_yes"],
+       "history_n":len(hist)}
+  # Leakage-safe reference: market prevalence from strictly earlier matches in this league.
+  for market,yk in [("over_1_5","actual_over_1_5"),("under_3_5","actual_under_3_5"),("btts_yes","actual_btts_yes")]:
+   if len(hist):
+    outcomes=[int((r.hg+r.ag>=2) if market=="over_1_5" else ((r.hg+r.ag<=3) if market=="under_3_5" else (r.hg>0 and r.ag>0))) for r in hist.itertuples()]
+    row[f"baseline_{market}"]=sum(outcomes)/len(outcomes)
+   else: row[f"baseline_{market}"]=None
+  preds.append(row)
  if not preds: raise RuntimeError("Sin predicciones; revisar formato de fechas y fuentes.")
- metrics=[]
- for market,pk,yk in [("over_1_5","p_over_1_5","actual_over_1_5"),("under_3_5","p_under_3_5","actual_under_3_5"),("btts_yes","p_btts_yes","actual_btts_yes")]:
-  sc=[score(x[pk],x[yk]) for x in preds]
-  metrics.append({"market":market,"n":len(sc),"brier":round(sum(x[0] for x in sc)/len(sc),6),"logloss":round(sum(x[1] for x in sc)/len(sc),6),
-   "accuracy_at_0_5":round(sum((p[pk]>=.5)==bool(p[yk]) for p in preds)/len(preds),6)})
+ market_defs=[("over_1_5","p_over_1_5","actual_over_1_5"),("under_3_5","p_under_3_5","actual_under_3_5"),("btts_yes","p_btts_yes","actual_btts_yes")]
+ def calc_metrics(rows,scope_name):
+  out=[]
+  for market,pk,yk in market_defs:
+   valid=[r for r in rows if r.get(pk) is not None and r.get(yk) is not None]
+   if not valid: continue
+   sc=[score(float(r[pk]),int(r[yk])) for r in valid]
+   brier=sum(v[0] for v in sc)/len(sc); logloss=sum(v[1] for v in sc)/len(sc)
+   base=[score(float(r[f"baseline_{market}"]),int(r[yk])) for r in valid if r.get(f"baseline_{market}") is not None]
+   base_brier=sum(v[0] for v in base)/len(base) if base else None
+   out.append({"scope":scope_name,"market":market,"n":len(sc),"brier":round(brier,6),"logloss":round(logloss,6),
+    "accuracy_at_0_5":round(sum((float(r[pk])>=.5)==bool(r[yk]) for r in valid)/len(valid),6),
+    "baseline_brier":round(base_brier,6) if base_brier is not None else None,
+    "baseline_logloss":round(sum(v[1] for v in base)/len(base),6) if base else None,
+    "brier_skill_vs_historical_prevalence":round(1-brier/base_brier,6) if base_brier and base_brier>0 else None})
+  return out
+ metrics=calc_metrics(preds,"Global")
+ grouped_metrics=[]
+ for league in sorted({r["league"] for r in preds}):
+  for season in sorted({r["season"] for r in preds if r["league"]==league}):
+   subset=[r for r in preds if r["league"]==league and r["season"]==season]
+   grouped_metrics.extend(calc_metrics(subset,f"{league} | {season}"))
+ # Reliability table in fixed bins; expose observed frequencies and counts.
+ calibration=[]
+ for market,pk,yk in market_defs:
+  for lo in [0,.1,.2,.3,.4,.5,.6,.7,.8,.9]:
+   hi=lo+.1
+   subset=[r for r in preds if lo <= float(r[pk]) < hi or (hi==1.0 and float(r[pk])<=1.0 and float(r[pk])>=lo)]
+   if subset:
+    calibration.append({"market":market,"bin_low":lo,"bin_high":hi,"n":len(subset),
+      "mean_predicted":round(sum(float(r[pk]) for r in subset)/len(subset),6),
+      "observed_rate":round(sum(int(r[yk]) for r in subset)/len(subset),6)})
  report={"created_utc":datetime.utcnow().isoformat(timespec="seconds")+"Z","source":"OpenFootball South America, CC0",
-  "leagues":list(SOURCES),"seasons":[2023,2024,2025],"manifest":manifest,"matches_loaded":len(df),
-  "predictions_scored":len(preds),"skipped_insufficient_history":skipped,"metrics":metrics,
-  "limitations":["Baseline de forma reciente + Poisson; no calibrado para apuestas.","Sin cuotas ni ROI: no afirma rentabilidad.",
-  "Predicciones usan solo partidos anteriores a la fecha objetivo.","Cobertura depende de los archivos públicos de origen."],"predictions":preds}
+  "leagues":list(SOURCES),"seasons":[2023,2024,2025],"manifest":manifest,"matches_loaded":len(df),"cleaning":cleaning,
+  "predictions_scored":len(preds),"skipped_insufficient_history":skipped,"metrics":metrics,"metrics_by_league_season":grouped_metrics,
+  "calibration_bins":calibration,
+  "limitations":["Poisson de forma reciente; no calibrado para apuestas.","Sin cuotas ni ROI: no afirma rentabilidad.",
+  "Predicciones usan solo partidos estrictamente anteriores a la fecha objetivo.",
+  "Baseline de prevalencia usa solo partidos anteriores de la misma liga; el skill es predictivo, no financiero.",
+  "Resultados por liga-temporada pueden tener muestras pequeñas; revisar N antes de interpretar."],"predictions":preds}
  OUT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
  print(json.dumps({k:report[k] for k in ("matches_loaded","predictions_scored","skipped_insufficient_history","metrics")},ensure_ascii=False,indent=2))
  print("Informe:",OUT)

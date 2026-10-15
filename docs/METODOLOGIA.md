@@ -5,7 +5,7 @@
 
 ## 1. Propósito y principios
 
-Construir un proceso reproducible para estimar probabilidades de mercados de fútbol antes del inicio del partido y evaluar si existe una oportunidad respaldada por datos y cuotas verificables.
+Construir un proceso reproducible para estimar probabilidades de mercados de fútbol antes del inicio del partido y validar su capacidad predictiva con resultados históricos. La evaluación económica de apuestas es una línea separada y prospectiva, basada en cuotas reales registradas desde el inicio de la simulación.
 
 Principios obligatorios:
 - No utilizar estadísticas en vivo del partido analizado para generar un pronóstico prepartido.
@@ -17,7 +17,7 @@ Principios obligatorios:
 
 ## 2. Alcance de datos
 
-El alcance inicial previsto cubre temporadas 2023-24, 2024-25 y 2025-26 en cinco ligas, sujeto a confirmar exactamente cuáles son las competiciones y qué datos están disponibles.
+El alcance de la línea base OpenFootball implementada cubre temporadas 2023-24, 2024-25 y 2025-26 de Premier League, LaLiga, Serie A, Bundesliga y Ligue 1. Los resultados de cada ejecución deben indicar las fuentes efectivamente recuperadas y su cobertura; una corrida incompleta no se acepta como backtest completo.
 
 Antes del modelado se debe crear un inventario con:
 - Competición, temporada y número de partidos.
@@ -73,7 +73,7 @@ La decisión económica requiere una cuota real, específica para el mercado y o
 
 La cuota de equilibrio es `1 / o`. Cuando existan cuotas de todos los resultados del mercado, evaluar el margen de la casa y considerar su eliminación antes de comparar probabilidades. Registrar casa, cuota, hora de consulta y condiciones del mercado.
 
-Si no se logra verificar la cuota de Betano Colombia, se puede mostrar el análisis probabilístico, pero no afirmar que existe valor esperado positivo para esa cuota ni inventar una cotización. El EV calculado es una estimación sujeta al error del modelo, no una garantía.
+Las cuotas históricas no son requisito para entrenar, comparar ni validar la capacidad predictiva del modelo con resultados históricos. No deben buscarse ni reconstruirse cuotas pasadas. Desde el inicio de la simulación se registran cuotas realmente observadas; solo con esas cuotas prospectivas liquidadas se calcularán EV y ROI observados. Si no se verifica una cuota actual de Betano Colombia, se puede completar y reportar la evaluación probabilística, pero no afirmar valor esperado positivo ni inventar una cotización. El EV estimado con cuota actual es incierto y no constituye garantía.
 
 Una probabilidad del 75% sirve como umbral de prioridad para revisar una selección; no es un mandato de apuesta ni sustituye el análisis de cuota, calibración, incertidumbre y riesgo.
 
@@ -81,7 +81,7 @@ Una probabilidad del 75% sirve como umbral de prioridad para revisar una selecci
 
 - **APUESTA CANDIDATA:** datos suficientes, probabilidad evaluada, cuota verificada, ventaja estimada positiva y riesgos comunicados.
 - **NO BET:** análisis suficientemente completo, pero no se observa ventaja convincente, la cuota no compensa el riesgo o la incertidumbre hace que la apuesta no sea atractiva.
-- **ANÁLISIS INSUFICIENTE:** faltan datos esenciales, no puede verificarse una cuota necesaria o existe una limitación que impide sostener una conclusión.
+- **ANÁLISIS INSUFICIENTE:** faltan datos deportivos esenciales o existe una limitación que impide sostener una conclusión probabilística. La ausencia de cuotas históricas nunca es motivo para bloquear el backtest predictivo. La ausencia de una cuota actual solo impide declarar EV/ROI para esa selección.
 
 No usar **NO BET** como respuesta automática. Si faltan datos, usar **ANÁLISIS INSUFICIENTE** y especificar qué se necesita para resolverlo. Si hay una oportunidad respaldada, debe poder presentarse como **APUESTA CANDIDATA**, aunque nunca como certeza.
 

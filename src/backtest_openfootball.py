@@ -30,9 +30,11 @@ def sha256(path):
 def fetch(league,code,season):
     url=f"https://raw.githubusercontent.com/openfootball/football.json/master/{season}/{code}.json"
     path=RAW/f"{season}_{code}.json"
+    downloaded_now = False
     if not path.exists():
         r=requests.get(url,timeout=45); r.raise_for_status()
         path.write_bytes(r.content)
+        downloaded_now = True
     obj=json.loads(path.read_text(encoding="utf-8"))
     # OpenFootball has used both an object with a "matches" array and a
     # top-level array. Normalize both shapes before parsing.
@@ -66,7 +68,7 @@ def fetch(league,code,season):
           "round":m.get("round"),"source_url":url,"source_file":path.name,"source_sha256":sha256(path)})
     return rows,{"league":league,"season":season,"url":url,"file":path.name,
       "sha256":sha256(path),"bytes":path.stat().st_size,"rows":len(rows),"source_name":source_name,
-      "downloaded_utc":STAMP,"status":"OK"}
+      "retrieved_utc":STAMP,"acquisition":"downloaded_now" if downloaded_now else "cached_local","status":"OK"}
 
 def poisson(lam,n=12):
     a=[math.exp(-lam)]
@@ -271,6 +273,15 @@ def paired_block_bootstrap_comparisons(detail, n_boot=3000, seed=20261015):
     return pd.DataFrame(rows, columns=columns)
 
 
+def validate_source_coverage(manifests, errors):
+    """Require the complete 5-league x 3-season panel; never label a partial run successful."""
+    expected = {(league, season) for league in LEAGUES for season in SEASONS}
+    actual = {(item.get("league"), item.get("season")) for item in manifests
+              if item.get("status") == "OK" and item.get("sha256")}
+    missing = sorted(expected - actual)
+    return missing, list(errors)
+
+
 def main():
     rows=[]; manifests=[]; errors=[]
     for league,code in LEAGUES.items():
@@ -278,7 +289,21 @@ def main():
             try:
                 rr,mm=fetch(league,code,season); rows.extend(rr); manifests.append(mm)
             except Exception as e: errors.append({"league":league,"season":season,"status":"ERROR","error":str(e)})
-    if not rows: raise RuntimeError("No se pudo recuperar ninguna fuente OpenFootball.")
+    missing_sources, source_errors = validate_source_coverage(manifests, errors)
+    if source_errors or missing_sources:
+        MANIFEST.write_text(json.dumps({
+            "run_utc": STAMP, "status": "FAILED_INCOMPLETE_SOURCE_COVERAGE",
+            "sources": manifests, "errors": source_errors,
+            "missing_sources": [{"league": league, "season": season}
+                                for league, season in missing_sources]
+        }, ensure_ascii=False, indent=2), encoding="utf-8")
+        raise RuntimeError(
+            f"Backtest cancelado: cobertura incompleta; fuentes OK={len(manifests)}/"
+            f"{len(LEAGUES)*len(SEASONS)}, errores={len(source_errors)}, "
+            f"faltantes={len(missing_sources)}. Ver manifiesto: {MANIFEST}"
+        )
+    if len(rows) == 0:
+        raise RuntimeError("No se pudo recuperar ninguna fuente OpenFootball.")
     clean_rows,invalid,dups,conflicts=clean(rows)
     detail,skipped=backtest(clean_rows)
     models=["multipliers_1.10_0.90","neutral_1.00_1.00","venue_adjusted","baseline_frequency"]

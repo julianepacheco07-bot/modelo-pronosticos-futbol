@@ -25,7 +25,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: backtest-sudamerica-\${{ github.run_number }}
+          name: backtest-sudamerica
           path: |
             src/data/south_america/**
             src/backtest_sudamerica_resultados.json

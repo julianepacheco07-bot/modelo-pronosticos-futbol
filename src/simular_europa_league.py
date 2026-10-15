@@ -2,7 +2,7 @@
 """Exploratory pre-match Europa League simulation, with strict historical cutoff."""
 from pathlib import Path
 from datetime import date, datetime, timezone
-import hashlib, json, math, requests
+import hashlib, json, math, requests, unicodedata, re
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"data"/"simulacion"/"simulacion_europa_league_2026-10-15.json"
@@ -19,8 +19,17 @@ FIXTURES=[
 ALIASES={"bayer leverkusen":"leverkusen","bayer 04 leverkusen":"leverkusen","ac milan":"milan",
 "olympique lyonnais":"lyon","rc celta de vigo":"celta vigo","real sociedad de futbol":"real sociedad","sparta praha":"sparta prague","sparta prague":"sparta prague","besiktas":"beşiktaş","viktoria plzen":"viktoria plzeň","n.e.c. nijmegen":"nec nijmegen","nec":"nec nijmegen","hapoel beer sheva":"hapoel beer-sheva"}
 def norm(s):
-    s=s.lower().replace(" fc","").replace(" cf","").replace(" afc","").replace(" sc","").strip()
-    return ALIASES.get(s,s)
+    s=unicodedata.normalize("NFKD",str(s)).encode("ascii","ignore").decode("ascii").lower()
+    s=re.sub(r"\\b(fc|cf|afc|sc|fk|sk|ac|as|club)\\b"," ",s)
+    s=re.sub(r"[^a-z0-9]+"," ",s).strip()
+    s=re.sub(r"\\s+"," ",s)
+    aliases={"bayer 04 leverkusen":"leverkusen","bayer leverkusen":"leverkusen","ac milan":"milan",
+    "olympique lyonnais":"lyon","rc celta de vigo":"celta vigo","real sociedad de futbol":"real sociedad",
+    "sparta praha":"sparta prague","besiktas":"besiktas","viktoria plzen":"viktoria plzen",
+    "n e c nijmegen":"nec nijmegen","nec":"nec nijmegen","hapoel beer sheva":"hapoel beer sheva",
+    "union saint gilloise":"union sg","ferencvarosi":"ferencvaros","ferencvaros budapest":"ferencvaros",
+    "celta":"celta vigo","of i crete":"ofi crete","az":"az alkmaar"}
+    return aliases.get(s,s)
 def pois(lam,n=12):
     p=[math.exp(-lam)]
     for k in range(1,n+1): p.append(p[-1]*lam/k)
@@ -60,6 +69,19 @@ def main():
                 if d>=TARGET: continue
                 games.append({"date":d,"home":norm(str(m.get("team1",""))),"away":norm(str(m.get("team2",""))),
                               "hg":int(sc[0]),"ag":int(sc[1]),"league":league})
+    # Resultados jornada 1 UEFA, anteriores al corte de la simulación.
+    uefa_round1=[
+      ("2026-09-16","Ararat-Armenia","Sparta Praha",1,4),("2026-09-16","Omonia","Celta Vigo",1,0),
+      ("2026-09-16","Milan","Benfica",0,2),("2026-09-16","Leverkusen","Celje",2,0),
+      ("2026-09-16","Hapoel Beer-Sheva","Dinamo Zagreb",0,0),("2026-09-16","Olympiacos","Jagiellonia",2,1),
+      ("2026-09-16","Anderlecht","Lyon",1,2),("2026-09-16","Sturm Graz","Rennes",0,0),
+      ("2026-09-16","Sunderland","AZ Alkmaar",1,0),("2026-09-17","OFI Crete","Hoffenheim",2,0),
+      ("2026-09-17","Levski Sofia","Salzburg",0,1),("2026-09-17","Beşiktaş","Marseille",4,1),
+      ("2026-09-17","Celtic","Ferencváros",1,3),("2026-09-17","Crystal Palace","Lech Poznań",4,0),
+      ("2026-09-17","Viktoria Plzeň","Union SG",0,3),("2026-09-17","Juventus","NEC Nijmegen",5,0),
+      ("2026-09-17","Lillestrøm","Torreense",1,2),("2026-09-17","Real Sociedad","Bournemouth",1,2)]
+    for d,h,a,hg,ag in uefa_round1:
+        games.append({"date":date.fromisoformat(d),"home":norm(h),"away":norm(a),"hg":hg,"ag":ag,"league":"UEFA Europa League"})
     output=[]
     for home,away in FIXTURES:
         hname,aname=norm(home),norm(away)
@@ -67,9 +89,9 @@ def main():
         hist_a=sorted([g for g in games if aname in (g["home"],g["away"])],key=lambda x:x["date"])[-10:]
         rec={"date":TARGET.isoformat(),"competition":"UEFA Europa League","home":home,"away":away,
              "cutoff":"2026-10-15 00:00 UTC (solo resultados anteriores; sin datos del partido objetivo)",
-             "odds":{"Betano":None,"other_bookmakers":None},"model":"Poisson exploratorio, forma de hasta 10 partidos previos",
+             "odds":{"Betano":None,"other_bookmakers":None},"model":"Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
              "decision":"ANALISIS_INSUFICIENTE"}
-        if len(hist_h)>=5 and len(hist_a)>=5:
+        if len(hist_h)>=3 and len(hist_a)>=3:
             def rates(hist,team):
                 gf=[];ga=[]
                 for g in hist:
@@ -84,9 +106,9 @@ def main():
               "away_last_match":max(g["date"] for g in hist_a).isoformat()},
               "probabilities":{k:round(v,4) for k,v in match_probs(lh,la).items()},
               "decision":"REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
-              "limitations":"Entrenamiento solo con cinco ligas fuente; no incorpora plantillas, competición europea, bajas, noticias ni cuotas verificadas."})
+              "limitations":"Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."})
         else:
-            rec["reason"]="Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+            rec["reason"]="Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
         output.append(rec)
     payload={"generated_utc":datetime.now(timezone.utc).isoformat(),"target_date":TARGET.isoformat(),
       "matches_requested":len(FIXTURES),"estimated":sum("probabilities" in x for x in output),

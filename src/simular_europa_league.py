@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"data"/"simulacion"/"simulacion_europa_league_2026-10-15.json"
 TARGET=date(2026,10,15)
 SEASONS=("2023-24","2024-25","2025-26")
-LEAGUES={"Premier League":"en.1","LaLiga":"es.1","Serie A":"it.1","Bundesliga":"de.1","Ligue 1":"fr.1"}
+LEAGUES={"Premier League":"en.1","LaLiga":"es.1","Serie A":"it.1","Bundesliga":"de.1","Ligue 1":"fr.1","Eredivisie":"nl.1","Primeira Liga":"pt.1","Belgian First Division":"be.1","Austrian Bundesliga":"at.1","Greek Super League":"gr.1","Scottish Premiership":"sco.1","Danish Superliga":"dk.1","Swiss Super League":"ch.1","Swedish Allsvenskan":"se.1","Norwegian Eliteserien":"no.1","Finnish Veikkausliiga":"fi.1","Turkish Super Lig":"tr.1","Polish Ekstraklasa":"pl.1","Croatian HNL":"hr.1","Hungarian NB I":"hu.1","Romanian Liga I":"ro.1"}
 FIXTURES=[
 ("Sparta Praha","Lillestrøm"),("AZ Alkmaar","Hapoel Beer-Sheva"),("Salzburg","Milan"),
 ("Lech Poznań","Leverkusen"),("Celje","Omonia"),("Lyon","Crystal Palace"),
@@ -17,7 +17,7 @@ FIXTURES=[
 ("Ferencváros","Viktoria Plzeň"),("Hoffenheim","Beşiktaş"),("Jagiellonia","Ararat-Armenia"),
 ("Marseille","Olympiacos"),("NEC Nijmegen","Levski Sofia"),("Rennes","OFI Crete")]
 ALIASES={"bayer leverkusen":"leverkusen","bayer 04 leverkusen":"leverkusen","ac milan":"milan",
-"olympique lyonnais":"lyon","rc celta de vigo":"celta vigo","real sociedad de futbol":"real sociedad"}
+"olympique lyonnais":"lyon","rc celta de vigo":"celta vigo","real sociedad de futbol":"real sociedad","sparta praha":"sparta prague","sparta prague":"sparta prague","besiktas":"beşiktaş","viktoria plzen":"viktoria plzeň","n.e.c. nijmegen":"nec nijmegen","nec":"nec nijmegen","hapoel beer sheva":"hapoel beer-sheva"}
 def norm(s):
     s=s.lower().replace(" fc","").replace(" cf","").replace(" afc","").replace(" sc","").strip()
     return ALIASES.get(s,s)
@@ -41,8 +41,16 @@ def main():
     for league,code in LEAGUES.items():
         for season in SEASONS:
             url=f"https://raw.githubusercontent.com/openfootball/football.json/master/{season}/{code}.json"
-            resp=requests.get(url,timeout=40); resp.raise_for_status()
-            raw=resp.content; source_manifest.append({"league":league,"season":season,"url":url,"sha256":hashlib.sha256(raw).hexdigest()})
+            try:
+                resp=requests.get(url,timeout=25)
+                if resp.status_code==404:
+                    source_manifest.append({"league":league,"season":season,"url":url,"status":"no disponible"})
+                    continue
+                resp.raise_for_status()
+            except requests.RequestException as exc:
+                source_manifest.append({"league":league,"season":season,"url":url,"status":"error","detail":str(exc)[:180]})
+                continue
+            raw=resp.content; source_manifest.append({"league":league,"season":season,"url":url,"status":"ok","sha256":hashlib.sha256(raw).hexdigest()})
             obj=resp.json(); items=obj.get("matches",[]) if isinstance(obj,dict) else obj
             for m in items:
                 sc=m.get("score",{}); sc=sc.get("ft") if isinstance(sc,dict) else sc

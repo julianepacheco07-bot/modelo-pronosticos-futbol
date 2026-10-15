@@ -1,5 +1,5 @@
 fecha,local,visitante,mercado,probabilidad_modelo,cuota_betano_verificada,EV_estimado,partidos_historial_local,partidos_historial_visitante,confianza,decision,fuente
-"2026-10-15","Sparta Praha","Lillestrøm","Más de 1.5 goles","80.96%","1.18","-4.47%","1","1","BAJA","NO BET: EV aritmético negativo","ScoreBob: referencia etiquetada Betano; no captura directa de Betano Colombia"
+"2026-10-15","Sparta Praha","Lillestrøm","Más de 1.5 goles","80.96%" ,"" ,"" ,"1","1","BAJA","NO BET: EV aritmético negativo" ,"Sin cuota directa verificada en Betano Colombia"
 "2026-10-15","Sparta Praha","Lillestrøm","Menos de 3.5 goles","63.38%","","","1","1","BAJA","NO BET por umbral probabilístico (sin precio verificado)","SIN CUOTA VERIFICADA"
 "2026-10-15","Sparta Praha","Lillestrøm","Ambos marcan: Sí","60.51%","","","1","1","BAJA","NO BET por umbral probabilístico (sin precio verificado)","SIN CUOTA VERIFICADA"
 "2026-10-15","Sparta Praha","Lillestrøm","Local gana","46.91%","","","1","1","BAJA","NO BET por umbral probabilístico (sin precio verificado)","SIN CUOTA VERIFICADA"

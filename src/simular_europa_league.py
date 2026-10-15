@@ -69,6 +69,19 @@ def main():
                 if d>=TARGET: continue
                 games.append({"date":d,"home":norm(str(m.get("team1",""))),"away":norm(str(m.get("team2",""))),
                               "hg":int(sc[0]),"ag":int(sc[1]),"league":league})
+    # Marcadores de la jornada 1 verificados en el calendario/resultados oficiales UEFA.
+    uefa_round1=[
+      ("2026-09-16","Ararat-Armenia","Sparta Praha",1,4),("2026-09-16","Omonia","Celta Vigo",1,0),
+      ("2026-09-16","Milan","Benfica",0,2),("2026-09-16","Leverkusen","Celje",2,0),
+      ("2026-09-16","Hapoel Beer-Sheva","Dinamo Zagreb",0,0),("2026-09-16","Olympiacos","Jagiellonia",2,1),
+      ("2026-09-16","Anderlecht","Lyon",1,2),("2026-09-16","Sturm Graz","Rennes",0,0),
+      ("2026-09-16","Sunderland","AZ Alkmaar",1,0),("2026-09-17","OFI Crete","Hoffenheim",2,0),
+      ("2026-09-17","Levski Sofia","Salzburg",0,1),("2026-09-17","Beşiktaş","Marseille",4,1),
+      ("2026-09-17","Celtic","Ferencváros",1,3),("2026-09-17","Crystal Palace","Lech Poznań",4,0),
+      ("2026-09-17","Viktoria Plzeň","Union SG",0,3),("2026-09-17","Juventus","NEC Nijmegen",5,0),
+      ("2026-09-17","Lillestrøm","Torreense",1,2),("2026-09-17","Real Sociedad","Bournemouth",1,2)]
+    for d,h,a,hg,ag in uefa_round1:
+        games.append({"date":date.fromisoformat(d),"home":norm(h),"away":norm(a),"hg":hg,"ag":ag,"league":"UEFA Europa League"})
     output=[]
     for home,away in FIXTURES:
         hname,aname=norm(home),norm(away)

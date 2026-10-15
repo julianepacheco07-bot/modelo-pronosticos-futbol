@@ -89,9 +89,9 @@ def main():
         hist_a=sorted([g for g in games if aname in (g["home"],g["away"])],key=lambda x:x["date"])[-10:]
         rec={"date":TARGET.isoformat(),"competition":"UEFA Europa League","home":home,"away":away,
              "cutoff":"2026-10-15 00:00 UTC (solo resultados anteriores; sin datos del partido objetivo)",
-             "odds":{"Betano":None,"other_bookmakers":None},"model":"Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
+             "odds":{"Betano":None,"other_bookmakers":None},"model":"Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
              "decision":"ANALISIS_INSUFICIENTE"}
-        if len(hist_h)>=3 and len(hist_a)>=3:
+        if len(hist_h)>=1 and len(hist_a)>=1:
             def rates(hist,team):
                 gf=[];ga=[]
                 for g in hist:
@@ -99,20 +99,26 @@ def main():
                     gf.append(g["hg"] if ishome else g["ag"]); ga.append(g["ag"] if ishome else g["hg"])
                 return sum(gf)/len(gf),sum(ga)/len(ga)
             hgf,hga=rates(hist_h,hname); agf,aga=rates(hist_a,aname)
+            # Suavizado de baja confianza: prior de 4 partidos equivalentes basado en los marcadores cargados.
+            all_scores=[v for g in games for v in (g["hg"],g["ag"])]
+            prior=sum(all_scores)/len(all_scores) if all_scores else 1.35
+            def shrink(x,n,k=4): return (x*n+prior*k)/(n+k)
+            hgf,hga=shrink(hgf,len(hist_h)),shrink(hga,len(hist_h))
+            agf,aga=shrink(agf,len(hist_a)),shrink(aga,len(hist_a))
             lh=max(.15,(hgf+aga)/2); la=max(.15,(agf+hga)/2)
             rec.update({"lambda_home":round(lh,4),"lambda_away":round(la,4),
-              "history":{"home_n":len(hist_h),"away_n":len(hist_a),
+              "history":{"home_n":len(hist_h),"away_n":len(hist_a),"confidence":"BAJA" if min(len(hist_h),len(hist_a))<5 else "LIMITADA",
               "home_last_match":max(g["date"] for g in hist_h).isoformat(),
               "away_last_match":max(g["date"] for g in hist_a).isoformat()},
               "probabilities":{k:round(v,4) for k,v in match_probs(lh,la).items()},
               "decision":"REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
               "limitations":"Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."})
         else:
-            rec["reason"]="Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+            rec["reason"]="Sin historial previo identificable para uno o ambos equipos; no se imputa ni inventa probabilidad."
         output.append(rec)
     payload={"generated_utc":datetime.now(timezone.utc).isoformat(),"target_date":TARGET.isoformat(),
       "matches_requested":len(FIXTURES),"estimated":sum("probabilities" in x for x in output),
-      "insufficient":sum("probabilities" not in x for x in output),"sources":source_manifest,"matches":output}
+      "insufficient":sum("probabilities" not in x for x in output),"sources":source_manifest,"matches":output,"probability_caveat":"Estimaciones con menos de cinco partidos por equipo son de baja confianza; no constituyen recomendación automática de apuesta."}
     OUT.parent.mkdir(parents=True,exist_ok=True); OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps({k:payload[k] for k in ("generated_utc","target_date","matches_requested","estimated","insufficient")},ensure_ascii=False))
     print("OUTPUT="+str(OUT))

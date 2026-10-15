@@ -1,9 +1,9 @@
 {
-  "generated_utc": "2026-10-15T11:30:51.074045+00:00",
+  "generated_utc": "2026-10-15T11:36:33.331538+00:00",
   "target_date": "2026-10-15",
   "matches_requested": 18,
-  "estimated": 2,
-  "insufficient": 16,
+  "estimated": 1,
+  "insufficient": 17,
   "sources": [
     {
       "league": "Premier League",
@@ -427,9 +427,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -441,9 +441,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -455,9 +455,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -469,9 +469,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -483,9 +483,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -497,25 +497,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
-      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
-      "lambda_home": 1.55,
-      "lambda_away": 1.25,
-      "history": {
-        "home_n": 10,
-        "away_n": 10,
-        "home_last_match": "2026-05-17",
-        "away_last_match": "2026-05-24"
-      },
-      "probabilities": {
-        "home_win": 0.443,
-        "draw": 0.2496,
-        "away_win": 0.3074,
-        "over_1_5": 0.7689,
-        "under_3_5": 0.6919,
-        "btts_yes": 0.5621
-      },
-      "limitations": "Entrenamiento solo con cinco ligas fuente; no incorpora plantillas, competición europea, bajas, noticias ni cuotas verificadas."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
+      "decision": "ANALISIS_INSUFICIENTE",
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -527,9 +511,25 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.85,
+      "lambda_away": 1.0,
+      "history": {
+        "home_n": 10,
+        "away_n": 10,
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.5729,
+        "draw": 0.2258,
+        "away_win": 0.2013,
+        "over_1_5": 0.7773,
+        "under_3_5": 0.6808,
+        "btts_yes": 0.5327
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -541,9 +541,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -555,9 +555,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -569,9 +569,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -583,25 +583,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
-      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
-      "lambda_home": 1.05,
-      "lambda_away": 1.4,
-      "history": {
-        "home_n": 10,
-        "away_n": 10,
-        "home_last_match": "2026-05-23",
-        "away_last_match": "2026-05-24"
-      },
-      "probabilities": {
-        "home_win": 0.2823,
-        "draw": 0.2681,
-        "away_win": 0.4496,
-        "over_1_5": 0.7023,
-        "under_3_5": 0.7682,
-        "btts_yes": 0.4898
-      },
-      "limitations": "Entrenamiento solo con cinco ligas fuente; no incorpora plantillas, competición europea, bajas, noticias ni cuotas verificadas."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
+      "decision": "ANALISIS_INSUFICIENTE",
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -613,9 +597,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -627,9 +611,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -641,9 +625,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -655,9 +639,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -669,9 +653,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -683,9 +667,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     },
     {
       "date": "2026-10-15",
@@ -697,9 +681,9 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, forma de hasta 10 partidos previos",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
       "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de cinco partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
     }
   ]
 }

@@ -1,44 +1,25 @@
-# Simulación revisada — Europa League — 15/10/2026
+# Simulación Europa League — revisión de cuotas y estado temporal — 15/10/2026
 
-## Qué se ha corregido en esta revisión
-Se revisaron los 18 partidos y sus probabilidades exploratorias ya calculadas. Para no repetir el error de introducir precios no comprobados, **solo se consigna una cuota concreta en esta versión: Sparta Praha–Lillestrøm, Más de 1.5 goles, 1.18**, encontrada en un comparador que etiqueta el precio como Betano. No equivale a una captura directa de Betano Colombia; hay que comprobarla en la aplicación. Los demás precios quedan vacíos hasta encontrar una fuente verificable. Las cuotas de la versión previa que no tenían verificación suficiente no deben utilizarse.
+## Resultado de la comprobación de cuotas
+Se buscaron precios en resultados públicos y se consultaron páginas de comparadores. No se obtuvo una captura verificable directamente desde Betano Colombia que permita confirmar los precios para los mercados evaluados. Por tanto, **no se registra ninguna cuota como confirmada de Betano Colombia y no se calcula EV definitivo para apuestas prospectivas**. Se retiró del CSV la referencia de 1.18 que se había anotado para Sparta Praha–Lillestrøm, porque provenía de un agregador y no de una verificación directa en Betano Colombia.
 
-## Tabla de cinco columnas solicitada
+## Estado de la simulación
+Las probabilidades de los 18 partidos siguen siendo las de la rama exploratoria Poisson del proyecto. No se han cambiado ni se presentan como calibradas. La tabla de evaluación en CSV incluye los mercados de goles, ambos marcan, 1X2 y doble oportunidad, y separa los casos por debajo del umbral de probabilidad de aquellos que necesitan precio verificable para completar el valor esperado.
 
-| Partido | Pronóstico simple evaluado | Cuota simple | Estado | Historial del modelo |
-|---|---|---:|---|---|
-| Sparta Praha vs Lillestrøm | Más de 1.5 goles (80.96%) | 1.18* | NO BET | 1/1 (BAJA) |
-| AZ Alkmaar vs Hapoel Beer-Sheva | Menos de 3.5 goles (75.04%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 10/1 (BAJA) |
-| Salzburg vs Milan | Menos de 3.5 goles (75.19%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/10 (BAJA) |
-| Lech Poznań vs Leverkusen | Más de 1.5 goles (83.58%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/10 (BAJA) |
-| Celje vs Omonia | Menos de 3.5 goles (74.47%) | No verificada | NO BET: ningún mercado calculado alcanza 75% | 1/1 (BAJA) |
-| Lyon vs Crystal Palace | Más de 1.5 goles (77.61%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 10/10 (LIMITADA) |
-| Union SG vs Real Sociedad | Más de 1.5 goles (77.61%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 10/10 (LIMITADA) |
-| Torreense vs Sunderland | Más de 1.5 goles (76.86%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/10 (BAJA) |
-| Benfica vs Celtic | Más de 1.5 goles (75.09%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/10 (BAJA) |
-| Bournemouth vs Sturm Graz | Más de 1.5 goles (74.48%) | No verificada | NO BET: ningún mercado calculado alcanza 75% | 10/10 (LIMITADA) |
-| Celta Vigo vs Juventus | Menos de 3.5 goles (76.06%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 10/10 (LIMITADA) |
-| Dinamo Zagreb vs Anderlecht | Menos de 3.5 goles (74.47%) | No verificada | NO BET: ningún mercado calculado alcanza 75% | 1/1 (BAJA) |
-| Ferencváros vs Viktoria Plzeň | Más de 1.5 goles (79.48%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/1 (BAJA) |
-| Hoffenheim vs Beşiktaş | Más de 1.5 goles (78.73%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/10 (BAJA) |
-| Jagiellonia vs Ararat-Armenia | Más de 1.5 goles (80.96%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/1 (BAJA) |
-| Marseille vs Olympiacos | Más de 1.5 goles (80.96%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/1 (BAJA) |
-| NEC Nijmegen vs Levski Sofia | Más de 1.5 goles (75.86%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 10/1 (BAJA) |
-| Rennes vs OFI Crete | Menos de 3.5 goles (76.61%) | No verificada | PROVISIONAL: falta cuota verificable para EV | 1/1 (BAJA) |
+## Restricción temporal importante
+A la hora de esta revisión, los horarios publicados para los partidos del 15 de octubre ya habían pasado o estaban transcurriendo. Por la regla del proyecto, no se usaron estadísticas en vivo ni resultados de los encuentros del día para fabricar una predicción prepartido. En consecuencia, este archivo sirve como auditoría de la simulación, no como una recomendación para apostar ahora en esos encuentros.
 
-## Combinada de dos selecciones
-**Lech Poznań–Leverkusen: Más de 1.5 goles + Sparta Praha–Lillestrøm: Más de 1.5 goles.**
+## Combinadas
+La pareja exploratoria Lech Poznań–Leverkusen Más de 1.5 goles + Sparta Praha–Lillestrøm Más de 1.5 goles tiene una probabilidad conjunta aproximada de 67.67% bajo independencia. Sin cuotas verificadas de ambas selecciones y sin una cuota combinada publicada por Betano Colombia, **no se puede calcular un EV fiable ni recomendarla como apuesta**.
 
-- Probabilidad conjunta aproximada, suponiendo independencia: **67.67%**, superior al umbral del 65%.
-- Cuota combinada: **no verificada**. No se multiplica ni se presenta como precio real de Betano sin cuotas confirmadas para ambas selecciones.
-- Decisión: **no emitir apuesta combinada todavía**. La probabilidad por sí sola no basta para calcular valor esperado ni justificar una apuesta.
+## Próximo paso técnico
+Para cerrar la evaluación económica hace falta una fuente verificable de cuotas de Betano Colombia antes del inicio de cada partido (captura o registro guardado en el momento). Para partidos futuros, registrar automáticamente el precio y la hora de consulta permitirá calcular EV, comparar contra el umbral y seleccionar combinadas sin reconstruir precios históricos inexistentes.
 
-## Lectura de resultados
-- La simulación base usa un modelo Poisson exploratorio y no validado específicamente para la Europa League. El historial es desigual; en varios partidos solo se identificó un juego por equipo. Por ello, los porcentajes son orientativos y no prueban una ventaja real.
-- Para Sparta–Lillestrøm, el cálculo con la cuota listada es: probabilidad **80.96%**, cuota 1.18 y EV aproximado **-4.47%**. El EV aritmético es negativo, por lo que corresponde **NO BET**.
-- En los mercados sin cuota verificada, se presenta el pronóstico y su probabilidad, pero no se finge que se calculó EV. Esto no es declarar todos los partidos insuficientes: es distinguir la evaluación probabilística de la económica.
-
-## Fuentes
-- Calendario oficial UEFA: https://www.uefa.com/uefaeuropaleague/news/02a8-2174cafa5bb6-82bbc20c9b92-1000--2026-27-europa-league-all-the-league-phase-fixtures-and-re/
-- Referencia de cuotas para Sparta Praha–Lillestrøm: https://scorebob.com/en/match/1636276/sparta-praha-vs-lillestrom
-- Probabilidades e historial calculados por la rama exploratoria del proyecto: https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/main/data/simulacion/simulacion_europa_league_2026-10-15.json
+## Fuentes consultadas
+- [Oddschecker Colombia — Sparta Praha–Lillestrøm](https://www.oddschecker.com/co/futbol/europa-league/sparta-prague-v-lillestrom) — comparador de mercado; no confirma precio directo de Betano Colombia.
+- [Oddschecker Colombia — Union Saint-Gilloise–Real Sociedad](https://www.oddschecker.com/co/futbol/europa-league/union-st-gilloise-v-real-sociedad) — comparador de mercado; no confirma precio directo de Betano Colombia.
+- [Oddschecker Colombia — Lyon–Crystal Palace](https://www.oddschecker.com/co/futbol/europa-league/lyon-v-crystal-palace) — comparador de mercado; no confirma precio directo de Betano Colombia.
+- [SportyTrader — Sparta Praha–Lillestrøm](https://www.sportytrader.com/es/apuestas/sparta-praga-lillestrom-8786953/) — cuotas agregadas, no captura directa de Betano Colombia.
+- [SportyTrader — Lyon–Crystal Palace](https://www.sportytrader.com/es/apuestas/lyon-crystal-palace-8786958/) — cuotas agregadas, no captura directa de Betano Colombia.
+- [UEFA — calendario de la Europa League 2026/27](https://www.uefa.com/uefaeuropaleague/news/02a8-2174cafa5bb6-82bbc20c9b92-1000--2026-27-europa-league-all-the-league-phase-fixtures-and-re/).
+- [JSON original de probabilidades](https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/main/data/simulacion/simulacion_europa_league_2026-10-15.json).

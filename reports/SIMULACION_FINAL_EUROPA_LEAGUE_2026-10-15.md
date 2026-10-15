@@ -1,67 +1,58 @@
-# Simulación Europa League — 15 de octubre de 2026
+# Evaluación de mercados y combinadas — Europa League — 15/10/2026
 
-**Estado:** simulación exploratoria; no es un modelo validado para recomendar apuestas.  
-**Corte de información:** antes de los partidos objetivo. No se incorporaron estadísticas en vivo.  
-**Calendario:** contrastado con la publicación oficial de UEFA del 14 de octubre de 2026.  
-**Corrección aplicada:** se retiraron del registro las cuotas que estaban atribuidas a PokerStars y no verificadas como cuotas de Betano Colombia. No se calcula EV ni se recomienda una combinada sin cuotas verificadas.
+**Ejecución de evaluación:** 15/10/2026. Probabilidades heredadas del JSON exploratorio del proyecto. Las cuotas marcadas con * son precios listados como Betano por el agregador ScoreBob; no son captura directa de Betano Colombia y deben confirmarse en la aplicación antes de apostar. No se usaron estadísticas en vivo.
 
-## Tabla de pronósticos
+## Tabla de evaluación
 
-| Partido | Pronóstico simple | Cuota simple | Combinada de 2 selecciones | Cuota combinada |
-|---|---|---|---|---|
-| Sparta Praha vs Lillestrøm | Más de 1.5 goles (80.96%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| AZ Alkmaar vs Hapoel Beer-Sheva | Menos de 3.5 goles (75.04%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Salzburg vs Milan | Menos de 3.5 goles (75.19%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Lech Poznań vs Leverkusen | Más de 1.5 goles (83.58%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Celje vs Omonia | Sin mercado ≥75% (máximo Menos de 3.5 goles 74.47%) — ANÁLISIS INSUFICIENTE | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Lyon vs Crystal Palace | Más de 1.5 goles (77.61%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Union SG vs Real Sociedad | Más de 1.5 goles (77.61%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Torreense vs Sunderland | Más de 1.5 goles (76.86%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Benfica vs Celtic | Más de 1.5 goles (75.09%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Bournemouth vs Sturm Graz | Sin mercado ≥75% (máximo Más de 1.5 goles 74.48%) — ANÁLISIS INSUFICIENTE | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Celta Vigo vs Juventus | Menos de 3.5 goles (76.06%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Dinamo Zagreb vs Anderlecht | Sin mercado ≥75% (máximo Menos de 3.5 goles 74.47%) — ANÁLISIS INSUFICIENTE | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Ferencváros vs Viktoria Plzeň | Más de 1.5 goles (79.48%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Hoffenheim vs Beşiktaş | Más de 1.5 goles (78.73%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Jagiellonia vs Ararat-Armenia | Más de 1.5 goles (80.96%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Marseille vs Olympiacos | Más de 1.5 goles (80.96%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| NEC Nijmegen vs Levski Sofia | Más de 1.5 goles (75.86%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
-| Rennes vs OFI Crete | Menos de 3.5 goles (76.61%) — ANÁLISIS INSUFICIENTE: falta cuota Betano y validación | No verificada | No se propone: falta validar dependencia y cuota real | No verificada |
+| Partido | Pronóstico simple evaluado | Cuota listada como Betano | Decisión y EV estimado | Historial disponible |
+|---|---|---:|---|---|
+| Sparta Praha vs Lillestrøm | Más de 1.5 goles (80.96%) | 1.18* | NO BET: EV no positivo; EV -4.47% | 1/1 (BAJA) |
+| AZ Alkmaar vs Hapoel Beer-Sheva | Menos de 3.5 goles (75.04%) | 1.70* | NO BET: evidencia débil/no validada; EV +27.57% | 10/1 (BAJA) |
+| Salzburg vs Milan | Menos de 3.5 goles (75.19%) | 1.53* | NO BET: evidencia débil/no validada; EV +15.04% | 1/10 (BAJA) |
+| Lech Poznań vs Leverkusen | Más de 1.5 goles (83.58%) | No verificada | ANÁLISIS INSUFICIENTE: falta precio verificable para cerrar EV | 1/10 (BAJA) |
+| Celje vs Omonia | Menos de 3.5 goles (74.47%) | No verificada | NO BET: ningún mercado calculado alcanza 75% | 1/1 (BAJA) |
+| Lyon vs Crystal Palace | Más de 1.5 goles (77.61%) | 1.22* | NO BET: EV no positivo; EV -5.32% | 10/10 (LIMITADA) |
+| Union SG vs Real Sociedad | 1X (Union SG o empate) (75.37%) | 1.50* | CANDIDATA CONDICIONAL; EV +13.05% | 10/10 (LIMITADA) |
+| Torreense vs Sunderland | Más de 1.5 goles (76.86%) | No verificada | ANÁLISIS INSUFICIENTE: falta precio verificable para cerrar EV | 1/10 (BAJA) |
+| Benfica vs Celtic | Más de 1.5 goles (75.09%) | 1.12* | NO BET: EV no positivo; EV -15.90% | 1/10 (BAJA) |
+| Bournemouth vs Sturm Graz | Más de 1.5 goles (74.48%) | No verificada | NO BET: ningún mercado calculado alcanza 75% | 10/10 (LIMITADA) |
+| Celta Vigo vs Juventus | Menos de 3.5 goles (76.06%) | No verificada | ANÁLISIS INSUFICIENTE: falta precio verificable para cerrar EV | 10/10 (LIMITADA) |
+| Dinamo Zagreb vs Anderlecht | Menos de 3.5 goles (74.47%) | No verificada | NO BET: ningún mercado calculado alcanza 75% | 1/1 (BAJA) |
+| Ferencváros vs Viktoria Plzeň | Más de 1.5 goles (79.48%) | 1.22* | NO BET: EV no positivo; EV -3.03% | 1/1 (BAJA) |
+| Hoffenheim vs Beşiktaş | Más de 1.5 goles (78.73%) | No verificada | ANÁLISIS INSUFICIENTE: falta precio verificable para cerrar EV | 1/10 (BAJA) |
+| Jagiellonia vs Ararat-Armenia | Más de 1.5 goles (80.96%) | 1.21* | NO BET: EV no positivo; EV -2.04% | 1/1 (BAJA) |
+| Marseille vs Olympiacos | Más de 1.5 goles (80.96%) | 1.24* | NO BET: evidencia débil/no validada; EV +0.39% | 1/1 (BAJA) |
+| NEC Nijmegen vs Levski Sofia | Más de 1.5 goles (75.86%) | 1.25* | NO BET: EV no positivo; EV -5.17% | 10/1 (BAJA) |
+| Rennes vs OFI Crete | Menos de 3.5 goles (76.61%) | 1.70* | NO BET: evidencia débil/no validada; EV +30.24% | 1/1 (BAJA) |
 
-## Probabilidades exploratorias por mercado
+## Combinada de dos selecciones con mayor probabilidad entre los precios identificados
+**Jagiellonia vs Ararat-Armenia — Más de 1.5 goles + Marseille vs Olympiacos — Más de 1.5 goles.**
 
-| Partido | 1 local | Empate | 2 visitante | Más de 1.5 | Menos de 3.5 | Ambos marcan: sí | Historial local/visita |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Sparta Praha vs Lillestrøm | 46.91% | 23.52% | 29.57% | 80.96% | 63.38% | 60.51% | 1/1 |
-| AZ Alkmaar vs Hapoel Beer-Sheva | 40.03% | 26.71% | 33.26% | 71.95% | 75.04% | 51.45% | 10/1 |
-| Salzburg vs Milan | 45.09% | 26.34% | 28.57% | 71.81% | 75.19% | 50.58% | 1/10 |
-| Lech Poznań vs Leverkusen | 25.44% | 21.98% | 52.58% | 83.58% | 59.03% | 62.48% | 1/10 |
-| Celje vs Omonia | 29.81% | 26.27% | 43.91% | 72.48% | 74.47% | 51.50% | 1/1 |
-| Lyon vs Crystal Palace | 41.54% | 24.95% | 33.51% | 77.61% | 68.24% | 57.36% | 10/10 |
-| Union SG vs Real Sociedad | 51.58% | 23.79% | 24.63% | 77.61% | 68.24% | 55.31% | 10/10 |
-| Torreense vs Sunderland | 40.46% | 25.23% | 34.31% | 76.86% | 69.24% | 56.61% | 1/10 |
-| Benfica vs Celtic | 37.58% | 25.83% | 36.59% | 75.09% | 71.46% | 54.83% | 1/10 |
-| Bournemouth vs Sturm Graz | 36.99% | 26.02% | 36.99% | 74.48% | 72.20% | 54.18% | 10/10 |
-| Celta Vigo vs Juventus | 27.45% | 26.46% | 46.09% | 70.98% | 76.06% | 49.50% | 10/10 |
-| Dinamo Zagreb vs Anderlecht | 39.06% | 26.59% | 34.35% | 72.48% | 74.47% | 52.05% | 1/1 |
-| Ferencváros vs Viktoria Plzeň | 49.12% | 23.66% | 27.21% | 79.48% | 65.62% | 58.22% | 1/1 |
-| Hoffenheim vs Beşiktaş | 28.04% | 24.03% | 47.93% | 78.73% | 66.69% | 57.62% | 1/10 |
-| Jagiellonia vs Ararat-Armenia | 42.40% | 23.90% | 33.70% | 80.96% | 63.38% | 61.16% | 1/1 |
-| Marseille vs Olympiacos | 29.57% | 23.52% | 46.91% | 80.96% | 63.38% | 60.51% | 1/1 |
-| NEC Nijmegen vs Levski Sofia | 40.34% | 25.53% | 34.13% | 75.86% | 70.51% | 55.53% | 10/1 |
-| Rennes vs OFI Crete | 31.66% | 27.09% | 41.24% | 70.44% | 76.61% | 49.79% | 1/1 |
+- Probabilidad conjunta aproximada bajo independencia: **65.55%**, por encima del umbral del 65%.
+- Producto de las cuotas listadas: **1.50**. Es un cálculo indicativo, no una cuota combinada publicada por Betano.
+- EV estimado: **-1.66%**. Resultado: **NO BET**, porque el valor esperado es negativo.
 
-## Hallazgos y límites
+## Resultado de la evaluación
+1. **Union SG o empate (1X)**: probabilidad del modelo **75.37%**, cuota listada **1.50**, EV aritmético **13.05%**. Pasa los umbrales numéricos; se deja como **candidata condicional** hasta verificar que Betano Colombia ofrezca esa cuota. No es una ventaja validada, pues el modelo sigue siendo exploratorio.
+2. **AZ–Hapoel, Salzburg–Milan y Rennes–OFI, Menos de 3.5 goles** muestran EV aritmético positivo a los precios listados, pero sus historiales son desiguales o mínimos (10/1, 1/10 y 1/1). Se descartan por calidad de evidencia, no por falta de cálculo.
+3. La combinada supera el umbral probabilístico, pero no el filtro económico. No se recomienda únicamente por superar 65%.
 
-1. **18 de 18 partidos** aparecen en el calendario oficial de la jornada.
-2. Las cuotas previas del registro eran improcedentes para una decisión basada en Betano Colombia. Se eliminaron del CSV; no deben usarse para calcular valor esperado.
-3. El historial disponible es desigual: varios equipos solo cuentan con un partido identificable en la muestra. La confianza se considera baja y no se puede afirmar ventaja estadística.
-4. Las probabilidades son referencias Poisson exploratorias, no probabilidades calibradas y validadas para esta competición.
-5. **Combinadas: ninguna propuesta.** No hay una cuota combinada real de Betano verificada ni una evaluación cuantitativa suficiente de dependencia.
-6. **Estado final de apuestas:** ANÁLISIS INSUFICIENTE, no NO BET generalizado. La información disponible no permite cerrar la evaluación económica de las selecciones.
+## Limitaciones
+- El modelo base es Poisson exploratorio y no está validado para Europa League. Varios equipos tienen solo un partido identificado; los porcentajes no son probabilidades calibradas.
+- Las cuotas del agregador son una referencia atribuida a Betano, no una garantía de disponibilidad en Betano Colombia. Se mantienen como referencia hasta confirmación en la app.
+- Los mercados sin precio exacto se dejan sin cuota. No se inventaron precios ni se atribuyeron cuotas de otras casas a Betano.
 
 ## Fuentes
-
-- UEFA, calendario y resultados de la jornada 1 y partidos de la jornada 2: https://www.uefa.com/uefaeuropaleague/news/02a8-2174cafa5bb6-82bbc20c9b92-1000--2026-27-europa-league-all-the-league-phase-fixtures-and-re/
-- Datos históricos de partidos: repositorio football.json (las fuentes individuales y sus huellas SHA-256 quedan en el JSON de simulación).
-- Cuotas Betano Colombia: no verificadas para esta ejecución; por eso se dejan vacías.
+- [Calendario UEFA](https://www.uefa.com/uefaeuropaleague/news/02a8-2174cafa5bb6-82bbc20c9b92-1000--2026-27-europa-league-all-the-league-phase-fixtures-and-re/).
+- [Sparta Praha–Lillestrøm](https://scorebob.com/en/match/1636276/sparta-praha-vs-lillestrom) — referencia de cuotas de goles.
+- [AZ Alkmaar–Hapoel Beer-Sheva](https://scorebob.com/en/match/1636222/az-alkmaar-vs-hapoel-beer-sheva).
+- [Salzburg–Milan](https://scorebob.com/en/match/1636332/red-bull-salzburg-vs-ac-milan).
+- [Lyon–Crystal Palace](https://scorebob.com/en/match/1636293/lyon-vs-crystal-palace).
+- [Union SG–Real Sociedad](https://scorebob.com/en/match/1636328/union-st-gilloise-vs-real-sociedad).
+- [Benfica–Celtic](https://scorebob.com/en/match/1636228/benfica-vs-celtic).
+- [Ferencváros–Viktoria Plzeň](https://scorebob.com/en/match/1636260/ferencvarosi-tc-vs-plzen).
+- [Jagiellonia–Ararat-Armenia](https://scorebob.com/en/match/1636274/jagiellonia-vs-ararat-armenia).
+- [Marseille–Olympiacos](https://scorebob.com/en/match/1636295/marseille-vs-olympiakos-piraeus).
+- [NEC Nijmegen–Levski Sofia](https://scorebob.com/en/match/1636300/nec-nijmegen-vs-levski-sofia).
+- [Rennes–OFI Crete](https://scorebob.com/en/match/1636326/rennes-vs-ofi).
+- [JSON con probabilidades de la simulación](https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/main/data/simulacion/simulacion_europa_league_2026-10-15.json).

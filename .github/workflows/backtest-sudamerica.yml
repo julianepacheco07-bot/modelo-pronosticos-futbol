@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "src/backtest_sudamerica.py"
+      - "tests/test_backtest_sudamerica.py"
       - ".github/workflows/backtest-sudamerica.yml"
 permissions:
   contents: read

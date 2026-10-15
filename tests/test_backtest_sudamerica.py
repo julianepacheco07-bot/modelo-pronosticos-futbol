@@ -25,9 +25,9 @@ class TestSouthAmericaBacktest(unittest.TestCase):
         self.assertAlmostEqual(sum(p), 1.0, places=12)
         self.assertTrue(all(0 <= x <= 1 for x in p))
         hist = pd.DataFrame([
-            {"home":"A","away":f"X{i}","hg":2,"ag":0} for i in range(5)
+            {"home":"A","away":f"X{i}","hg":2,"ag":0} for i in range(15)
         ] + [
-            {"home":f"Y{i}","away":"B","hg":0,"ag":1} for i in range(5)
+            {"home":f"Y{i}","away":"B","hg":0,"ag":1} for i in range(15)
         ])
         match = SimpleNamespace(home="A", away="B")
         pred = bt.predict(hist, match)

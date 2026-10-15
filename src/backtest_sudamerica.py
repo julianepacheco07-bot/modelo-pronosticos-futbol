@@ -106,6 +106,34 @@ def run():
   preds.append(row)
  if not preds: raise RuntimeError("Sin predicciones; revisar formato de fechas y fuentes.")
  market_defs=[("over_1_5","p_over_1_5","actual_over_1_5"),("under_3_5","p_under_3_5","actual_under_3_5"),("btts_yes","p_btts_yes","actual_btts_yes")]
+ # Leakage-safe ensemble: choose the model weight only from earlier-season forecasts.
+ # Alpha=1 means Poisson model; alpha=0 means historical league prevalence baseline.
+ seasons=sorted({str(r["season"]) for r in preds})
+ ensemble_selection=[]
+ for i,season in enumerate(seasons):
+  train=[r for r in preds if str(r["season"]) in seasons[:i]]
+  test=[r for r in preds if str(r["season"])==season]
+  for market,pk,yk in market_defs:
+   baseline_key=f"baseline_{market}"
+   if not train:
+    alpha=0.0
+    train_loss=None
+    method="baseline_only_no_prior_scored_season"
+   else:
+    candidates=[]
+    for step in range(21):
+     a=step/20
+     probs=[a*float(r[pk])+(1-a)*float(r[baseline_key]) for r in train]
+     loss=sum(score(p,int(r[yk]))[1] for p,r in zip(probs,train))/len(train)
+     candidates.append((loss,a))
+    train_loss,alpha=min(candidates,key=lambda z:(z[0],z[1]))
+    method="alpha_grid_0.00_to_1.00_step_0.05_fit_on_prior_seasons_only"
+   for r in test:
+    r[f"ensemble_alpha_{market}"]=alpha
+    r[f"p_{market}_ensemble"]=round(alpha*float(r[pk])+(1-alpha)*float(r[baseline_key]),6)
+   ensemble_selection.append({"season_test":season,"market":market,"alpha_model":alpha,
+     "alpha_baseline":round(1-alpha,2),"n_train":len(train),"train_logloss":round(train_loss,6) if train_loss is not None else None,
+     "n_test":len(test),"method":method,"leakage_control":"alpha fitted only on strictly earlier seasons"})
  def calc_metrics(rows,scope_name):
   out=[]
   for market,pk,yk in market_defs:
@@ -127,23 +155,55 @@ def run():
   for season in sorted({r["season"] for r in preds if r["league"]==league}):
    subset=[r for r in preds if r["league"]==league and r["season"]==season]
    grouped_metrics.extend(calc_metrics(subset,f"{league} | {season}"))
- # Reliability table in fixed bins; expose observed frequencies and counts.
+ # Final temporal evaluation excludes the first season because no earlier season exists to fit alpha.
+ holdout_seasons=seasons[1:]
+ holdout=[r for r in preds if str(r["season"]) in holdout_seasons]
+ temporal_ensemble_metrics=[]
+ for market,pk,yk in market_defs:
+  ens=f"p_{market}_ensemble"; base=f"baseline_{market}"
+  def triplet(rows,col):
+   vals=[score(float(r[col]),int(r[yk])) for r in rows]
+   return {"brier":round(sum(v[0] for v in vals)/len(vals),6),
+           "logloss":round(sum(v[1] for v in vals)/len(vals),6),
+           "accuracy_at_0_5":round(sum((float(r[col])>=.5)==bool(r[yk]) for r in rows)/len(rows),6)}
+  temporal_ensemble_metrics.append({"market":market,"n":len(holdout),
+   "poisson":triplet(holdout,pk),"historical_prevalence_baseline":triplet(holdout,base),
+   "temporal_ensemble":triplet(holdout,ens),
+   "ensemble_brier_skill_vs_baseline":round(1-triplet(holdout,ens)["brier"]/triplet(holdout,base)["brier"],6)})
+ temporal_ensemble_by_league_season=[]
+ for league in sorted({r["league"] for r in holdout}):
+  for season in holdout_seasons:
+   subset=[r for r in holdout if r["league"]==league and str(r["season"])==season]
+   if not subset: continue
+   for market,pk,yk in market_defs:
+    ens=f"p_{market}_ensemble"; base=f"baseline_{market}"
+    def one(col):
+     vals=[score(float(r[col]),int(r[yk])) for r in subset]
+     return {"brier":round(sum(v[0] for v in vals)/len(vals),6),
+             "logloss":round(sum(v[1] for v in vals)/len(vals),6),"n":len(vals)}
+    temporal_ensemble_by_league_season.append({"league":league,"season":season,"market":market,
+      "poisson":one(pk),"baseline":one(base),"ensemble":one(ens)})
+ # Reliability table in fixed bins for raw model and temporally fitted ensemble.
  calibration=[]
  for market,pk,yk in market_defs:
-  for lo in [0,.1,.2,.3,.4,.5,.6,.7,.8,.9]:
-   hi=lo+.1
-   subset=[r for r in preds if lo <= float(r[pk]) < hi or (hi==1.0 and float(r[pk])<=1.0 and float(r[pk])>=lo)]
-   if subset:
-    calibration.append({"market":market,"bin_low":lo,"bin_high":hi,"n":len(subset),
-      "mean_predicted":round(sum(float(r[pk]) for r in subset)/len(subset),6),
-      "observed_rate":round(sum(int(r[yk]) for r in subset)/len(subset),6)})
+  for col,variant in [(pk,"poisson"),(f"p_{market}_ensemble","temporal_ensemble")]:
+   for lo in [0,.1,.2,.3,.4,.5,.6,.7,.8,.9]:
+    hi=lo+.1
+    subset=[r for r in preds if lo <= float(r[col]) < hi or (hi==1.0 and float(r[col])<=1.0 and float(r[col])>=lo)]
+    if subset:
+     calibration.append({"market":market,"variant":variant,"bin_low":lo,"bin_high":hi,"n":len(subset),
+       "mean_predicted":round(sum(float(r[col]) for r in subset)/len(subset),6),
+       "observed_rate":round(sum(int(r[yk]) for r in subset)/len(subset),6)})
  report={"created_utc":datetime.utcnow().isoformat(timespec="seconds")+"Z","source":"OpenFootball South America, CC0",
   "leagues":list(SOURCES),"seasons":[2023,2024,2025],"manifest":manifest,"matches_loaded":len(df),"cleaning":cleaning,
   "predictions_scored":len(preds),"skipped_insufficient_history":skipped,"metrics":metrics,"metrics_by_league_season":grouped_metrics,
+  "temporal_ensemble_selection":ensemble_selection,"temporal_ensemble_holdout_seasons":holdout_seasons,
+  "temporal_ensemble_metrics":temporal_ensemble_metrics,"temporal_ensemble_by_league_season":temporal_ensemble_by_league_season,
   "calibration_bins":calibration,
-  "limitations":["Poisson de forma reciente; no calibrado para apuestas.","Sin cuotas ni ROI: no afirma rentabilidad.",
-  "Predicciones usan solo partidos estrictamente anteriores a la fecha objetivo.",
-  "Baseline de prevalencia usa solo partidos anteriores de la misma liga; el skill es predictivo, no financiero.",
+  "limitations":["Poisson reciente sin mezcla es inferior a la prevalencia histórica en los tres mercados de esta muestra.",
+  "El ensemble selecciona peso en temporadas previas y se evalúa solo en temporadas posteriores; no prueba rentabilidad.",
+  "Sin cuotas ni ROI: no afirma rentabilidad.","Predicciones usan solo partidos estrictamente anteriores a la fecha objetivo.",
+  "Baseline de prevalencia usa solo partidos anteriores de la misma liga; skill es predictivo, no financiero.",
   "Resultados por liga-temporada pueden tener muestras pequeñas; revisar N antes de interpretar."],"predictions":preds}
  OUT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
  print(json.dumps({k:report[k] for k in ("matches_loaded","predictions_scored","skipped_insufficient_history","metrics")},ensure_ascii=False,indent=2))

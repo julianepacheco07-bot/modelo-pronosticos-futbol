@@ -2,7 +2,7 @@
 """Exploratory pre-match Europa League simulation, with strict historical cutoff."""
 from pathlib import Path
 from datetime import date, datetime, timezone
-import hashlib, json, math, requests, unicodedata, re, unicodedata, re
+import hashlib, json, math, requests, unicodedata, re
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"data"/"simulacion"/"simulacion_europa_league_2026-10-15.json"
@@ -20,9 +20,9 @@ ALIASES={"bayer leverkusen":"leverkusen","bayer 04 leverkusen":"leverkusen","ac 
 "olympique lyonnais":"lyon","rc celta de vigo":"celta vigo","real sociedad de futbol":"real sociedad","sparta praha":"sparta prague","sparta prague":"sparta prague","besiktas":"beşiktaş","viktoria plzen":"viktoria plzeň","n.e.c. nijmegen":"nec nijmegen","nec":"nec nijmegen","hapoel beer sheva":"hapoel beer-sheva"}
 def norm(s):
     s=unicodedata.normalize("NFKD",str(s)).encode("ascii","ignore").decode("ascii").lower()
-    s=re.sub(r"\\b(fc|cf|afc|sc|fk|sk|ac|as|club)\\b"," ",s)
+    s=re.sub(r"\b(fc|cf|afc|sc|fk|sk|ac|as|club)\b"," ",s)
     s=re.sub(r"[^a-z0-9]+"," ",s).strip()
-    s=re.sub(r"\\s+"," ",s)
+    s=re.sub(r"\s+"," ",s)
     aliases={"bayer 04 leverkusen":"leverkusen","bayer leverkusen":"leverkusen","ac milan":"milan",
     "olympique lyonnais":"lyon","rc celta de vigo":"celta vigo","real sociedad de futbol":"real sociedad",
     "sparta praha":"sparta prague","besiktas":"besiktas","viktoria plzen":"viktoria plzen",
@@ -70,19 +70,6 @@ def main():
                 games.append({"date":d,"home":norm(str(m.get("team1",""))),"away":norm(str(m.get("team2",""))),
                               "hg":int(sc[0]),"ag":int(sc[1]),"league":league})
     # Resultados jornada 1 UEFA, anteriores al corte de la simulación.
-    uefa_round1=[
-      ("2026-09-16","Ararat-Armenia","Sparta Praha",1,4),("2026-09-16","Omonia","Celta Vigo",1,0),
-      ("2026-09-16","Milan","Benfica",0,2),("2026-09-16","Leverkusen","Celje",2,0),
-      ("2026-09-16","Hapoel Beer-Sheva","Dinamo Zagreb",0,0),("2026-09-16","Olympiacos","Jagiellonia",2,1),
-      ("2026-09-16","Anderlecht","Lyon",1,2),("2026-09-16","Sturm Graz","Rennes",0,0),
-      ("2026-09-16","Sunderland","AZ Alkmaar",1,0),("2026-09-17","OFI Crete","Hoffenheim",2,0),
-      ("2026-09-17","Levski Sofia","Salzburg",0,1),("2026-09-17","Beşiktaş","Marseille",4,1),
-      ("2026-09-17","Celtic","Ferencváros",1,3),("2026-09-17","Crystal Palace","Lech Poznań",4,0),
-      ("2026-09-17","Viktoria Plzeň","Union SG",0,3),("2026-09-17","Juventus","NEC Nijmegen",5,0),
-      ("2026-09-17","Lillestrøm","Torreense",1,2),("2026-09-17","Real Sociedad","Bournemouth",1,2)]
-    for d,h,a,hg,ag in uefa_round1:
-        games.append({"date":date.fromisoformat(d),"home":norm(h),"away":norm(a),"hg":hg,"ag":ag,"league":"UEFA Europa League"})
-    # Resultados de la jornada 1 UEFA anteriores al corte de simulación.
     uefa_round1=[
       ("2026-09-16","Ararat-Armenia","Sparta Praha",1,4),("2026-09-16","Omonia","Celta Vigo",1,0),
       ("2026-09-16","Milan","Benfica",0,2),("2026-09-16","Leverkusen","Celje",2,0),

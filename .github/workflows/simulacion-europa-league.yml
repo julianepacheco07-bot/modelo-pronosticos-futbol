@@ -1,0 +1,38 @@
+name: Simulacion Europa League
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/simular_europa_league.py"
+      - ".github/workflows/simulacion-europa-league.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: simulacion-europa-league
+  cancel-in-progress: false
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install --upgrade requests
+      - name: Run pre-match simulation
+        run: python src/simular_europa_league.py
+      - name: Publish simulation output
+        uses: actions/upload-artifact@v4
+        with:
+          name: simulacion-europa-league-2026-10-15
+          path: data/simulacion/simulacion_europa_league_2026-10-15.json
+          if-no-files-found: error
+          retention-days: 90

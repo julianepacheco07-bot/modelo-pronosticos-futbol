@@ -1,9 +1,9 @@
 {
-  "generated_utc": "2026-10-15T11:36:33.331538+00:00",
+  "generated_utc": "2026-10-15T11:37:01.836838+00:00",
   "target_date": "2026-10-15",
   "matches_requested": 18,
-  "estimated": 1,
-  "insufficient": 17,
+  "estimated": 18,
+  "insufficient": 0,
   "sources": [
     {
       "league": "Premier League",
@@ -427,9 +427,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.73,
+      "lambda_away": 1.33,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.4691,
+        "draw": 0.2352,
+        "away_win": 0.2957,
+        "over_1_5": 0.8096,
+        "under_3_5": 0.6338,
+        "btts_yes": 0.6051
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -441,9 +458,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.3382,
+      "lambda_away": 1.1953,
+      "history": {
+        "home_n": 10,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.4003,
+        "draw": 0.2671,
+        "away_win": 0.3326,
+        "over_1_5": 0.7195,
+        "under_3_5": 0.7504,
+        "btts_yes": 0.5145
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -455,9 +489,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.4382,
+      "lambda_away": 1.0882,
+      "history": {
+        "home_n": 1,
+        "away_n": 10,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.4509,
+        "draw": 0.2634,
+        "away_win": 0.2857,
+        "over_1_5": 0.7181,
+        "under_3_5": 0.7519,
+        "btts_yes": 0.5058
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -469,9 +520,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.3025,
+      "lambda_away": 1.9525,
+      "history": {
+        "home_n": 1,
+        "away_n": 10,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.2544,
+        "draw": 0.2198,
+        "away_win": 0.5258,
+        "over_1_5": 0.8358,
+        "under_3_5": 0.5903,
+        "btts_yes": 0.6248
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -483,9 +551,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.13,
+      "lambda_away": 1.43,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.2981,
+        "draw": 0.2627,
+        "away_win": 0.4391,
+        "over_1_5": 0.7248,
+        "under_3_5": 0.7447,
+        "btts_yes": 0.515
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -497,9 +582,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.3025,
+      "lambda_away": 1.6668,
+      "history": {
+        "home_n": 10,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.2999,
+        "draw": 0.24,
+        "away_win": 0.46,
+        "over_1_5": 0.7962,
+        "under_3_5": 0.6541,
+        "btts_yes": 0.5906
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -511,23 +613,24 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
       "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
-      "lambda_home": 1.85,
-      "lambda_away": 1.0,
+      "lambda_home": 1.725,
+      "lambda_away": 1.1178,
       "history": {
         "home_n": 10,
         "away_n": 10,
+        "confidence": "LIMITADA",
         "home_last_match": "2026-09-17",
         "away_last_match": "2026-09-17"
       },
       "probabilities": {
-        "home_win": 0.5729,
-        "draw": 0.2258,
-        "away_win": 0.2013,
-        "over_1_5": 0.7773,
-        "under_3_5": 0.6808,
-        "btts_yes": 0.5327
+        "home_win": 0.5158,
+        "draw": 0.2379,
+        "away_win": 0.2463,
+        "over_1_5": 0.7761,
+        "under_3_5": 0.6824,
+        "btts_yes": 0.5531
       },
       "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
@@ -541,9 +644,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.33,
+      "lambda_away": 1.33,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.3698,
+        "draw": 0.2604,
+        "away_win": 0.3698,
+        "over_1_5": 0.744,
+        "under_3_5": 0.7229,
+        "btts_yes": 0.541
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -555,9 +675,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.63,
+      "lambda_away": 1.23,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.4672,
+        "draw": 0.2442,
+        "away_win": 0.2886,
+        "over_1_5": 0.7789,
+        "under_3_5": 0.6786,
+        "btts_yes": 0.569
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -569,9 +706,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.3239,
+      "lambda_away": 1.4739,
+      "history": {
+        "home_n": 1,
+        "away_n": 10,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.3399,
+        "draw": 0.2521,
+        "away_win": 0.4079,
+        "over_1_5": 0.7686,
+        "under_3_5": 0.6924,
+        "btts_yes": 0.5658
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -583,9 +737,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.1953,
+      "lambda_away": 1.7668,
+      "history": {
+        "home_n": 10,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.2582,
+        "draw": 0.234,
+        "away_win": 0.5077,
+        "over_1_5": 0.7951,
+        "under_3_5": 0.6557,
+        "btts_yes": 0.5782
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -597,9 +768,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.33,
+      "lambda_away": 1.23,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.3906,
+        "draw": 0.2659,
+        "away_win": 0.3435,
+        "over_1_5": 0.7248,
+        "under_3_5": 0.7447,
+        "btts_yes": 0.5205
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -611,9 +799,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.73,
+      "lambda_away": 1.23,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.4912,
+        "draw": 0.2366,
+        "away_win": 0.2721,
+        "over_1_5": 0.7948,
+        "under_3_5": 0.6562,
+        "btts_yes": 0.5822
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -625,9 +830,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.2311,
+      "lambda_away": 1.6811,
+      "history": {
+        "home_n": 1,
+        "away_n": 10,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.2804,
+        "draw": 0.2403,
+        "away_win": 0.4793,
+        "over_1_5": 0.7873,
+        "under_3_5": 0.6669,
+        "btts_yes": 0.5762
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -639,9 +861,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.63,
+      "lambda_away": 1.43,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.424,
+        "draw": 0.239,
+        "away_win": 0.337,
+        "over_1_5": 0.8096,
+        "under_3_5": 0.6338,
+        "btts_yes": 0.6116
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -653,9 +892,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.33,
+      "lambda_away": 1.73,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-16"
+      },
+      "probabilities": {
+        "home_win": 0.2957,
+        "draw": 0.2352,
+        "away_win": 0.4691,
+        "over_1_5": 0.8096,
+        "under_3_5": 0.6338,
+        "btts_yes": 0.6051
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -667,9 +923,26 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.4382,
+      "lambda_away": 1.3025,
+      "history": {
+        "home_n": 10,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-17",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.4034,
+        "draw": 0.2553,
+        "away_win": 0.3413,
+        "over_1_5": 0.7586,
+        "under_3_5": 0.7051,
+        "btts_yes": 0.5553
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     },
     {
       "date": "2026-10-15",
@@ -681,9 +954,27 @@
         "Betano": null,
         "other_bookmakers": null
       },
-      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 3 por equipo",
-      "decision": "ANALISIS_INSUFICIENTE",
-      "reason": "Menos de tres partidos previos identificables para uno o ambos equipos; no se imputa ni inventa probabilidad."
+      "model": "Poisson exploratorio, hasta 10 partidos previos en 21 ligas y jornada 1 UEFA; mínimo 1 por equipo; estimaciones de baja confianza",
+      "decision": "REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
+      "lambda_home": 1.13,
+      "lambda_away": 1.33,
+      "history": {
+        "home_n": 1,
+        "away_n": 1,
+        "confidence": "BAJA",
+        "home_last_match": "2026-09-16",
+        "away_last_match": "2026-09-17"
+      },
+      "probabilities": {
+        "home_win": 0.3166,
+        "draw": 0.2709,
+        "away_win": 0.4124,
+        "over_1_5": 0.7044,
+        "under_3_5": 0.7661,
+        "btts_yes": 0.4979
+      },
+      "limitations": "Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."
     }
-  ]
+  ],
+  "probability_caveat": "Estimaciones con menos de cinco partidos por equipo son de baja confianza; no constituyen recomendación automática de apuesta."
 }

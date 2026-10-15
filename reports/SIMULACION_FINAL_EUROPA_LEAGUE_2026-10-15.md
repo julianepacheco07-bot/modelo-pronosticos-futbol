@@ -1,53 +1,37 @@
-# Simulación Europa League — tabla gerencial revisada — 15/10/2026
+# Europa League — simulación prepartido para encuentros aún en curso — 15/10/2026
 
-## Criterios aplicados
-- **Simples:** se evalúan los mercados disponibles y se priorizan por probabilidad; el umbral acordado es 75%. La cuota simple se registra solo cuando hay un precio verificable.
-- **Combinadas:** se forman con dos selecciones de partidos distintos. **No se exige cuota combinada verificable para calcular la probabilidad conjunta ni para ordenar las propuestas.** Se multiplica la probabilidad de cada selección como aproximación bajo independencia. El umbral acordado es 65%; si hay varias propuestas, se prioriza la de mayor probabilidad.
-- La cuota justa teórica (1/probabilidad conjunta) es una referencia matemática, no la cuota real que ofrece una casa. La cuota real de la combinada puede quedar no disponible sin bloquear la evaluación.
+## Corte y método
+Se recuperó la simulación prepartido archivada a las 11:41 UTC del 15 de octubre de 2026, antes del inicio de los diez partidos tardíos. Se utilizó el estado actual únicamente para determinar cuáles encuentros seguían en curso; **no se usaron goles, estadísticas ni eventos en vivo para alterar las probabilidades prepartido**. La cobertura en directo del Guardian marcaba 21:11 CEST y señalaba que los diez partidos tardíos acababan de comenzar.
 
 ## Tabla de cinco columnas
+Las cuotas recuperadas de la mañana son referencias de los mercados 1X2/doble oportunidad, no del mercado de goles seleccionado. Se conservan con esa aclaración para no cambiar ni inventar el precio del mercado. No se calcula el valor esperado de O1,5/U3,5 usando una cuota de otro mercado.
 
-| Partido | Pronóstico simple | Cuota simple | Combinada de dos selecciones | Cuota combinada |
+| Partido | Pronóstico simple prepartido | Cuota simple de referencia guardada en la mañana | Combinada de 2 selecciones | Cuota combinada |
 |---|---|---|---|---|
-| Sparta Praha vs Lillestrøm | Más de 1.5 goles (80.96%) | No verificada | Sparta Praha–Lillestrøm: Más de 1.5 + Lech Poznań–Leverkusen: Más de 1.5 (67.67%) | No requerida; cuota real no verificada |
-| AZ Alkmaar vs Hapoel Beer-Sheva | Menos de 3.5 goles (75.04%) | No verificada | — | — |
-| Salzburg vs Milan | Menos de 3.5 goles (75.19%) | No verificada | — | — |
-| Lech Poznań vs Leverkusen | Más de 1.5 goles (83.58%) | No verificada | — | — |
-| Celje vs Omonia | Menos de 3.5 goles (74.47%) | No verificada | — | — |
-| Lyon vs Crystal Palace | Más de 1.5 goles (77.61%) | No verificada | — | — |
-| Union SG vs Real Sociedad | Más de 1.5 goles (77.61%) | No verificada | — | — |
-| Torreense vs Sunderland | Más de 1.5 goles (76.86%) | No verificada | — | — |
-| Benfica vs Celtic | Más de 1.5 goles (75.09%) | No verificada | — | — |
-| Bournemouth vs Sturm Graz | Más de 1.5 goles (74.48%) | No verificada | — | — |
-| Celta Vigo vs Juventus | Menos de 3.5 goles (76.06%) | No verificada | — | — |
-| Dinamo Zagreb vs Anderlecht | Menos de 3.5 goles (74.47%) | No verificada | — | — |
-| Ferencváros vs Viktoria Plzeň | Más de 1.5 goles (79.48%) | No verificada | — | — |
-| Hoffenheim vs Beşiktaş | Más de 1.5 goles (78.73%) | No verificada | — | — |
-| Jagiellonia vs Ararat-Armenia | Más de 1.5 goles (80.96%) | No verificada | — | — |
-| Marseille vs Olympiacos | Más de 1.5 goles (80.96%) | No verificada | — | — |
-| NEC Nijmegen vs Levski Sofia | Más de 1.5 goles (75.86%) | No verificada | — | — |
-| Rennes vs OFI Crete | Menos de 3.5 goles (76.61%) | No verificada | — | — |
+| Benfica–Celtic | Más de 1,5 goles (78,27%) | 1,26 (Benfica gana, 1X2; no es cuota O1,5) | — | No requerida por metodología acordada |
+| Bournemouth–Sturm Graz | NO BET — O1,5 bajo umbral (74,52%) | 1,18 (Bournemouth gana, 1X2; no es cuota O1,5) | — | No requerida por metodología acordada |
+| Celta Vigo–Juventus | Más de 1,5 goles (79,54%) | 2,22 (Juventus gana, 1X2; no es cuota O1,5) | — | No requerida por metodología acordada |
+| Dinamo Zagreb–Anderlecht | Menos de 3,5 goles (78,23%) | 1,278 (1X Dinamo; no es cuota U3,5) | — | No requerida por metodología acordada |
+| Ferencváros–Viktoria Plzeň | Más de 1,5 goles (80,81%) | 1,91 (Ferencváros gana, 1X2; no es cuota O1,5) | — | No requerida por metodología acordada |
+| Hoffenheim–Beşiktaş | Más de 1,5 goles (78,99%) | 3,50 (Beşiktaş gana, 1X2; no es cuota O1,5) | — | No requerida por metodología acordada |
+| Jagiellonia–Ararat-Armenia | Más de 1,5 goles (83,09%) | 1,36 (Jagiellonia gana, 1X2; no es cuota O1,5) | Más de 1,5 goles — 83,09% (combinada principal) | No requerida por metodología acordada |
+| Marseille–Olympiacos | Más de 1,5 goles (83,09%) | 1,294 (1X Marseille; no es cuota O1,5) | Más de 1,5 goles — 83,09% (combinada principal) | No requerida por metodología acordada |
+| NEC Nijmegen–Levski Sofia | NO BET — O1,5 bajo umbral (74,96%) | 1,85 (NEC gana, 1X2; no es cuota O1,5) | — | No requerida por metodología acordada |
+| Rennes–OFI Crete | Menos de 3,5 goles (81,61%) | 1,21 (Rennes gana, 1X2; no es cuota U3,5) | — | No requerida por metodología acordada |
 
-## Combinada prioritaria
-1. **Sparta Praha vs Lillestrøm — Más de 1.5 goles:** 80.96%.
-2. **Lech Poznań vs Leverkusen — Más de 1.5 goles:** 83.58%.
-3. **Probabilidad conjunta estimada:** **67.67%**, supera el umbral de 65%.
-4. **Cuota justa teórica:** **1.48**.
-5. **Cuota combinada real:** no disponible/no verificada; no se necesita para evaluar la combinación según el acuerdo metodológico.
+## Combinada prioritaria según probabilidad
+1. **Jagiellonia–Ararat-Armenia: Más de 1,5 goles** — 83,09%.
+2. **Marseille–Olympiacos: Más de 1,5 goles** — 83,09%.
+3. **Probabilidad conjunta aproximada: 69,04%**, suponiendo independencia entre partidos.
+4. Umbral del proyecto: 65%; supera el umbral.
+5. Cuota combinada real: no requerida para evaluar la probabilidad, según el acuerdo metodológico. Cuota justa teórica: **1,45**, solo referencia matemática, no precio ofrecido.
 
-Otras combinadas alcanzan el umbral, y quedan registradas para trazabilidad en el archivo CSV. La propuesta prioritaria tiene la mayor probabilidad conjunta (67.67%); hay otras empatadas en ese valor.
+## Filtros simples
+- Pasan el umbral probabilístico del 75%: Benfica O1,5; Celta O1,5; Dinamo U3,5; Ferencváros O1,5; Hoffenheim O1,5; Jagiellonia O1,5; Marseille O1,5; Rennes U3,5.
+- No pasan: Bournemouth O1,5 (74,52%) y NEC O1,5 (74,96%). Se aplica el umbral exacto sin redondear para forzar elegibilidad.
+- La mayoría de los historiales disponibles en el dataset prepartido tiene solo dos partidos por equipo. La etiqueta es candidata condicional, no validación de rentabilidad.
 
-## Evaluación de simples y cuotas
-No se encontró confirmación directa suficiente de cuotas actuales de Betano Colombia para la lista completa de mercados simples. Por eso, el informe no inventa precios ni EV de simples. Esto **no bloquea las combinadas**, cuyo criterio de selección acordado es probabilístico.
-
-## Límites de la simulación
-- Las probabilidades provienen de la rama Poisson exploratoria existente, no de un modelo calibrado y validado específicamente para Europa League.
-- Varios equipos tienen historial muy corto dentro de la fuente incorporada, por lo que los porcentajes deben interpretarse con cautela.
-- Los partidos son del 15/10/2026; el archivo es la salida de simulación prepartido, no una recomendación para apostar una vez iniciado el encuentro.
-- La probabilidad conjunta asume independencia entre partidos; no constituye garantía de acierto.
-
-## Archivos de soporte
-- [Probabilidades base de la simulación](https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/main/data/simulacion/simulacion_europa_league_2026-10-15.json)
-- [Registro de combinadas y probabilidades conjuntas](https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/main/data/simulacion/combinadas_europa_league_2026-10-15.csv)
-- [Evaluación de mercados individuales](https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/main/data/simulacion/evaluacion_mercados_europa_league_2026-10-15.csv)
+## Fuentes y trazabilidad
+- [JSON prepartido original guardado a las 11:41 UTC](https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/7ed17bfca02d83e0f90edff0d1f376a14ba2d7b0/data/simulacion/simulacion_europa_league_2026-10-15.json).
+- [Cobertura en directo, usada solo para filtrar encuentros no finalizados](https://www.theguardian.com/football/live/2026/oct/15/bournemouth-v-sturm-graz-benfica-v-celtic-and-more-europa-league-live).
 - [Calendario oficial UEFA](https://www.uefa.com/uefaeuropaleague/news/02a8-2174cafa5bb6-82bbc20c9b92-1000--2026-27-europa-league-all-the-league-phase-fixtures-and-re/).

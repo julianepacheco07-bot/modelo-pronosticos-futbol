@@ -1,0 +1,30 @@
+name: Temporal backtest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/backtest_temporal.py"
+      - ".github/workflows/temporal-backtest.yml"
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install backtest dependency
+        run: python -m pip install requests
+      - name: Compile backtest
+        run: python -m py_compile src/backtest_temporal.py
+      - name: Run rolling-origin backtest
+        run: python src/backtest_temporal.py
+      - name: Upload reproducible reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: backtest-temporal-2023-2026
+          path: |
+            data/evaluacion/backtest_temporal_2023_2026.json
+            data/evaluacion/backtest_temporal_2023_2026.md

@@ -30,7 +30,8 @@ Construir y evaluar un modelo de pronósticos de fútbol prepartido, con validac
 ## Estructura
 - `docs/METODOLOGIA.md`: protocolo de análisis y evaluación.
 - `data/`: datos y procedencia; no subir secretos ni datos con restricciones de licencia.
-- `src/`: modelo y utilidades.
+- `src/`: modelo y utilidades, incluidas funciones de mercados en `mercados_betano.py`.
+- `tests/`: pruebas unitarias; ejecutar con `python -m unittest discover -s tests`.
 - `tests/`: pruebas reproducibles.
 - `reports/`: resultados con parámetros y fecha.
 
@@ -38,6 +39,8 @@ Construir y evaluar un modelo de pronósticos de fútbol prepartido, con validac
 - [x] Repositorio público creado.
 - [x] Backtest exploratorio de mercados de goles en Colombia, Brasil y Argentina (temporadas 2023–2025).
 - [x] Registro prospectivo de cuotas desde el inicio de la simulación.
+- [x] Añadidas funciones exploratorias para interpretar mercados comunes y modelar “ganar o liderar por 2 goles” (`src/mercados_betano.py`).
+- [x] Añadidas pruebas unitarias para interpretación de mercados, probabilidades, EV y tratamiento de cuotas faltantes (`tests/test_mercados_betano.py`).
 - [ ] Validar calibración del modelo fuera de muestra.
 - [ ] Registrar y liquidar las primeras selecciones simuladas para iniciar las métricas de EV/ROI observados.
 

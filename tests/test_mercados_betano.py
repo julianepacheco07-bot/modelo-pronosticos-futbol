@@ -1,4 +1,9 @@
 import unittest
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 from src.mercados_betano import (
     classify, expected_value_per_unit, implied_probability, infer_market,

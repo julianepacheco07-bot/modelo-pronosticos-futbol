@@ -3,6 +3,7 @@
 from pathlib import Path
 from datetime import date, datetime, timezone
 import hashlib, json, math, requests, unicodedata, re
+from mercados_betano import scoreline_markets, win_or_two_goal_lead
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"data"/"simulacion"/"simulacion_europa_league_2026-10-15.json"
@@ -111,8 +112,14 @@ def main():
               "home_last_match":max(g["date"] for g in hist_h).isoformat(),
               "away_last_match":max(g["date"] for g in hist_a).isoformat()},
               "probabilities":{k:round(v,4) for k,v in match_probs(lh,la).items()},
+              "market_probabilities": {
+                **{k:round(v,4) for k,v in scoreline_markets(lh,la).items()},
+                "home_win_or_two_goal_lead":round(win_or_two_goal_lead(lh,la),4),
+                "away_win_or_two_goal_lead":round(win_or_two_goal_lead(la,lh),4)
+              },
+              "odds_status":"CUOTA_PENDIENTE",
               "decision":"REFERENCIA_EXPLORATORIA; NO ES MODELO VALIDADO PARA EUROPA LEAGUE",
-              "limitations":"Estimación exploratoria no validada para Europa League; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. Incertidumbre alta con muestras cortas."})
+              "limitations":"Estimación exploratoria no validada; no incorpora alineaciones, lesiones, noticias ni cuotas verificadas. El mercado de ventaja de dos goles usa una aproximación temporal aún no calibrada. Incertidumbre alta con muestras cortas."})
         else:
             rec["reason"]="Sin historial previo identificable para uno o ambos equipos; no se imputa ni inventa probabilidad."
         output.append(rec)

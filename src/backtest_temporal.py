@@ -3,7 +3,7 @@
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-import hashlib, json, math
+import hashlib, json, math, random
 import requests
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -47,6 +47,34 @@ def binary(rows,pkey,ykey):
         p=max(1e-12,min(1-1e-12,float(r[pkey]))); y=int(r[ykey])
         bs+=(p-y)**2; ll-=y*math.log(p)+(1-y)*math.log(1-p); sp+=p; sy+=y
     return {'n':n,'brier':round(bs/n,6),'log_loss':round(ll/n,6),'mean_probability':round(sp/n,6),'observed_rate':round(sy/n,6)}
+
+def paired_bootstrap(rows, model_keys, base_keys, target, multiclass_mode=False, reps=2000, seed=20261018):
+    """Paired bootstrap CI for model-minus-baseline Brier/log-loss; negative favors model."""
+    if len(rows)<2:
+        return {'n':len(rows),'reps':0,'note':'Insufficient sample'}
+    def losses(r, keys):
+        ps=[max(1e-12,min(1-1e-12,float(r[k]))) for k in keys]
+        if multiclass_mode:
+            y=int(r[target])
+            return sum((p-(i==y)**2) for i,p in enumerate(ps)), -math.log(ps[y])
+        p=ps[0]; y=int(r[target])
+        return (p-y)**2, -(y*math.log(p)+(1-y)*math.log(1-p))
+    pairs=[(losses(r,model_keys),losses(r,base_keys)) for r in rows]
+    obs_b=sum(a[0]-b[0] for a,b in pairs)/len(pairs)
+    obs_l=sum(a[1]-b[1] for a,b in pairs)/len(pairs)
+    rng=random.Random(seed+len(rows)+sum(ord(ch) for ch in target))
+    boot_b=[]; boot_l=[]; n=len(pairs)
+    for _ in range(reps):
+        sample=[pairs[rng.randrange(n)] for _ in range(n)]
+        boot_b.append(sum(a[0]-b[0] for a,b in sample)/n)
+        boot_l.append(sum(a[1]-b[1] for a,b in sample)/n)
+    boot_b.sort(); boot_l.sort()
+    lo=int(0.025*reps); hi=min(reps-1,int(0.975*reps))
+    return {'n':n,'reps':reps,'brier_delta_model_minus_baseline':round(obs_b,8),
+      'brier_delta_95ci':[round(boot_b[lo],8),round(boot_b[hi],8)],
+      'logloss_delta_model_minus_baseline':round(obs_l,8),
+      'logloss_delta_95ci':[round(boot_l[lo],8),round(boot_l[hi],8)],
+      'interpretation':'Negative favors Poisson; CI entirely below zero suggests evidence of lower loss under this bootstrap.'}
 
 def calibration_bins(rows,pkey,ykey):
     bins=[]
@@ -113,6 +141,11 @@ def main():
         hist[(g['league'],g['away'])].append({'date':g['date'],'home':g['home'],'hg':g['hg'],'ag':g['ag']})
     result={'generated_utc':datetime.now(timezone.utc).isoformat(),'seasons':list(SEASONS),'leagues':list(LEAGUES),'method':'Rolling origin; only earlier completed fixtures; last 10 matches per team; minimum 5 prior matches; shrinkage toward league mean.','raw_completed_matches':len(games),'evaluated_matches':len(rows),'skipped_insufficient_history':skipped,'source_manifest':sources,'source_errors':errors,'metrics':{'1x2':multiclass(rows,['p_home','p_draw','p_away'],'actual_1x2'),'over_1_5':binary(rows,'p_over15','y_over15'),'under_3_5':binary(rows,'p_under35','y_under35'),'btts_yes':binary(rows,'p_btts','y_btts')},
       'baseline_metrics':{'1x2':multiclass(rows,['base_home','base_draw','base_away'],'actual_1x2'),'over_1_5':binary(rows,'base_over15','y_over15'),'under_3_5':binary(rows,'base_under35','y_under35'),'btts_yes':binary(rows,'base_btts','y_btts')},
+      'paired_bootstrap_95ci':{
+        '1x2':paired_bootstrap(rows,['p_home','p_draw','p_away'],['base_home','base_draw','base_away'],'actual_1x2',True),
+        'over_1_5':paired_bootstrap(rows,['p_over15'],['base_over15'],'y_over15'),
+        'under_3_5':paired_bootstrap(rows,['p_under35'],['base_under35'],'y_under35'),
+        'btts_yes':paired_bootstrap(rows,['p_btts'],['base_btts'],'y_btts')},
       'calibration':{'over_1_5':calibration_bins(rows,'p_over15','y_over15'),'under_3_5':calibration_bins(rows,'p_under35','y_under35'),'btts_yes':calibration_bins(rows,'p_btts','y_btts')},
       'by_league_season':{},
       'limitations':['Exploratory baseline; no odds or ROI claims.','Source coverage varies and is listed explicitly.','The special two-goal-lead market lacks historical goal-timeline data and is not validated by this backtest.']}
@@ -140,6 +173,12 @@ def main():
     for key,label in [('1x2','1X2'),('over_1_5','Over 1.5'),('under_3_5','Under 3.5'),('btts_yes','Ambos marcan')]:
         pm=met[key]; bm=result['baseline_metrics'][key]
         md.append(f"| {label} | {pm['brier']} | {bm['brier']} | {pm['log_loss']} | {bm['log_loss']} |")
+    md+=['','## Incertidumbre: bootstrap pareado del diferencial de pérdida','',
+      '2.000 remuestreos pareados de partidos. Diferencia = Poisson menos baseline; negativo favorece Poisson. IC 95% completamente negativo sugiere menor pérdida en esta muestra, no rentabilidad.','',
+      '| Mercado | Delta Brier | IC 95% | Delta log loss | IC 95% |','|---|---:|---|---:|---|']
+    for key,label in [('1x2','1X2'),('over_1_5','Over 1.5'),('under_3_5','Under 3.5'),('btts_yes','Ambos marcan')]:
+        z=result['paired_bootstrap_95ci'][key]
+        md.append(f"| {label} | {z['brier_delta_model_minus_baseline']} | {z['brier_delta_95ci']} | {z['logloss_delta_model_minus_baseline']} | {z['logloss_delta_95ci']} |")
     md+=['','## Calibración por rangos de probabilidad','',
       'Cada fila compara la probabilidad media pronosticada con la frecuencia observada; los rangos pequeños deben interpretarse con su N.','',
       '| Mercado | Rango | N | Prob. media | Frecuencia observada |','|---|---|---:|---:|---:|']

@@ -1,23 +1,34 @@
-# Diccionario técnico de mercados — Betano Colombia
-## Entrada: “Ganar el partido o liderar por 2 goles”
-Fecha documentada: 2026-10-18
-Fuente de la regla operativa: explicación del usuario a partir de su interfaz de Betano; pendiente de cotejo con las reglas oficiales de liquidación.
+# Diccionario operativo de mercados — Betano Colombia
 
-### Significado operativo informado
-La selección gana si el equipo elegido gana el partido **o si llega a estar ganando por una diferencia de dos goles durante el encuentro**. En este segundo caso, Betano marca la apuesta como ganada anticipadamente, según la explicación del usuario. Si ya fue liquidada como ganadora al alcanzar esa ventaja, un resultado posterior que reduzca o elimine la ventaja no revierte esa liquidación, según lo informado.
+Actualizado: 2026-10-18
 
-### Consecuencias para el análisis
-- No tratar este mercado como victoria simple ni como doble oportunidad.
-- Modelar el evento como: equipo gana al final **O** equipo alcanza una ventaja de al menos dos goles en algún momento antes de terminar el partido.
-- Estos sucesos se solapan; calcular la probabilidad del evento combinado contando una sola vez los partidos donde se cumplen ambas condiciones.
-- No estimar la probabilidad de este mercado usando únicamente la probabilidad 1X2.
-- Comparar la cuota con la probabilidad del evento completo; cuota justa = 1 / probabilidad estimada, y EV simple = p × cuota − 1 solo si la liquidación es binaria y sin condiciones adicionales.
-- Registrar por separado cuota, hora de captura, reglas de liquidación y fuente. Si la regla solo fue descrita por el usuario, marcarla como “regla reportada por usuario; pendiente de verificación oficial”.
-- No asumir que el mismo texto tiene idéntica liquidación en otros operadores o en otros mercados.
+## Reglas operativas inferidas del nombre
+- **Ganar el partido / victoria:** el equipo elegido debe ganar al final del tiempo reglamentario más descuento, salvo que el mercado indique otra cosa.
+- **Doble oportunidad 1X:** local gana o empata.
+- **Doble oportunidad X2:** visitante gana o empata.
+- **Doble oportunidad 12:** gana cualquiera de los equipos; el empate pierde.
+- **Más de 1.5 goles:** deben anotarse al menos 2 goles en total.
+- **Menos de 3.5 goles:** deben anotarse como máximo 3 goles en total.
+- **Ambos equipos marcan — sí:** ambos anotan al menos un gol.
+- **Ganar el partido o liderar por 2 goles:** regla reportada por el usuario: la apuesta se marca ganada en el momento en que el equipo elegido alcanza una ventaja de al menos dos goles; si no llega a esa ventaja, todavía puede ganar por victoria final. Un marcador posterior no revierte la liquidación anticipada reportada.
 
-### Ejemplos del boleto del 18-10-2026
-- Molde FK vs IK Start — Molde gana o lidera por 2 goles, cuota reportada 1.34.
-- Nottingham Forest vs Arsenal — Arsenal gana o lidera por 2 goles, cuota reportada 1.62.
+## Mercado “Ganar o liderar por 2 goles”
+El evento a estimar es **victoria final O haber alcanzado una ventaja de dos o más goles en cualquier momento**. No debe confundirse con victoria simple ni doble oportunidad. Los dos sucesos se solapan y no deben sumarse sin corregir esa intersección.
 
-### Limitación
-Esta entrada documenta la interpretación operativa aportada por el usuario. Antes de automatizar la liquidación del modelo, contrastar con los términos oficiales de Betano Colombia y conservar evidencia de la regla vigente.
+La función `win_or_two_goal_lead` de `src/mercados_betano.py` estima este evento mediante una aproximación de llegadas de gol por minuto. Es exploratoria y no calibrada; no debe presentarse como probabilidad validada. Se necesita comparar con datos históricos de trayectorias de marcadores y calibrar fuera de muestra antes de usarla para decisiones reales.
+
+## Evaluación y registro
+- Probabilidad de equilibrio de cuota decimal: `1 / cuota`; no elimina el margen del operador.
+- EV binario por unidad: `probabilidad × cuota - 1`, aplicable solo a liquidaciones de ganar/perder sin reembolso, pago parcial ni condiciones especiales.
+- Cuota faltante: `CUOTA_PENDIENTE`; no equivale a NO BET.
+- Probabilidad faltante: `ANALISIS_INSUFICIENTE`.
+- Candidata: probabilidad estimada >=75%, cuota observada y EV positivo. El 75% es filtro de prioridad, no garantía.
+- Combinadas: registrar cuota real observada y estimar probabilidad conjunta; no asumir independencia automáticamente.
+- Si el texto de mercado no permite deducir inequívocamente la liquidación, registrar `PENDIENTE_DE_VERIFICACION` en vez de adivinar.
+
+## Alcance de la regla
+La regla de dos goles se documenta como aportada por el usuario para Betano Colombia. No se afirma que los términos oficiales de Colombia se hayan verificado independientemente, ni que las condiciones sean idénticas en otras jurisdicciones.
+
+## Referencias
+- Ayuda pública de Betano Ecuador sobre reglas de apuestas: https://support-ec.betano.com/hc/es-ec/articles/7874613484701--D%C3%B3nde-puedo-encontrar-la-secci%C3%B3n-de-Reglas-de-Apuestas
+- Ayuda pública de Betano Brasil sobre “2 Gols de Vantagem” (referencia de otra jurisdicción, no prueba de las condiciones colombianas): https://support.betano.bet.br/hc/pt-br/articles/6414151241629-Como-funciona-a-oferta-2-Gols-de-Vantagem

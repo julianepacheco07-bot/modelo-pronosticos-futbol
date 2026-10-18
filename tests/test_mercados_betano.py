@@ -7,7 +7,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.mercados_betano import (
     classify, expected_value_per_unit, implied_probability, infer_market,
-    scoreline_markets, win_or_two_goal_lead,
+    scoreline_markets, win_or_two_goal_lead, settle_win_or_two_goal_lead,
 )
 
 
@@ -33,6 +33,11 @@ class BetanoMarketTests(unittest.TestCase):
         self.assertLessEqual(p, 1.0)
         # The two-goal settlement is a separate time-path approximation;
         # do not assert numeric equality with the independent scoreline Poisson.
+
+    def test_settlement_two_goal_lead(self):
+        self.assertEqual(settle_win_or_two_goal_lead(False, True), "WON")
+        self.assertEqual(settle_win_or_two_goal_lead(True, False), "WON")
+        self.assertEqual(settle_win_or_two_goal_lead(False, False), "LOST")
 
     def test_missing_odds_are_not_no_bet(self):
         self.assertEqual(classify(0.80, None), "CUOTA_PENDIENTE")

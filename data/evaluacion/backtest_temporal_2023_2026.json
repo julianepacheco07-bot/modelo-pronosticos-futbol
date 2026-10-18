@@ -1,0 +1,59 @@
+{
+  "generated_utc": "2026-10-18T14:43:55.089414+00:00",
+  "status": "exploratory_temporal_backtest",
+  "seasons": [
+    "2023-24",
+    "2024-25",
+    "2025-26"
+  ],
+  "leagues": [
+    "Premier League",
+    "LaLiga",
+    "Serie A",
+    "Bundesliga",
+    "Ligue 1"
+  ],
+  "method": "Rolling origin; only earlier completed matches; up to 10 latest matches per team; minimum 5 prior matches per team; shrinkage toward league historical goal mean.",
+  "raw_completed_matches": 5235,
+  "evaluated_matches": 4883,
+  "skipped_insufficient_history": 352,
+  "source_errors": [],
+  "source_urls": [
+    "https://raw.githubusercontent.com/openfootball/football.json/master/{season}/{league-code}.json"
+  ],
+  "metrics": {
+    "1x2": {
+      "n": 4883,
+      "brier": 0.62,
+      "log_loss": 1.033273,
+      "accuracy": 0.497235
+    },
+    "over_1_5": {
+      "n": 4883,
+      "brier": 0.171989,
+      "log_loss": 0.526403,
+      "mean_probability": 0.766755,
+      "observed_rate": 0.776572
+    },
+    "under_3_5": {
+      "n": 4883,
+      "brier": 0.210731,
+      "log_loss": 0.61127,
+      "mean_probability": 0.683491,
+      "observed_rate": 0.686668
+    },
+    "btts_yes": {
+      "n": 4883,
+      "brier": 0.246733,
+      "log_loss": 0.686673,
+      "mean_probability": 0.559706,
+      "observed_rate": 0.550481
+    }
+  },
+  "limitations": [
+    "Exploratory baseline; no odds, EV, or ROI claims.",
+    "All 15 league-season source files returned successfully; no download errors in this run.",
+    "The two-goal-lead market has no historical goal-timeline labels in this dataset and is not validated.",
+    "The Brier score for 1X2 is the sum of squared errors across three classes."
+  ]
+}

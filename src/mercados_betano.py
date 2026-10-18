@@ -89,6 +89,17 @@ def win_or_two_goal_lead(lambda_selected: float, lambda_opponent: float,
                         if reached or d > 0))
 
 
+
+def settle_win_or_two_goal_lead(selected_team_won: bool,
+                                reached_two_goal_lead: bool) -> str:
+    """Settle the user-reported market rule independently of model probability.
+
+    This is a result-labeling helper, not a probability estimator. It requires
+    pre/post-match evidence for whether a two-goal lead was reached at any time.
+    """
+    return "WON" if selected_team_won or reached_two_goal_lead else "LOST"
+
+
 def implied_probability(odds: float) -> float:
     """Raw break-even probability; does not remove bookmaker margin."""
     if odds <= 1:

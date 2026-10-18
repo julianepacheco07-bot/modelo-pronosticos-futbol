@@ -48,6 +48,15 @@ def binary(rows,pkey,ykey):
         bs+=(p-y)**2; ll-=y*math.log(p)+(1-y)*math.log(1-p); sp+=p; sy+=y
     return {'n':n,'brier':round(bs/n,6),'log_loss':round(ll/n,6),'mean_probability':round(sp/n,6),'observed_rate':round(sy/n,6)}
 
+def calibration_bins(rows,pkey,ykey):
+    bins=[]
+    for lo in [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]:
+        subset=[r for r in rows if lo <= float(r[pkey]) < lo+0.1 or (lo==0.9 and float(r[pkey])==1.0)]
+        bins.append({'range':f'{lo:.1f}-{lo+0.1:.1f}','n':len(subset),
+          'mean_probability':round(sum(float(r[pkey]) for r in subset)/len(subset),6) if subset else None,
+          'observed_rate':round(sum(int(r[ykey]) for r in subset)/len(subset),6) if subset else None})
+    return bins
+
 def main():
     games=[]; sources=[]; errors=[]
     for league,code in LEAGUES.items():
@@ -86,15 +95,61 @@ def main():
             hgf=(hgf*len(hh)+prior*PRIOR_STRENGTH)/(len(hh)+PRIOR_STRENGTH); hga=(hga*len(hh)+prior*PRIOR_STRENGTH)/(len(hh)+PRIOR_STRENGTH)
             agf=(agf*len(aa)+prior*PRIOR_STRENGTH)/(len(aa)+PRIOR_STRENGTH); aga=(aga*len(aa)+prior*PRIOR_STRENGTH)/(len(aa)+PRIOR_STRENGTH)
             p,b=markets(max(.05,(hgf+aga)/2),max(.05,(agf+hga)/2))
-            rows.append({'date':g['date'],'league':g['league'],'home':g['home'],'away':g['away'],'actual_1x2':0 if g['hg']>g['ag'] else 1 if g['hg']==g['ag'] else 2,'p_home':p[0],'p_draw':p[1],'p_away':p[2],'p_over15':b['over15'],'y_over15':int(g['hg']+g['ag']>=2),'p_under35':b['under35'],'y_under35':int(g['hg']+g['ag']<=3),'p_btts':b['btts'],'y_btts':int(g['hg']>0 and g['ag']>0),'prior_home_n':len(hh),'prior_away_n':len(aa)})
+            # Baseline probabilities use only prior matches in this league.
+            prior_n=max(1,len(league_old))
+            base_home=(sum(1 for x in league_old if x['hg']>x['ag'])+1)/(prior_n+3)
+            base_draw=(sum(1 for x in league_old if x['hg']==x['ag'])+1)/(prior_n+3)
+            base_away=(sum(1 for x in league_old if x['hg']<x['ag'])+1)/(prior_n+3)
+            base_total=base_home+base_draw+base_away
+            base_1x2=[base_home/base_total,base_draw/base_total,base_away/base_total]
+            base_over=(sum(1 for x in league_old if x['hg']+x['ag']>=2)+1)/(prior_n+2)
+            base_under=(sum(1 for x in league_old if x['hg']+x['ag']<=3)+1)/(prior_n+2)
+            base_btts=(sum(1 for x in league_old if x['hg']>0 and x['ag']>0)+1)/(prior_n+2)
+            rows.append({'date':g['date'],'league':g['league'],'home':g['home'],'away':g['away'],'actual_1x2':0 if g['hg']>g['ag'] else 1 if g['hg']==g['ag'] else 2,'p_home':p[0],'p_draw':p[1],'p_away':p[2],'p_over15':b['over15'],'y_over15':int(g['hg']+g['ag']>=2),'p_under35':b['under35'],'y_under35':int(g['hg']+g['ag']<=3),'p_btts':b['btts'],'y_btts':int(g['hg']>0 and g['ag']>0),
+              'base_home':base_1x2[0],'base_draw':base_1x2[1],'base_away':base_1x2[2],
+              'base_over15':base_over,'base_under35':base_under,'base_btts':base_btts,
+              'season':g['season'],'prior_home_n':len(hh),'prior_away_n':len(aa)})
         hist[(g['league'],g['home'])].append({'date':g['date'],'home':g['home'],'hg':g['hg'],'ag':g['ag']})
         hist[(g['league'],g['away'])].append({'date':g['date'],'home':g['home'],'hg':g['hg'],'ag':g['ag']})
-    result={'generated_utc':datetime.now(timezone.utc).isoformat(),'seasons':list(SEASONS),'leagues':list(LEAGUES),'method':'Rolling origin; only earlier completed fixtures; last 10 matches per team; minimum 5 prior matches; shrinkage toward league mean.','raw_completed_matches':len(games),'evaluated_matches':len(rows),'skipped_insufficient_history':skipped,'source_manifest':sources,'source_errors':errors,'metrics':{'1x2':multiclass(rows,['p_home','p_draw','p_away'],'actual_1x2'),'over_1_5':binary(rows,'p_over15','y_over15'),'under_3_5':binary(rows,'p_under35','y_under35'),'btts_yes':binary(rows,'p_btts','y_btts')},'limitations':['Exploratory baseline; no odds or ROI claims.','Source coverage varies and is listed explicitly.','The special two-goal-lead market lacks historical goal-timeline data and is not validated by this backtest.']}
+    result={'generated_utc':datetime.now(timezone.utc).isoformat(),'seasons':list(SEASONS),'leagues':list(LEAGUES),'method':'Rolling origin; only earlier completed fixtures; last 10 matches per team; minimum 5 prior matches; shrinkage toward league mean.','raw_completed_matches':len(games),'evaluated_matches':len(rows),'skipped_insufficient_history':skipped,'source_manifest':sources,'source_errors':errors,'metrics':{'1x2':multiclass(rows,['p_home','p_draw','p_away'],'actual_1x2'),'over_1_5':binary(rows,'p_over15','y_over15'),'under_3_5':binary(rows,'p_under35','y_under35'),'btts_yes':binary(rows,'p_btts','y_btts')},
+      'baseline_metrics':{'1x2':multiclass(rows,['base_home','base_draw','base_away'],'actual_1x2'),'over_1_5':binary(rows,'base_over15','y_over15'),'under_3_5':binary(rows,'base_under35','y_under35'),'btts_yes':binary(rows,'base_btts','y_btts')},
+      'calibration':{'over_1_5':calibration_bins(rows,'p_over15','y_over15'),'under_3_5':calibration_bins(rows,'p_under35','y_under35'),'btts_yes':calibration_bins(rows,'p_btts','y_btts')},
+      'by_league_season':{},
+      'limitations':['Exploratory baseline; no odds or ROI claims.','Source coverage varies and is listed explicitly.','The special two-goal-lead market lacks historical goal-timeline data and is not validated by this backtest.']}
+    for league in LEAGUES:
+        for season in SEASONS:
+            subset=[r for r in rows if r['league']==league and r['season']==season]
+            if subset:
+                result['by_league_season'][f'{league} {season}']={
+                  'n':len(subset),
+                  '1x2':multiclass(subset,['p_home','p_draw','p_away'],'actual_1x2'),
+                  '1x2_baseline':multiclass(subset,['base_home','base_draw','base_away'],'actual_1x2'),
+                  'over_1_5':binary(subset,'p_over15','y_over15'),
+                  'over_1_5_baseline':binary(subset,'base_over15','y_over15'),
+                  'under_3_5':binary(subset,'p_under35','y_under35'),
+                  'under_3_5_baseline':binary(subset,'base_under35','y_under35'),
+                  'btts_yes':binary(subset,'p_btts','y_btts'),
+                  'btts_yes_baseline':binary(subset,'base_btts','y_btts')}
     OUT.parent.mkdir(parents=True,exist_ok=True); OUT.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     met=result['metrics']; md=['# Backtest temporal — Poisson exploratorio','',f"Generado UTC: {result['generated_utc']}",'','**No es una prueba de rentabilidad.** Solo se evalúan partidos con al menos cinco partidos previos por equipo.','',f"- Partidos completos cargados: {len(games)}",f"- Partidos evaluados: {len(rows)}",f"- Omitidos por historial insuficiente: {skipped}",f"- Errores de descarga: {len(errors)}",'','| Mercado | N | Brier | Log loss | Exactitud / comparación |','|---|---:|---:|---:|---|']
     a=met['1x2']; md.append(f"| 1X2 | {a['n']} | {a['brier']} | {a['log_loss']} | Exactitud {a['accuracy']} |")
     for k,label in [('over_1_5','Over 1.5'),('under_3_5','Under 3.5'),('btts_yes','Ambos marcan')]:
         x=met[k]; md.append(f"| {label} | {x['n']} | {x['brier']} | {x['log_loss']} | Media {x['mean_probability']}; observada {x['observed_rate']} |")
+    md+=['','## Comparación contra baseline histórico de liga (menor es mejor para Brier/log loss)','',
+      '| Mercado | Poisson Brier | Baseline Brier | Poisson log loss | Baseline log loss |','|---|---:|---:|---:|---:|']
+    for key,label in [('1x2','1X2'),('over_1_5','Over 1.5'),('under_3_5','Under 3.5'),('btts_yes','Ambos marcan')]:
+        pm=met[key]; bm=result['baseline_metrics'][key]
+        md.append(f"| {label} | {pm['brier']} | {bm['brier']} | {pm['log_loss']} | {bm['log_loss']} |")
+    md+=['','## Calibración por rangos de probabilidad','',
+      'Cada fila compara la probabilidad media pronosticada con la frecuencia observada; los rangos pequeños deben interpretarse con su N.','',
+      '| Mercado | Rango | N | Prob. media | Frecuencia observada |','|---|---|---:|---:|---:|']
+    for key,label in [('over_1_5','Over 1.5'),('under_3_5','Under 3.5'),('btts_yes','Ambos marcan')]:
+        for b in result['calibration'][key]:
+            if b['n']: md.append(f"| {label} | {b['range']} | {b['n']} | {b['mean_probability']} | {b['observed_rate']} |")
+    md+=['','## Rendimiento por liga y temporada','',
+      '| Liga-temporada | N | 1X2 Brier modelo/base | Over1.5 Brier modelo/base | Under3.5 Brier modelo/base | BTTS Brier modelo/base |','|---|---:|---:|---:|---:|---:|']
+    for name,x in result['by_league_season'].items():
+        md.append(f"| {name} | {x['n']} | {x['1x2']['brier']}/{x['1x2_baseline']['brier']} | {x['over_1_5']['brier']}/{x['over_1_5_baseline']['brier']} | {x['under_3_5']['brier']}/{x['under_3_5_baseline']['brier']} | {x['btts_yes']['brier']}/{x['btts_yes_baseline']['brier']} |")
     md+=['','## Fuentes','', '| Liga | Temporada | Estado | Partidos del archivo | URL |','|---|---|---|---:|---|']
     for s in sources: md.append(f"| {s['league']} | {s['season']} | {s['status']} | {s.get('matches_in_file','—')} | {s['url']} |")
     md+=['','## Limitaciones','']+['- '+x for x in result['limitations']]

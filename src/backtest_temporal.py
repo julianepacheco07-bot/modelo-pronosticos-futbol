@@ -56,7 +56,7 @@ def paired_bootstrap(rows, model_keys, base_keys, target, multiclass_mode=False,
         ps=[max(1e-12,min(1-1e-12,float(r[k]))) for k in keys]
         if multiclass_mode:
             y=int(r[target])
-            return sum((p-(i==y)**2) for i,p in enumerate(ps)), -math.log(ps[y])
+            return sum((p-(i==y))**2 for i,p in enumerate(ps)), -math.log(ps[y])
         p=ps[0]; y=int(r[target])
         return (p-y)**2, -(y*math.log(p)+(1-y)*math.log(1-p))
     pairs=[(losses(r,model_keys),losses(r,base_keys)) for r in rows]

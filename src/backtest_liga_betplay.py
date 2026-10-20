@@ -10,8 +10,8 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/"data/evaluacion/backtest_liga_betplay_2023_2025.json"
-REPORT=ROOT/"data/evaluacion/backtest_liga_betplay_2023_2025.md"
+OUT=ROOT/"data/evaluacion/backtest_liga_betplay_2023_2025_ejecucion_diagnostica.json"
+REPORT=ROOT/"data/evaluacion/backtest_liga_betplay_2023_2025_ejecucion_diagnostica.md"
 SOURCES={
  2023:"https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt",
  2024:"https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt",
@@ -66,7 +66,12 @@ def multiclass_metrics(rows,key):
 def main():
  all_rows=[];coverage={}
  for year,url in SOURCES.items():
-  rows,bad=parse(year,fetch(year));coverage[str(year)]={"parsed_scored_matches":len(rows),"unparsed_score_lines":bad,"source_url":url};all_rows+=rows
+  source_text=fetch(year)
+  rows,bad=parse(year,source_text)
+  header=re.search(r"# Matches\s+(\d+)",source_text)
+  expected=int(header.group(1)) if header else None
+  coverage[str(year)]={"parsed_scored_matches":len(rows),"header_match_count":expected,"unparsed_score_lines":bad,"source_url":url,"count_matches_header":(expected is None or expected==len(rows))}
+  all_rows+=rows
  all_rows.sort(key=lambda r:(r["date"],r["home"],r["away"]))
  seen=set();dupes=[]
  for r in all_rows:
@@ -101,6 +106,8 @@ def main():
   for row in bydate[date]:
    prior.append(row);history[row["home"]].append({"gf":row["hg"],"ga":row["ag"]});history[row["away"]].append({"gf":row["ag"],"ga":row["hg"]})
  if not evaluated:raise SystemExit("No se generaron predicciones; revisar fuente y parser.")
+ if any(not d["count_matches_header"] for d in coverage.values()):
+  print("ADVERTENCIA: los conteos parseados no coinciden con los encabezados de la fuente; resultados no aptos para aprobar recalibración.")
  metrics={"1x2":{"n":len(evaluated),"model":multiclass_metrics(evaluated,"model"),"rolling_frequency_baseline":multiclass_metrics(evaluated,"baseline")}}
  for key in ("over15","under35","btts"):
   ys=[r["outcomes"][key] for r in evaluated]

@@ -1,53 +1,44 @@
-# Backtest diagnóstico corregido — Liga BetPlay 2023–2025
+# Backtest diagnóstico — Liga BetPlay 2023–2025
 
-**Estado: análisis exploratorio; recalibración no aprobada.**  
-**Cobertura de la fuente consultada:** 2023–2025 parcial; el archivo 2025 recuperado llega a mayo.
+**Estado: BLOQUEADO PARA CONCLUSIONES. No aprobar recalibración ni usar estos resultados para recomendar apuestas.**
 
-## Correcciones aplicadas al código
+## Hallazgo de auditoría
 
-- El parser ahora acepta líneas de partido con y sin hora de inicio. La versión anterior omitía encuentros sin hora.
-- Se normalizan algunos alias conocidos: Alianza Petrolera/Alianza FC y Atlético Junior/Junior.
-- Se detectan duplicados después de normalizar los alias.
-- Las predicciones se agrupan por fecha: ningún resultado de un partido del mismo día se añade al historial hasta que todas las predicciones de esa fecha están generadas. La fuente no ofrece horas de inicio fiables para ordenar encuentros dentro del día.
-- Se añadió una comparación con una línea base de frecuencias históricas acumuladas, suavizadas y calculadas solo con resultados anteriores.
+La fuente OpenFootball de 2025 declara **200 partidos**, pero el informe previo contabilizó solo **167**. Esto revela una discrepancia de cobertura que debe resolverse antes de considerar fiables las métricas agregadas. Los datos de 2023 y 2024 también deben contrastarse automáticamente con el encabezado de cada archivo.
 
-## Cobertura y muestra
+- Fuente 2023: https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt
+- Fuente 2024: https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt
+- Fuente 2025: https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt
 
-| Fuente | Marcadores parseados |
-|---|---:|
-| 2023 | 452 |
-| 2024 | 432 |
-| 2025 (parcial) | 167 |
-| **Total** | **1.051** |
+## Métricas previas: solo referencia no validada
 
-- Duplicados tras normalización de alias: **0**.
-- Equipos normalizados identificados: **23**.
-- Predicciones evaluadas: **995**.
-- Período de predicciones: **18 de febrero de 2023 a 4 de mayo de 2025**.
+El informe anterior reportó 995 predicciones evaluadas y estos resultados:
 
-Fuentes: [2023](https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt), [2024](https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt), [2025](https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt).
+| Mercado | Brier modelo | Brier línea base | Log loss modelo | Log loss línea base |
+|---|---:|---:|---:|---:|
+| 1X2 multiclase | 0,6256 | 0,6379 | 1,0399 | 1,0569 |
+| Over 1.5 | 0,2343 | 0,2321 | 0,6623 | 0,6571 |
+| Under 3.5 | 0,1474 | 0,1454 | 0,4723 | 0,4667 |
+| Ambos marcan | 0,2506 | 0,2488 | 0,6943 | 0,6907 |
 
-## Modelo frente a línea base rolling
+**No deben interpretarse como resultados confirmados** hasta volver a ejecutar el backtest después de corregir la cobertura y reconciliar los marcadores parseados con los conteos declarados por la fuente. En particular, no calculo intervalos de confianza ni calibración por bandas sobre una muestra cuya integridad todavía está en duda.
 
-| Mercado | Brier modelo | Brier base | Log loss modelo | Log loss base | Prob. media modelo | Frecuencia observada |
-|---|---:|---:|---:|---:|---:|---:|
-| 1X2 multiclase | 0,6256 | 0,6379 | 1,0399 | 1,0569 | — | — |
-| Over 1.5 | 0,2343 | 0,2321 | 0,6623 | 0,6571 | 65,98 % | 63,72 % |
-| Under 3.5 | 0,1474 | 0,1454 | 0,4723 | 0,4667 | 80,48 % | 82,41 % |
-| Ambos marcan | 0,2506 | 0,2488 | 0,6943 | 0,6907 | 44,49 % | 44,42 % |
+## Corrección aplicada al script
 
-Para 1X2, el modelo tiene una exactitud de **47,34 %** y la línea base **47,14 %**; el pequeño aumento de exactitud no reemplaza la comparación de probabilidades con Brier y Log loss.
+El script se actualizó para:
+1. Escribir los artefactos en las rutas diagnósticas ya publicadas, evitando que una ejecución genere archivos con nombres distintos.
+2. Leer el número de partidos declarado en el encabezado de cada fuente.
+3. Registrar el conteo declarado y el parseado, marcar si coinciden y emitir una advertencia si hay discrepancias.
 
-## Conclusión
+Código actualizado: https://github.com/julianepacheco07-bot/modelo-pronosticos-futbol/blob/main/src/backtest_liga_betplay.py
 
-El Poisson mejora a la línea base en Brier y Log loss para 1X2, pero la línea base es mejor en los tres mercados de goles evaluados. Por ahora, **no se debe recalibrar ni aprobar el modelo para recomendaciones automáticas**. La diferencia es pequeña y no se calcularon intervalos de confianza.
+## Siguiente criterio de aceptación
 
-## Pendientes antes de aprobar
+No cerrar esta auditoría hasta que:
+- los conteos parseados coincidan con los encabezados de la fuente o cada diferencia esté explicada;
+- se inspeccionen nombres de equipos, fechas y partidos duplicados;
+- se vuelva a calcular el backtest con un solo procedimiento reproducible;
+- se publiquen calibración por bandas e intervalos de confianza temporales;
+- se mantenga separado el análisis de probabilidades del ROI, que requiere cuotas prepartido archivadas.
 
-1. Auditar manualmente una muestra de fechas, resultados y fases del torneo.
-2. Completar la normalización histórica de nombres de clubes.
-3. Calcular calibración por bandas e intervalos de confianza mediante remuestreo temporal.
-4. Evaluar por separado Apertura, Finalización, cuadrangulares y playoffs.
-5. Incorporar cuotas prepartido verificadas capturadas antes del inicio para estudiar valor esperado; no se calcula ROI con esta fuente.
-
-No hay evidencia aquí de rentabilidad, ni se han cambiado los umbrales de apuesta.
+**Limitación operativa:** pude modificar el archivo en GitHub, pero no ejecutar aquí el script Python del repositorio. Por tanto, no afirmo que la corrección ya haya sido ejecutada ni que las métricas estén recalculadas.

@@ -1,62 +1,93 @@
 {
-  "status": "exploratory_execution_complete_recalibration_not_approved",
-  "date": "2026-10-19",
-  "sources": {
+  "status": "diagnostic_only_recalibration_not_approved",
+  "method": "Date-batched rolling-origin Poisson score model compared with smoothed rolling competition-frequency baseline; all matches on a date are forecast before any results from that date are added to history.",
+  "source_coverage": {
     "2023": {
-      "parsed_matches": 433,
+      "parsed_scored_matches": 452,
       "url": "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt"
     },
     "2024": {
-      "parsed_matches": 409,
+      "parsed_scored_matches": 432,
       "url": "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt"
     },
     "2025_partial": {
-      "parsed_matches": 167,
+      "parsed_scored_matches": 167,
       "url": "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt"
     }
   },
-  "evaluated_matches": 949,
+  "parsed_total": 1051,
+  "duplicates_after_known_alias_normalization": 0,
+  "normalized_team_count": 23,
+  "evaluated_matches": 995,
   "prediction_date_range": [
     "2023-02-18",
     "2025-05-04"
   ],
-  "method": "Chronological; minimum 4 prior matches per team; last 10 team results; goal-rate shrinkage strength 4; independent Poisson score matrix truncated at 12 goals.",
   "metrics": {
     "1x2": {
-      "n": 949,
-      "brier_multiclass": 0.627109,
-      "log_loss": 1.04189,
-      "accuracy": 0.471022
+      "n": 995,
+      "model": {
+        "brier_multiclass": 0.6256298623,
+        "log_loss": 1.0398973092,
+        "accuracy": 0.4733668342
+      },
+      "rolling_frequency_baseline": {
+        "brier_multiclass": 0.6378878973,
+        "log_loss": 1.0569044046,
+        "accuracy": 0.4713567839
+      }
     },
     "over15": {
-      "n": 949,
-      "brier": 0.235273,
-      "log_loss": 0.664392,
-      "mean_probability": 0.656251,
-      "observed_rate": 0.635406
+      "n": 995,
+      "model": {
+        "brier": 0.2342638338,
+        "log_loss": 0.6623359787,
+        "mean_probability": 0.6597666311,
+        "observed_rate": 0.6371859296
+      },
+      "rolling_frequency_baseline": {
+        "brier": 0.2321145145,
+        "log_loss": 0.6571433912,
+        "mean_probability": 0.6626913968,
+        "observed_rate": 0.6371859296
+      }
     },
     "under35": {
-      "n": 949,
-      "brier": 0.144697,
-      "log_loss": 0.465947,
-      "mean_probability": 0.807716,
-      "observed_rate": 0.82824
+      "n": 995,
+      "model": {
+        "brier": 0.1473753431,
+        "log_loss": 0.4722622757,
+        "mean_probability": 0.8048012154,
+        "observed_rate": 0.824120603
+      },
+      "rolling_frequency_baseline": {
+        "brier": 0.1454043246,
+        "log_loss": 0.4666663088,
+        "mean_probability": 0.8195459622,
+        "observed_rate": 0.824120603
+      }
     },
     "btts": {
-      "n": 949,
-      "brier": 0.250469,
-      "log_loss": 0.694145,
-      "mean_probability": 0.441061,
-      "observed_rate": 0.444679
+      "n": 995,
+      "model": {
+        "brier": 0.2505583816,
+        "log_loss": 0.6943122889,
+        "mean_probability": 0.4449108588,
+        "observed_rate": 0.4442211055
+      },
+      "rolling_frequency_baseline": {
+        "brier": 0.2487710233,
+        "log_loss": 0.6907067179,
+        "mean_probability": 0.4870028162,
+        "observed_rate": 0.4442211055
+      }
     }
   },
   "limitations": [
-    "Coverage and parser not independently audited",
-    "2025 file partial through May in retrieved version",
-    "No team alias normalization",
-    "No rolling baseline comparison",
-    "No confidence intervals",
-    "No historical odds or ROI",
-    "Do not recalibrate or deploy based on this run alone"
+    "The 2025 source is partial through May",
+    "Alias normalization is not exhaustive",
+    "No confidence intervals or calibration-bin analysis yet",
+    "No historical pre-match odds, ROI, or profitability analysis",
+    "The Python script was corrected in GitHub; the diagnostic metrics above were computed by running the same parser/model logic through the available execution tool, not by executing Python inside GitHub"
   ]
 }

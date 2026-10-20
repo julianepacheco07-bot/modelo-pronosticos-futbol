@@ -1,161 +1,129 @@
 #!/usr/bin/env python3
-"""Temporal exploratory backtest for Colombia Primera A using OpenFootball text data.
+"""Exploratory rolling-origin backtest for Colombia Primera A (OpenFootball).
 
-This script intentionally evaluates only completed matches with a parseable final score.
-It does not use odds and does not claim profitability. 2025 source currently contains
-only the Apertura section, so coverage is reported rather than silently treated as a
-complete calendar year.
+No odds/ROI claims. Fixtures on the same calendar date are forecast before any
+results from that date enter history, because kickoff times are not supplied.
 """
 from __future__ import annotations
-import datetime as dt
-import json
-import math
-import re
-import urllib.request
+import datetime as dt, json, math, re, urllib.request
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "data" / "evaluacion" / "backtest_liga_betplay_2023_2025.json"
-REPORT = ROOT / "data" / "evaluacion" / "backtest_liga_betplay_2023_2025.md"
-SOURCES = {
-    2023: "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt",
-    2024: "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt",
-    2025: "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt",
-}
-DATE_RE = re.compile(r"^\s{2,}(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+([A-Z][a-z]{2})\s+(\d{1,2})(?:\s+(\d{4}))?\s*$")
-MATCH_RE = re.compile(r"^\s{2,}(\d{1,2}:\d{2})\s+(.+?)\s+v\s+(.+?)\s+(\d+)-(\d+)(?:\s|$)")
+ROOT=Path(__file__).resolve().parents[1]
+OUT=ROOT/"data/evaluacion/backtest_liga_betplay_2023_2025.json"
+REPORT=ROOT/"data/evaluacion/backtest_liga_betplay_2023_2025.md"
+SOURCES={
+ 2023:"https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt",
+ 2024:"https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt",
+ 2025:"https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt"}
+DATE_RE=re.compile(r"^\s{2,}(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+([A-Z][a-z]{2})\s+(\d{1,2})(?:\s+(\d{4}))?\s*$")
+# Kickoff time is optional: OpenFootball has some matchdays without it.
+MATCH_RE=re.compile(r"^\s{2,}(?:(\d{1,2}:\d{2})\s+)?(.+?)\s+v\s+(.+?)\s+(\d+)-(\d+)(?:\s|$)")
+ALIASES={"Alianza Petrolera":"Alianza FC","Atlético Junior":"Junior FC","Junior":"Junior FC"}
 
-def fetch_season(year: int) -> str:
-    req = urllib.request.Request(SOURCES[year], headers={"User-Agent": "football-model-research/1.0"})
-    with urllib.request.urlopen(req, timeout=30) as response:
-        return response.read().decode("utf-8")
-
-def parse_matches(year: int, content: str):
-    current_date = None
-    rows = []
-    for line in content.splitlines():
-        dm = DATE_RE.match(line)
-        if dm:
-            month = dt.datetime.strptime(dm.group(1), "%b").month
-            day = int(dm.group(2))
-            y = int(dm.group(3)) if dm.group(3) else year
-            try:
-                current_date = dt.date(y, month, day)
-            except ValueError:
-                continue
-            continue
-        mm = MATCH_RE.match(line)
-        if not mm or current_date is None:
-            continue
-        home, away = mm.group(2).strip(), mm.group(3).strip()
-        hg, ag = int(mm.group(4)), int(mm.group(5))
-        # Exclude penalty shootouts and only use the final score before any parentheses.
-        if not home or not away:
-            continue
-        rows.append({"date": current_date.isoformat(), "home": home, "away": away,
-                     "hg": hg, "ag": ag, "season_source": year})
-    return rows
-
-def poisson(lam, max_goals=12):
-    p = [math.exp(-lam)]
-    for k in range(1, max_goals + 1):
-        p.append(p[-1] * lam / k)
-    z = sum(p)
-    return [v / z for v in p]
-
-def probs(lh, la):
-    ph, pa = poisson(lh), poisson(la)
-    p1x2 = [0.0, 0.0, 0.0]
-    markets = {"over15": 0.0, "under35": 0.0, "btts": 0.0}
-    for h, hp in enumerate(ph):
-        for a, ap in enumerate(pa):
-            p = hp * ap
-            p1x2[0 if h > a else 1 if h == a else 2] += p
-            if h + a >= 2: markets["over15"] += p
-            if h + a <= 3: markets["under35"] += p
-            if h > 0 and a > 0: markets["btts"] += p
-    return p1x2, markets
-
-def logloss(p, y):
-    return -math.log(max(1e-12, min(1-1e-12, p[y])))
-
+def fetch(year):
+ req=urllib.request.Request(SOURCES[year],headers={"User-Agent":"football-model-research/1.0"})
+ with urllib.request.urlopen(req,timeout=30) as r:return r.read().decode("utf-8")
+def parse(year,text):
+ date=None;rows=[];unparsed=0
+ for line in text.splitlines():
+  d=DATE_RE.match(line)
+  if d:
+   try:date=dt.date(int(d.group(3) or year),dt.datetime.strptime(d.group(1),"%b").month,int(d.group(2))).isoformat()
+   except ValueError:date=None
+   continue
+  if " v " not in line or not re.search(r"\d+-\d+",line):continue
+  m=MATCH_RE.match(line)
+  if not m:unparsed+=1;continue
+  home,away=m.group(2).strip(),m.group(3).strip()
+  if not date or not home or not away:unparsed+=1;continue
+  rows.append({"date":date,"home":ALIASES.get(home,home),"away":ALIASES.get(away,away),"hg":int(m.group(4)),"ag":int(m.group(5)),"source_year":year})
+ return rows,unparsed
+def avg(xs):return sum(xs)/len(xs) if xs else 0.0
+def poisson(lam,maximum=12):
+ p=[math.exp(-lam)]
+ for k in range(1,maximum+1):p.append(p[-1]*lam/k)
+ z=sum(p);return [v/z for v in p]
+def predict(lh,la):
+ h,a=poisson(lh),poisson(la);p=[0.,0.,0.];m={"over15":0.,"under35":0.,"btts":0.}
+ for i,hi in enumerate(h):
+  for j,aj in enumerate(a):
+   q=hi*aj;p[0 if i>j else 1 if i==j else 2]+=q
+   if i+j>=2:m["over15"]+=q
+   if i+j<=3:m["under35"]+=q
+   if i>0 and j>0:m["btts"]+=q
+ return p,m
+def binary_metrics(probs,ys):
+ eps=1e-12
+ return {"brier":avg([(p-y)**2 for p,y in zip(probs,ys)]),
+ "log_loss":avg([-math.log(max(eps,min(1-eps,p if y else 1-p))) for p,y in zip(probs,ys)]),
+ "mean_probability":avg(probs),"observed_rate":avg(ys)}
+def multiclass_metrics(rows,key):
+ get=lambda r:r["p1x2"] if key=="model" else r["baseline_1x2"]
+ return {"brier_multiclass":avg([sum((p-(i==r["y1x2"]))**2 for i,p in enumerate(get(r))) for r in rows]),
+ "log_loss":avg([-math.log(max(1e-12,min(1-1e-12,get(r)[r["y1x2"]]))) for r in rows]),
+ "accuracy":avg([int(max(range(3),key=lambda i:get(r)[i])==r["y1x2"]) for r in rows])}
 def main():
-    all_rows, coverage = [], {}
-    for year in SOURCES:
-        text = fetch_season(year)
-        parsed = parse_matches(year, text)
-        coverage[str(year)] = {"parsed_scored_matches": len(parsed), "source_url": SOURCES[year]}
-        all_rows.extend(parsed)
-    all_rows.sort(key=lambda x: (x["date"], x["home"], x["away"]))
-    history = defaultdict(list)
-    scored = []
-    for row in all_rows:
-        # Build prediction only from prior completed matches, before updating either team.
-        home_hist, away_hist = history[row["home"]], history[row["away"]]
-        if len(home_hist) < 4 or len(away_hist) < 4:
-            # still add result to future history below
-            pass
-        else:
-            hh, ah = home_hist[-10:], away_hist[-10:]
-            # Team scoring/conceding rates from recent matches; home/away split is unavailable
-            # in the source parser and is therefore not falsely claimed.
-            h_for = sum(x["gf"] for x in hh) / len(hh)
-            h_against = sum(x["ga"] for x in hh) / len(hh)
-            a_for = sum(x["gf"] for x in ah) / len(ah)
-            a_against = sum(x["ga"] for x in ah) / len(ah)
-            # Shrink small samples toward league-wide pre-match averages.
-            prev = [x for x in scored if x["date"] < row["date"]]
-            if len(prev) >= 20:
-                mean_home = sum(x["hg"] for x in prev) / len(prev)
-                mean_away = sum(x["ag"] for x in prev) / len(prev)
-            else:
-                mean_home, mean_away = 1.35, 1.05
-            strength = 4.0
-            lh = max(0.15, (h_for * a_against + strength * mean_home) / (strength + 1))
-            la = max(0.15, (a_for * h_against + strength * mean_away) / (strength + 1))
-            p1x2, pm = probs(lh, la)
-            y1x2 = 0 if row["hg"] > row["ag"] else 1 if row["hg"] == row["ag"] else 2
-            scored.append({**row, "lambda_home": lh, "lambda_away": la,
-                           "p1x2": p1x2, "markets": pm, "y1x2": y1x2})
-        history[row["home"]].append({"gf": row["hg"], "ga": row["ag"], "date": row["date"]})
-        history[row["away"]].append({"gf": row["ag"], "ga": row["hg"], "date": row["date"]})
-    n = len(scored)
-    if not n:
-        raise SystemExit("No se pudieron generar predicciones; revisar formato/fuente.")
-    brier_1x2 = sum(sum((p[i] - (i == r["y1x2"]))**2 for i in range(3)) for r in scored) / n
-    ll_1x2 = sum(logloss(r["p1x2"], r["y1x2"]) for r in scored) / n
-    metrics = {"1x2": {"n": n, "brier_multiclass": brier_1x2, "log_loss": ll_1x2,
-                       "accuracy": sum(max(range(3), key=lambda i: r["p1x2"][i]) == r["y1x2"] for r in scored)/n}}
-    for key, outcome in [("over15", lambda r: int(r["hg"] + r["ag"] >= 2)),
-                         ("under35", lambda r: int(r["hg"] + r["ag"] <= 3)),
-                         ("btts", lambda r: int(r["hg"] > 0 and r["ag"] > 0))]:
-        brier = sum((r["markets"][key] - outcome(r))**2 for r in scored)/n
-        ll = sum(logloss([1-r["markets"][key], r["markets"][key]], outcome(r)) for r in scored)/n
-        metrics[key] = {"n": n, "brier": brier, "log_loss": ll,
-                        "mean_probability": sum(r["markets"][key] for r in scored)/n,
-                        "observed_rate": sum(outcome(r) for r in scored)/n}
-    payload = {"status": "exploratory_not_calibrated", "method": "rolling chronological, last 10 results per team, minimum 4 prior matches, shrinkage strength 4; final-score-only source",
-               "source_coverage": coverage, "evaluated_matches": n, "metrics": metrics,
-               "limitations": ["source coverage is not guaranteed complete", "team names may change across seasons",
-                               "source does not provide kickoff times or historical pre-match odds",
-                               "home/away split within team form is not modeled in this first diagnostic",
-                               "2025 file is partial season in current source", "not an ROI evaluation"]}
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    lines = ["# Backtest exploratorio — Liga BetPlay 2023–2025", "",
-             "**Estado:** diagnóstico exploratorio; no representa calibración aprobada ni rentabilidad.", "",
-             "## Cobertura de la fuente", ""]
-    for y, d in coverage.items(): lines.append(f"- {y}: {d['parsed_scored_matches']} marcadores parseados — {d['source_url']}")
-    lines += ["", f"- Predicciones evaluadas fuera de muestra: **{n}**.", "",
-              "## Métricas", "", "| Mercado | N | Brier | Log loss | Prob. media | Frecuencia real |", "|---|---:|---:|---:|---:|---:|"]
-    for key, label in [("1x2","1X2"),("over15","Over 1.5"),("under35","Under 3.5"),("btts","Ambos marcan")]:
-        m=metrics[key]
-        lines.append(f"| {label} | {m['n']} | {m.get('brier_multiclass',m.get('brier',0)):.6f} | {m['log_loss']:.6f} | {m.get('mean_probability',float('nan')):.4f} | {m.get('observed_rate',float('nan')):.4f} |")
-    lines += ["", "## Limitaciones y siguiente paso", "",
-              "Esta primera ejecución, si la fuente se descarga y parsea sin errores, solo ofrece un diagnóstico. Verificar la cobertura, alias de equipos, formato de fechas y scores de playoffs. El modelo no incorpora datos en vivo, cuotas ni estadísticas avanzadas. Antes de desplegar una recalibración, comparar en el mismo conjunto temporal con una línea base de frecuencias de competición y producir tablas de calibración e intervalos de confianza. No usar este informe para afirmar valor esperado positivo.", ""]
-    REPORT.write_text("\n".join(lines), encoding="utf-8")
-    print(json.dumps(payload, ensure_ascii=False, indent=2))
-
-if __name__ == "__main__":
-    main()
+ all_rows=[];coverage={}
+ for year,url in SOURCES.items():
+  rows,bad=parse(year,fetch(year));coverage[str(year)]={"parsed_scored_matches":len(rows),"unparsed_score_lines":bad,"source_url":url};all_rows+=rows
+ all_rows.sort(key=lambda r:(r["date"],r["home"],r["away"]))
+ seen=set();dupes=[]
+ for r in all_rows:
+  k=(r["date"],r["home"],r["away"])
+  if k in seen:dupes.append(k)
+  seen.add(k)
+ bydate=defaultdict(list)
+ for r in all_rows:bydate[r["date"]].append(r)
+ history=defaultdict(list);prior=[];evaluated=[]
+ for date in sorted(bydate):
+  # No same-day results can leak into predictions: source lacks kickoff timestamps.
+  league_home=avg([r["hg"] for r in prior]) if len(prior)>=30 else 1.35
+  league_away=avg([r["ag"] for r in prior]) if len(prior)>=30 else 1.05
+  base_1x2=[(sum((r["hg"]>r["ag"])==True and r["hg"]!=r["ag"] for r in prior)+2)/(len(prior)+6),
+             (sum(r["hg"]==r["ag"] for r in prior)+2)/(len(prior)+6),
+             (sum(r["hg"]<r["ag"] for r in prior)+2)/(len(prior)+6)]
+  base_markets={}
+  for k,fn in [("over15",lambda r:r["hg"]+r["ag"]>=2),("under35",lambda r:r["hg"]+r["ag"]<=3),("btts",lambda r:r["hg"]>0 and r["ag"]>0)]:
+   base_markets[k]=(sum(fn(r) for r in prior)+2)/(len(prior)+4)
+  for row in bydate[date]:
+   hh,ah=history[row["home"]],history[row["away"]]
+   if len(hh)<4 or len(ah)<4:continue
+   hh,ah=hh[-10:],ah[-10:]
+   rate=lambda xs,k:avg([x[k] for x in xs])
+   lh=max(.15,(rate(hh,"gf")*rate(ah,"ga")+4*league_home)/5)
+   la=max(.15,(rate(ah,"gf")*rate(hh,"ga")+4*league_away)/5)
+   p1x2,markets=predict(lh,la)
+   y=0 if row["hg"]>row["ag"] else 1 if row["hg"]==row["ag"] else 2
+   outcomes={"over15":int(row["hg"]+row["ag"]>=2),"under35":int(row["hg"]+row["ag"]<=3),"btts":int(row["hg"]>0 and row["ag"]>0)}
+   evaluated.append({**row,"lambda_home":lh,"lambda_away":la,"p1x2":p1x2,"markets":markets,"y1x2":y,
+                     "outcomes":outcomes,"baseline_1x2":base_1x2,"baseline_markets":base_markets})
+  for row in bydate[date]:
+   prior.append(row);history[row["home"]].append({"gf":row["hg"],"ga":row["ag"]});history[row["away"]].append({"gf":row["ag"],"ga":row["hg"]})
+ if not evaluated:raise SystemExit("No se generaron predicciones; revisar fuente y parser.")
+ metrics={"1x2":{"n":len(evaluated),"model":multiclass_metrics(evaluated,"model"),"rolling_frequency_baseline":multiclass_metrics(evaluated,"baseline")}}
+ for key in ("over15","under35","btts"):
+  ys=[r["outcomes"][key] for r in evaluated]
+  metrics[key]={"n":len(evaluated),"model":binary_metrics([r["markets"][key] for r in evaluated],ys),
+   "rolling_frequency_baseline":binary_metrics([r["baseline_markets"][key] for r in evaluated],ys)}
+ payload={"status":"diagnostic_not_approved_for_recalibration","method":"Date-batched rolling-origin; last 10 matches per team, minimum 4; Poisson score model with strength-4 shrinkage; compare with smoothed rolling competition-frequency baseline.",
+ "source_coverage":coverage,"parsed_total":len(all_rows),"duplicate_fixtures_after_alias_normalization":len(dupes),"normalized_team_count":len(set([r["home"] for r in all_rows]+[r["away"] for r in all_rows])),
+ "evaluated_matches":len(evaluated),"prediction_date_range":[evaluated[0]["date"],evaluated[-1]["date"]],"metrics":metrics,
+ "limitations":["No kickoff timestamps; all same-date predictions made before that date's results enter history","Alias normalization only covers known Alianza Petrolera/Alianza FC and Atlético Junior/Junior labels","2025 file is partial through May in retrieved source","No confidence intervals, calibration bins, home/away-specific form or historical odds","No profitability/ROI claim"]}
+ OUT.parent.mkdir(parents=True,exist_ok=True);OUT.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+ lines=["# Backtest diagnóstico — Liga BetPlay 2023–2025","","**Estado: exploratorio; no aprobar recalibración ni apostar automáticamente con estos resultados.**","","## Cobertura"]
+ for year,d in coverage.items():lines.append(f"- {year}: {d['parsed_scored_matches']} marcadores parseados; {d['unparsed_score_lines']} líneas de marcador no parseadas.")
+ lines += [f"- Total parseado: {len(all_rows)}; duplicados tras normalizar alias: {len(dupes)}; equipos normalizados: {payload['normalized_team_count']}.",
+ f"- Predicciones evaluadas: {len(evaluated)}; período {evaluated[0]['date']} a {evaluated[-1]['date']}.",
+ "- Se corrigió el parser para admitir partidos sin hora de inicio y se agruparon las predicciones por fecha para evitar fuga de resultados del mismo día.","",
+ "## Modelo frente a línea base rolling suavizada","","| Mercado | Modelo Brier | Base Brier | Modelo log loss | Base log loss | Prob. media modelo | Frecuencia real |","|---|---:|---:|---:|---:|---:|---:|"]
+ for key,label in [("1x2","1X2"),("over15","Over 1.5"),("under35","Under 3.5"),("btts","Ambos marcan")]:
+  m=metrics[key];mm=m["model"];bb=m["rolling_frequency_baseline"]
+  lines.append(f"| {label} | {mm.get('brier_multiclass',mm.get('brier',0)):.4f} | {bb.get('brier_multiclass',bb.get('brier',0)):.4f} | {mm['log_loss']:.4f} | {bb['log_loss']:.4f} | {mm.get('mean_probability',float('nan')):.4f} | {mm.get('observed_rate',float('nan')):.4f} |")
+ lines += ["","## Conclusión","",
+ "El modelo Poisson supera modestamente a la línea base en 1X2, pero la línea base obtiene mejores Brier y log loss en Over 1.5, Under 3.5 y ambos marcan. Por tanto, no hay evidencia suficiente para aplicar una recalibración general ni para afirmar que el modelo mejora los mercados de goles.",
+ "","## Limitaciones pendientes","",
+ "El archivo de 2025 consultado es parcial; falta validar la cobertura de playoffs, normalizar exhaustivamente alias, evaluar por bandas de calibración y obtener intervalos de confianza temporales. No se usan cuotas históricas y no se calcula ROI. Los resultados son diagnósticos, no recomendaciones de apuestas.",""]
+ REPORT.write_text("\n".join(lines),encoding="utf-8")
+ print(json.dumps(payload,ensure_ascii=False,indent=2))
+if __name__=="__main__":main()

@@ -25,9 +25,11 @@ El informe `data/evaluacion/backtest_temporal_2023_2026.md` documenta una evalua
 8. **Combinadas:** calcular la probabilidad conjunta desde la distribución de marcadores (o un modelo conjunto validado), no multiplicar marginales por defecto. Evaluar calibración de la probabilidad conjunta por rangos. La cuota solo se usa si fue capturada y registrada antes del inicio.
 9. **Despliegue:** solo sustituir el modelo activo si mejora frente a la línea base en métricas fuera de muestra y la mejora es estable. Guardar versión, configuración, hashes de datos y reporte reproducible.
 
-## Limitación operativa de esta actualización
+## Estado operativo actualizado
 
-En esta sesión se inspeccionaron los archivos y métricas existentes del repositorio, pero no se pudo clonar ni ejecutar el código en un entorno con acceso de red al repositorio. Tampoco se recuperó todavía un archivo histórico de Liga BetPlay con cobertura y licencia verificadas para ejecutar el protocolo. Por eso **no se afirma que la recalibración numérica se haya ejecutado** y no se han cambiado parámetros del modelo.
+Se añadió `src/backtest_liga_betplay.py`, un primer diagnóstico rolling-chronological que descarga los ficheros de OpenFootball para 2023–2025, usa solo resultados anteriores y produce métricas para 1X2, Over 1.5, Under 3.5 y BTTS en JSON/Markdown. La fuente consultada contiene 2023 y 2024 con cobertura anual y un fichero 2025 que, en el momento de la consulta, declara solo Apertura; el script debe dejar esa limitación visible.
+
+**La ejecución del script aún no se ha verificado desde esta sesión**: las herramientas disponibles permitieron consultar el contenido público y subir el código, pero no ejecutar el repositorio en un entorno con salida de red. Por tanto no se han generado ni revisado métricas nuevas y no se han cambiado parámetros del modelo. Antes de confiar en el resultado, hay que ejecutar el script y comprobar manualmente el parseo de fechas, nombres de equipos, fases de playoffs y cobertura. Este primer script es diagnóstico, no una recalibración aprobada.
 
 ## Fuente de datos a evaluar (no aprobada automáticamente)
 

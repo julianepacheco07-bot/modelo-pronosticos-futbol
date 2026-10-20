@@ -1,0 +1,62 @@
+{
+  "status": "exploratory_execution_complete_recalibration_not_approved",
+  "date": "2026-10-19",
+  "sources": {
+    "2023": {
+      "parsed_matches": 433,
+      "url": "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt"
+    },
+    "2024": {
+      "parsed_matches": 409,
+      "url": "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt"
+    },
+    "2025_partial": {
+      "parsed_matches": 167,
+      "url": "https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt"
+    }
+  },
+  "evaluated_matches": 949,
+  "prediction_date_range": [
+    "2023-02-18",
+    "2025-05-04"
+  ],
+  "method": "Chronological; minimum 4 prior matches per team; last 10 team results; goal-rate shrinkage strength 4; independent Poisson score matrix truncated at 12 goals.",
+  "metrics": {
+    "1x2": {
+      "n": 949,
+      "brier_multiclass": 0.627109,
+      "log_loss": 1.04189,
+      "accuracy": 0.471022
+    },
+    "over15": {
+      "n": 949,
+      "brier": 0.235273,
+      "log_loss": 0.664392,
+      "mean_probability": 0.656251,
+      "observed_rate": 0.635406
+    },
+    "under35": {
+      "n": 949,
+      "brier": 0.144697,
+      "log_loss": 0.465947,
+      "mean_probability": 0.807716,
+      "observed_rate": 0.82824
+    },
+    "btts": {
+      "n": 949,
+      "brier": 0.250469,
+      "log_loss": 0.694145,
+      "mean_probability": 0.441061,
+      "observed_rate": 0.444679
+    }
+  },
+  "limitations": [
+    "Coverage and parser not independently audited",
+    "2025 file partial through May in retrieved version",
+    "No team alias normalization",
+    "No rolling baseline comparison",
+    "No confidence intervals",
+    "No historical odds or ROI",
+    "Do not recalibrate or deploy based on this run alone"
+  ]
+}

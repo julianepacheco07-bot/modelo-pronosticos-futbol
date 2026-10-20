@@ -1,69 +1,53 @@
-# Ejecución diagnóstica del backtest — Liga BetPlay 2023–2025
+# Backtest diagnóstico corregido — Liga BetPlay 2023–2025
 
-**Estado: ejecución exploratoria completada sobre datos descargados desde OpenFootball; recalibración NO aprobada.**  
-**Fecha de ejecución:** 19 de octubre de 2026.
+**Estado: análisis exploratorio; recalibración no aprobada.**  
+**Cobertura de la fuente consultada:** 2023–2025 parcial; el archivo 2025 recuperado llega a mayo.
 
-## Fuente y cobertura parseada
+## Correcciones aplicadas al código
 
-Se recuperaron los archivos de texto públicos de OpenFootball desde sus URLs raw. El parser actual encontró:
+- El parser ahora acepta líneas de partido con y sin hora de inicio. La versión anterior omitía encuentros sin hora.
+- Se normalizan algunos alias conocidos: Alianza Petrolera/Alianza FC y Atlético Junior/Junior.
+- Se detectan duplicados después de normalizar los alias.
+- Las predicciones se agrupan por fecha: ningún resultado de un partido del mismo día se añade al historial hasta que todas las predicciones de esa fecha están generadas. La fuente no ofrece horas de inicio fiables para ordenar encuentros dentro del día.
+- Se añadió una comparación con una línea base de frecuencias históricas acumuladas, suavizadas y calculadas solo con resultados anteriores.
 
-| Archivo fuente | Partidos con marcador parseados |
+## Cobertura y muestra
+
+| Fuente | Marcadores parseados |
 |---|---:|
-| 2023 | 433 |
-| 2024 | 409 |
+| 2023 | 452 |
+| 2024 | 432 |
 | 2025 (parcial) | 167 |
-| **Total** | **1.009** |
+| **Total** | **1.051** |
 
-El procedimiento generó predicciones para **949 partidos** después de exigir al menos cuatro partidos previos por equipo. El rango de predicciones va del 18 de febrero de 2023 al 4 de mayo de 2025.
+- Duplicados tras normalización de alias: **0**.
+- Equipos normalizados identificados: **23**.
+- Predicciones evaluadas: **995**.
+- Período de predicciones: **18 de febrero de 2023 a 4 de mayo de 2025**.
 
-Fuentes:
-- https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt
-- https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt
-- https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt
+Fuentes: [2023](https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2023_co1.txt), [2024](https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2024_co1.txt), [2025](https://raw.githubusercontent.com/openfootball/south-america/master/colombia/2025_co1.txt).
 
-## Método ejecutado
+## Modelo frente a línea base rolling
 
-- Orden cronológico por fecha.
-- Para cada equipo, últimos 10 resultados previos, con un mínimo de 4 partidos.
-- Tasas de goles a favor y en contra por equipo, suavizadas hacia promedios generales de goles en partidos previos (fuerza de suavizado 4).
-- Distribución de marcadores por Poisson independiente, truncada a 12 goles y renormalizada.
-- Mercados calculados desde la matriz de marcadores: 1X2, Over 1.5, Under 3.5 y ambos equipos marcan.
+| Mercado | Brier modelo | Brier base | Log loss modelo | Log loss base | Prob. media modelo | Frecuencia observada |
+|---|---:|---:|---:|---:|---:|---:|
+| 1X2 multiclase | 0,6256 | 0,6379 | 1,0399 | 1,0569 | — | — |
+| Over 1.5 | 0,2343 | 0,2321 | 0,6623 | 0,6571 | 65,98 % | 63,72 % |
+| Under 3.5 | 0,1474 | 0,1454 | 0,4723 | 0,4667 | 80,48 % | 82,41 % |
+| Ambos marcan | 0,2506 | 0,2488 | 0,6943 | 0,6907 | 44,49 % | 44,42 % |
 
-Este es un **modelo diagnóstico simple**: no incluye ajuste explícito de localía dentro de la forma de cada equipo, alias de clubes verificados, intervalos de confianza ni comparación contra una línea base rolling ya auditada.
+Para 1X2, el modelo tiene una exactitud de **47,34 %** y la línea base **47,14 %**; el pequeño aumento de exactitud no reemplaza la comparación de probabilidades con Brier y Log loss.
 
-## Métricas observadas
+## Conclusión
 
-| Mercado | N | Brier | Log loss | Probabilidad media | Frecuencia observada |
-|---|---:|---:|---:|---:|---:|
-| 1X2 (multiclase) | 949 | 0,6271 | 1,0419 | — | Acierto del signo: 47,10 % |
-| Over 1.5 | 949 | 0,2353 | 0,6644 | 65,63 % | 63,54 % |
-| Under 3.5 | 949 | 0,1447 | 0,4659 | 80,77 % | 82,82 % |
-| Ambos marcan | 949 | 0,2505 | 0,6941 | 44,11 % | 44,47 % |
+El Poisson mejora a la línea base en Brier y Log loss para 1X2, pero la línea base es mejor en los tres mercados de goles evaluados. Por ahora, **no se debe recalibrar ni aprobar el modelo para recomendaciones automáticas**. La diferencia es pequeña y no se calcularon intervalos de confianza.
 
-## Interpretación prudente
+## Pendientes antes de aprobar
 
-- El modelo sobreestima la frecuencia de Over 1.5 en aproximadamente 2,09 puntos porcentuales en esta muestra.
-- Sobreestima la probabilidad de Under 3.5 en promedio en aproximadamente 2,05 puntos porcentuales (frecuencia observada mayor que probabilidad media, por lo que en realidad **subestima** el Under 3.5 en ~2,05 puntos).
-- Ambos marcan queda muy cerca en promedio, con diferencia de ~0,04 puntos porcentuales.
-- La exactitud 1X2 de 47,10% por sí sola no demuestra calidad: debe compararse con una línea base y acompañarse de Brier/Log Loss y calibración por bandas.
+1. Auditar manualmente una muestra de fechas, resultados y fases del torneo.
+2. Completar la normalización histórica de nombres de clubes.
+3. Calcular calibración por bandas e intervalos de confianza mediante remuestreo temporal.
+4. Evaluar por separado Apertura, Finalización, cuadrangulares y playoffs.
+5. Incorporar cuotas prepartido verificadas capturadas antes del inicio para estudiar valor esperado; no se calcula ROI con esta fuente.
 
-## Advertencias de calidad
-
-1. Los 433 y 409 partidos parseados en 2023 y 2024 pueden incluir cuadrangulares/playoffs además de fases regulares; confirmar cobertura y duplicados antes de aprobar resultados.
-2. El archivo 2025 disponible en esta ruta solo llega a mayo en la versión consultada. No representa la temporada completa.
-3. Nombres de equipos pueden cambiar entre temporadas; falta normalización de alias.
-4. El parser identifica fechas y resultados por patrones de texto. Hay que auditar partidos muestreados contra la fuente y detectar fechas omitidas.
-5. No se calcularon intervalos de confianza ni se comparó contra una línea base de frecuencias rolling en esta ejecución.
-6. No se incorporaron cuotas prepartido; no hay evaluación de valor esperado ni ROI.
-7. Estas métricas no justifican cambiar parámetros ni trasladar automáticamente el modelo a decisiones de apuesta.
-
-## Decisión
-
-**No aplicar recalibración automática aún.** Esta ejecución permite detectar una discrepancia agregada para Over 1.5, pero antes de corregirla se debe:
-- validar cobertura y parseo;
-- normalizar equipos;
-- implementar una línea base rolling usando solo resultados previos;
-- reportar diagramas/tablas de calibración y bootstrap temporal;
-- comparar candidatos con validación rolling-origin y test final reservado.
-
-Hasta completar estos controles, el modelo para Liga BetPlay permanece experimental.
+No hay evidencia aquí de rentabilidad, ni se han cambiado los umbrales de apuesta.

@@ -44,3 +44,21 @@ Sofascore identifica el encuentro de Liga DIMAYOR, Finalización, jornada 15, co
 - Caracol Radio, directo y estadísticas (estado consultado cerca del minuto 76): https://caracol.com.co/resultados/futbol/colombia_ii/2026/directo/regular_a_15_6a2d5d4121fff87/estadisticas/
 - Flashscore, ficha estadística: https://www.flashscore.com/match/football/alianza-GfFNymsk/dep-pasto-GdemgvJl/summary/stats/
 - Sofascore, ficha del partido: https://www.sofascore.com/football/match/alianza-valledupar-fc-deportivo-pasto/nxcsZXbe
+
+
+## Ampliación con datos de la ficha de partido (consulta posterior)
+
+Una ficha estadística indexada de AS/Caracol, consultada el 20 de octubre de 2026, publica datos de temporada previos/alrededor del partido (no son estadísticas del encuentro en sí):
+- Goles por partido: Pasto 0,8 (9 goles); Alianza 1,1 (14 goles).
+- Goles encajados por partido: Pasto 1,5 (18); Alianza 2,0 (26).
+- Disparos recibidos por partido: Pasto 12,8 (153); Alianza 11,9 (155).
+- Pases por partido: Pasto 425,8 (5.110); Alianza 336,2 (4.370).
+Fuente: https://colombia.as.com/resultados/futbol/colombia_ii/2026/directo/regular_a_15_6a2d5d4121fff87/
+
+Estos totales de temporada sugieren que Alianza concedía más goles por partido y Pasto anotaba poco; sirven como contexto, pero no reemplazan la muestra separada local/visitante ni se deben usar como si fueran datos exclusivamente prepartido sin comprobar el corte temporal exacto.
+
+## Estado de ejecución del modelo
+
+En esta actualización se consultaron los archivos del repositorio y las páginas públicas disponibles, pero **no se ejecutó de nuevo el backtest completo** ni se generaron métricas nuevas. El backtest documentado en `backtest_temporal_2023_2026.md` cubre cinco ligas europeas, no la Liga BetPlay colombiana. Por ello no hay base para afirmar que el pipeline existente validó este partido o que ya esté calibrado para Colombia.
+
+Siguiente tarea técnica: incorporar una fuente histórica verificable para Liga BetPlay, construir variables estrictamente prepartido con corte temporal, ejecutar validación rolling-origin por temporada y reportar Brier/Log Loss para 1X2 y mercados de goles. Las cuotas de Betano de este encuentro permanecen como datos aportados por el usuario, no como captura archivada verificable.
